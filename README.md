@@ -27,4 +27,11 @@ https://whimsical.com/mtr-05-W9KwquMBSCPHosycDw3rhC
 - 行事曆系統：讓學生可以查詢自己的購買的課程與上課時間；讓老師可以看見自己課程的預約狀況。
 - 金流系統：平台將以「儲值點數」的方式做課程的購買，使用者必須先儲值足夠的點數，才可以購買相對應點數的課程。
 
+## 使用技術與資源
+1. 前端：採用前端框架 React、Style 開發工具 Sass、圖片優化資源 imgur API。
+2. 後端：Express + Sequelize + firebase （第三方登入）
+
+## 團隊成員
+1. 前端：[@hazel-shih](https://github.com/hazel-shih)、[@ZoeLiuhy](https://github.com/ZoeLiuhy)
+2. 後端：[@chengcheng1231](https://github.com/chengcheng1231)、[@Wangpoching](https://github.com/Wangpoching)
 
