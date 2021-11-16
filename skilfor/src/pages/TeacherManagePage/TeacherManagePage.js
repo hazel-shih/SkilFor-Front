@@ -4,6 +4,7 @@ import teacher from "../../img/teacher.jpeg";
 import FormItem from "./FormItem";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -208,7 +209,6 @@ function TeacherManagePage() {
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
               <SectionText>課程時間</SectionText>
               <MyCalendar />
-              <CalendarContainer></CalendarContainer>
             </>
           )}
         </FormContainer>
