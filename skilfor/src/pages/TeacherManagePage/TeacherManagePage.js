@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import teacher from "../../img/teacher.jpeg";
 import FormItem from "./FormItem";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import moment from "moment";
 
+//styled component
 const TeacherManageWrapper = styled.section`
   padding: 196px 100px 182px 100px;
 `;
@@ -105,6 +108,13 @@ const CalendarContainer = styled(ColumnContainer)`
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
 `;
 
+const SectionText = styled.h3`
+  font-size: 1.3rem;
+  color: ${(props) => props.theme.colors.green_dark};
+  margin: 10px 0 30px 0;
+`;
+
+//fake data
 const COURSE_MAPPING = ["程式", "音樂", "數學"];
 const COURSE_INFOS = {
   category: "程式",
@@ -113,6 +123,20 @@ const COURSE_INFOS = {
     "經過幾年的發展，Spring Boot 的功能已經非常成熟，並且在近幾年軟體業盛行微服務（microservice）的設計模式下，也帶動越來越多企業選擇使用 Spring Boot 作為主流的開發工具。Spring Boot 之所以能夠成為目前業界最流行的開發工具，原因就在於 Spring Boot 憑借著 簡化 Spring 開發 以及 快速整合主流框架 的優點，讓工程師們可以更專注的在解決問題上，進而提升了前期開發和後續部署的效率。",
   price: 1000,
 };
+
+//calendar
+const localizer = momentLocalizer(moment);
+
+const MyCalendar = (props) => (
+  <div>
+    <Calendar
+      localizer={localizer}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+    />
+  </div>
+);
 
 function TeacherManagePage() {
   const [page, setPage] = useState("self");
@@ -174,6 +198,7 @@ function TeacherManagePage() {
                   ))}
                 </CourseBtnsContainer>
               )}
+              <SectionText>課程資訊</SectionText>
               <FormItem itemName="Category" value={COURSE_INFOS.category} />
               <FormItem itemName="Class Name" value={COURSE_INFOS.className} />
               <FormItem
@@ -181,6 +206,9 @@ function TeacherManagePage() {
                 value={COURSE_INFOS.classIntro}
               />
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
+              <SectionText>課程時間</SectionText>
+              <MyCalendar />
+              <CalendarContainer></CalendarContainer>
             </>
           )}
         </FormContainer>
