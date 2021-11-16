@@ -6,6 +6,7 @@ import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
+  background: ${(props) => props.theme.colors.pure_white};
   padding: 30px;
   margin: 0 auto;
   position: fixed;

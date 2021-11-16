@@ -7,7 +7,7 @@ const Container = styled.div`
   border-bottom: 20px solid ${(props) => props.theme.colors.green_dark};
   padding: 30px;
   margin: 0 auto;
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0px;
