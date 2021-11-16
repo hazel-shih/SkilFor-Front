@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { ReactComponent as BurgerIcon } from "../img/icons/burger-icon.svg";
-import { ReactComponent as QuestionIcon } from "../img/icons/question-icon.svg";
+import Icons from "../Icon/Icons";
 import LogoSrc from "../img/logo/logo.png";
-import { IconBtn } from "../IconBtn/IconBtn";
+import { IconDiv } from "../Icon/IconDiv";
+import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -40,6 +40,11 @@ const NavbarList = styled.ul`
     padding: 6px;
     cursor: pointer;
 
+    ${MEDIA_QUERY_SM} {
+      padding: 2px;
+      margin: 4px;
+    }
+
     & a {
       text-decoration: none;
       color: ${(props) => props.theme.colors.grey_dark};
@@ -74,16 +79,16 @@ function Nav() {
             </li>
             <li>
               <a href="./question_and_answer">
-                <IconBtn>
-                  <QuestionIcon />
-                </IconBtn>
+                <IconDiv>
+                  <Icons.NavIcons.Question />
+                </IconDiv>
               </a>
             </li>
             <li>
               <a href="burger_list_showup">
-                <IconBtn>
-                  <BurgerIcon />
-                </IconBtn>
+                <IconDiv>
+                  <Icons.NavIcons.Burger />
+                </IconDiv>
               </a>
             </li>
           </NavbarList>

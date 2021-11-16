@@ -1,6 +1,6 @@
 import Nav from "../Nav";
 import Footer from "../Footer";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -8,9 +8,9 @@ function App() {
       <div>
         <Nav />
         <Routes>
+          <Route exact path="/"></Route>
           <Route path="/login"></Route>
           <Route path="/register"></Route>
-          <Route path="/"></Route>
         </Routes>
         <Footer />
       </div>

@@ -1,11 +1,7 @@
 import styled from "styled-components";
-
-import { ReactComponent as TwitterIcon } from "../img/icons/twitter-icon.svg";
-import { ReactComponent as YoutubeIcon } from "../img/icons/youtube-icon.svg";
-import { ReactComponent as TelegramIcon } from "../img/icons/telegram-icon.svg";
-import { ReactComponent as InstagramIcon } from "../img/icons/instagram-icon.svg";
-import { ReactComponent as FacebookIcon } from "../img/icons/facebook-icon.svg";
-import { IconBtn } from "../IconBtn/IconBtn";
+import { IconDiv } from "../Icon/IconDiv";
+import Icons from "../Icon/Icons";
+import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 
 const Container = styled.div`
   border-bottom: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -18,6 +14,10 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.grey_dark};
   color: ${(props) => props.theme.colors.white_pure};
   text-align: center;
+
+  ${MEDIA_QUERY_SM} {
+    font-size: 8px;
+  }
 `;
 
 const FooterList = styled.ul`
@@ -56,42 +56,42 @@ function Footer() {
         <FooterList>
           <li>
             <a href="./twitter">
-              <IconBtn>
-                <TwitterIcon />
-              </IconBtn>
+              <IconDiv>
+                <Icons.SocialMediaIcons.Twitter />
+              </IconDiv>
             </a>
           </li>
           <li>
             <a href="./youtube">
-              <IconBtn>
-                <YoutubeIcon />
-              </IconBtn>
+              <IconDiv>
+                <Icons.SocialMediaIcons.Youtube />
+              </IconDiv>
             </a>
           </li>
           <li>
             <a href="./telegram">
-              <IconBtn>
-                <TelegramIcon />
-              </IconBtn>
+              <IconDiv>
+                <Icons.SocialMediaIcons.Telegram />
+              </IconDiv>
             </a>
           </li>
           <li>
             <a href="./instagram">
-              <IconBtn>
-                <InstagramIcon />
-              </IconBtn>
+              <IconDiv>
+                <Icons.SocialMediaIcons.Instagram />
+              </IconDiv>
             </a>
           </li>
           <li>
             <a href="./facebook">
-              <IconBtn>
-                <FacebookIcon />
-              </IconBtn>
+              <IconDiv>
+                <Icons.SocialMediaIcons.Facebook />
+              </IconDiv>
             </a>
           </li>
         </FooterList>
       </div>
-      <p>Copyright © 2021 SkilFor All Rights Reserved.</p>
+      <p>Copyright © {new Date().getFullYear()} SkilFor All Rights Reserved.</p>
     </Container>
   );
 }

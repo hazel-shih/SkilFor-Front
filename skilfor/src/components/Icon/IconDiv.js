@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const IconBtn = styled.div`
+export const IconDiv = styled.div`
   display: flex;
   align-items: center;
 
