@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import banner from "../../img/banner.jpg";
+import beATeacher from "../../img/banner_teacher.jpg";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 const Container = styled.div``;
 
@@ -39,14 +40,13 @@ const Banner = styled.section`
   }
 `;
 
-const Wrapper = styled.div`
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 12px;
-`;
-const Section = styled.section``;
 const StudentStep = styled.div``;
-const TeacherStep = styled.div``;
+const TeacherStep = styled(Banner)`
+  background: url(${beATeacher}) no-repeat center/cover;
+  & > p {
+    transform: translate(-50%, -130%);
+  }
+`;
 
 function HomePage() {
   return (
@@ -61,14 +61,13 @@ function HomePage() {
           <br />
         </p>
       </Banner>
-      <Wrapper>
-        <Section>
-          <StudentStep></StudentStep>
-        </Section>
-      </Wrapper>
-      <Section>
-        <TeacherStep></TeacherStep>
-      </Section>
+      <StudentStep></StudentStep>
+      <TeacherStep src={beATeacher}>
+        <p>
+          上架你的才華，將熱情與技能分享給全世界
+          <br />
+        </p>
+      </TeacherStep>
     </Container>
   );
 }
