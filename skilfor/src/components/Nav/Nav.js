@@ -3,6 +3,7 @@ import Icons from "../Icon/Icons";
 import LogoSrc from "../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
+import BurgerMenu from "../BurgerMenu";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -34,7 +35,7 @@ const NavbarList = styled.ul`
   list-style: none;
   height: 50px;
 
-  & li {
+  & > li {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -47,7 +48,7 @@ const NavbarList = styled.ul`
       margin: 4px;
     }
 
-    & a {
+    & > a {
       text-decoration: none;
       color: ${(props) => props.theme.colors.grey_dark};
       border-bottom: 3px solid transparent;
@@ -87,11 +88,7 @@ function Nav() {
               </a>
             </li>
             <li>
-              <a href="burger_list_showup">
-                <IconDiv>
-                  <Icons.NavIcons.Burger />
-                </IconDiv>
-              </a>
+              <BurgerMenu />
             </li>
           </NavbarList>
         </div>
