@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import CourseCalendar from "../../components/Calendar";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -95,20 +93,6 @@ const COURSE_INFOS = {
   price: 1000,
 };
 
-//calendar
-const localizer = momentLocalizer(moment);
-
-const MyCalendar = (props) => (
-  <div>
-    <Calendar
-      localizer={localizer}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    />
-  </div>
-);
-
 function TeacherManagePage() {
   const [page, setPage] = useState("self");
   const [courseType, setCourseType] = useState(COURSE_MAPPING[0]);
@@ -175,7 +159,7 @@ function TeacherManagePage() {
               />
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
               <SectionText>課程時間</SectionText>
-              <MyCalendar />
+              <CourseCalendar className={COURSE_INFOS.className} />
             </>
           )}
         </FormContainer>
