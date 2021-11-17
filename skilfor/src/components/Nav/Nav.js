@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Icons from "../Icon/Icons";
-import LogoSrc from "../img/logo/logo.png";
+import LogoSrc from "../../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
