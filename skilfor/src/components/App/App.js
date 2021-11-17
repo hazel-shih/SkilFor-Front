@@ -2,6 +2,7 @@ import Nav from "../Nav";
 import Footer from "../Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TeacherManagePage from "../../pages/TeacherManagePage";
+import HomePage from "../../pages/HomePage";
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
         <Routes>
           <Route exact path="/login"></Route>
           <Route exact path="/register"></Route>
-          <Route exact path="/"></Route>
+          <Route exact path="/" element={<HomePage />}></Route>
           <Route
             path="/teacher/manage/:teacherId"
             element={<TeacherManagePage />}
