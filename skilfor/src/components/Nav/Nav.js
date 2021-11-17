@@ -6,13 +6,15 @@ import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
-  padding: 30px;
+  background: white;
+  padding: 20px 30px;
   margin: 0 auto;
   position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
-  border-bottom: black 1px solid;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 5;
 `;
 
 const Logo = styled.img`
