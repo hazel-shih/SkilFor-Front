@@ -103,12 +103,6 @@ const CourseButton = styled.button`
     `background: ${props.theme.colors.green_dark}; color:white; border:2px solid ${props.theme.colors.green_dark}`}
 `;
 
-const CalendarContainer = styled(ColumnContainer)`
-  width: 100%;
-  height: 400px;
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
-`;
-
 const SectionText = styled.h3`
   font-size: 1.3rem;
   color: ${(props) => props.theme.colors.green_dark};
