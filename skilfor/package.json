@@ -16,6 +16,7 @@
     "sass": "^1.43.4",
     "sass-loader": "^12.3.0",
     "styled-components": "^5.3.3",
+    "typed.js": "^2.0.12",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
