@@ -5,6 +5,9 @@ import firstStep from "../../img/first_step.jpg";
 import secondStep from "../../img/second_step.jpg";
 import thirdStep from "../../img/third_step.jpg";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
+import Typed from "typed.js";
+import { useEffect, useRef } from "react";
+
 const Container = styled.div``;
 
 const Banner = styled.section`
@@ -125,17 +128,26 @@ const FindATeacherBtn = styled(Btn)`
 `;
 
 function HomePage() {
+  const newTyped = useRef(null);
+  const typed = useRef(null);
+
+  useEffect(() => {
+    const typedSetting = {
+      strings: [
+        "最酷的技能學習平台<br/>從寫程式到 B-box 你都可以在這裡教與學！<br/>A platform for learning and teaching skill.",
+      ],
+      typeSpeed: 80,
+      fadeOut: true,
+      loop: true,
+      showCursor: false,
+    };
+    typed.current = new Typed(newTyped.current, typedSetting);
+  }, []);
+
   return (
     <Container>
       <Banner src={banner}>
-        <p>
-          最酷的技能學習平台
-          <br />
-          從寫程式到 B-box 你都可以在這裡教與學！
-          <br />
-          A platform for learning and teaching skill.
-          <br />
-        </p>
+        <p ref={newTyped}></p>
       </Banner>
       <StudentStep>
         <Title>上課三步驟</Title>
