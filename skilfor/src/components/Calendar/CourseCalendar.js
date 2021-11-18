@@ -16,12 +16,26 @@ function CourseCalendar({ courseName }) {
   const [allEvents, setAllEvents] = useState(events);
   const [newEvent, setNewEvent] = useState({
     title: courseName,
+    dateData: {
+      month: "",
+      date: "",
+      day: "",
+    },
     start: "",
     end: "",
   });
 
   const handleDateClick = (e) => {
-    console.log(e.slots);
+    let dateDataObj = e.slots[0];
+    setAddAlertShow(true);
+    setNewEvent({
+      ...newEvent,
+      dateData: {
+        month: dateDataObj.getMonth() + 1,
+        date: dateDataObj.getDate(),
+        day: dateDataObj.getDay(),
+      },
+    });
   };
 
   const handleEventClick = (e) => {
@@ -47,6 +61,8 @@ function CourseCalendar({ courseName }) {
       <AddTaskAlertCard
         addAlertShow={addAlertShow}
         setAddAlertShow={setAddAlertShow}
+        newEvent={newEvent}
+        setNewEvent={setNewEvent}
       />
       <MyCalendar />
     </CalendarContainer>

@@ -98,7 +98,18 @@ const createTimeOptions = (timeType, time) => {
   }
 };
 
-function AddTaskAlertCard({ date, addAlertShow, setAddAlertShow }) {
+//處理星期格式
+let dayArr = ["日", "一", "二", "三", "四", "五", "六"];
+const getDay = (dayNum) => {
+  return dayArr[dayNum];
+};
+
+function AddTaskAlertCard({
+  addAlertShow,
+  setAddAlertShow,
+  newEvent,
+  setNewEvent,
+}) {
   const [courseTime, setCourseTime] = useState({
     start: {
       time: "0:00",
@@ -116,6 +127,7 @@ function AddTaskAlertCard({ date, addAlertShow, setAddAlertShow }) {
       },
     });
   };
+  console.log(courseTime);
   const handleCloseClick = () => {
     setAddAlertShow(false);
   };
@@ -123,7 +135,9 @@ function AddTaskAlertCard({ date, addAlertShow, setAddAlertShow }) {
     <AddNewContainer addAlertShow={addAlertShow}>
       <CloseButton src={close} onClick={handleCloseClick} />
       <AddNewTitle>新增一個上課時段</AddNewTitle>
-      <AddNewTitle>11月17日(星期三)</AddNewTitle>
+      <AddNewTitle>{`${newEvent.dateData.month}月${
+        newEvent.dateData.date
+      }日 星期${getDay(newEvent.dateData.day)}`}</AddNewTitle>
       <RowContainer>
         <AddNewContent>開始時間：</AddNewContent>
         <SelectContainer
