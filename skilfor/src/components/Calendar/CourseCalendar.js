@@ -5,6 +5,10 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import events from "./event";
 
+const CalendarContainer = styled.div`
+  position: relative;
+`;
+
 const RowContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -12,11 +16,17 @@ const RowContainer = styled.div`
 `;
 
 const AddNewContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 300px;
   background: white;
-  border: 1px solid grey;
   border-top: 8px solid ${(props) => props.theme.colors.green_dark};
   padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.2);
+  z-index: 5;
 `;
 
 const AddNewTitle = styled.h1`
@@ -37,39 +47,66 @@ const SelectContainer = styled.select`
   font-size: 1rem;
 `;
 
-const SelectOption = styled.option``;
+const SelectOption = styled.option`
+  over-flow: scroll;
+`;
 
-const createTimeOptions = (startTime) => {
-  let arr = [];
-  if (!startTime) {
-    for (let i = 0; i < 24; i++) {
-      arr.push(`${i}:00`);
-      arr.push(`${i}:30`);
-    }
-    return arr;
+const AddButton = styled.button`
+  border: none;
+  border-radius: 5px;
+  width: 80px;
+  color: white;
+  background: ${(props) => props.theme.colors.green_dark};
+  margin: 0 auto;
+  margin-top: 15px;
+  padding: 6px 10px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
   }
-  if (startTime) {
-    let temp = startTime.split(":");
-    let hour = Number(temp[0]);
-    let min = Number(temp[1]);
-    if (min === 0) {
-      for (let i = hour + 1; i < 24; i++) {
-        arr.push(`${i}:30`);
-        arr.push(`${i}:30`);
-      }
-    }
+`;
+
+const createTimeOptionsList = () => {
+  let arr = [];
+  for (let i = 0; i < 24; i++) {
+    arr.push(`${i}:00`);
+    arr.push(`${i}:30`);
+  }
+  arr.push("24:00");
+  return arr;
+};
+const createTimeOptions = (timeType, time) => {
+  let list = createTimeOptionsList();
+  //沒給定開始時間的結束時間選單
+  if (!time && timeType === "end") {
+    return list.slice(1, list.length);
+  }
+  //給定開始時間的結束時間選單
+  if (time && timeType === "end") {
+    return list.slice(list.indexOf(time) + 1, list.length);
+  }
+  //開始時間選單
+  if (timeType === "start") {
+    return list.slice(0, list.length - 1);
   }
 };
 
-function CourseCalendar({ className }) {
+function CourseCalendar({ courseName }) {
   const localizer = momentLocalizer(moment);
   const [allEvents, setAllEvents] = useState(events);
   const [newEvent, setNewEvent] = useState({
-    title: className,
+    title: courseName,
     start: "",
     end: "",
   });
-  const [startTime, setStartTime] = useState("");
+  const [courseTime, setCourseTime] = useState({
+    start: {
+      time: "0:00",
+    },
+    end: {
+      time: "0:30",
+    },
+  });
 
   const handleDateClick = (e) => {
     console.log(e.slots);
@@ -79,8 +116,14 @@ function CourseCalendar({ className }) {
     console.log(e);
   };
 
-  const handleStartTimeChange = (e) => {
-    setStartTime(e.target.value);
+  const handleCourseTimeChange = (e) => {
+    const { id, value } = e.target;
+    setCourseTime({
+      ...courseTime,
+      [id]: {
+        time: value,
+      },
+    });
   };
 
   const MyCalendar = (props) => (
@@ -90,20 +133,29 @@ function CourseCalendar({ className }) {
         <AddNewTitle>11月17日(星期三)</AddNewTitle>
         <RowContainer>
           <AddNewContent>開始時間：</AddNewContent>
-          <SelectContainer onChange={handleStartTimeChange} value={startTime}>
-            {createTimeOptions().map((item) => (
+          <SelectContainer
+            id="start"
+            onChange={handleCourseTimeChange}
+            value={courseTime.start.time}
+          >
+            {createTimeOptions("start", courseTime.end.time).map((item) => (
               <SelectOption>{item}</SelectOption>
             ))}
           </SelectContainer>
         </RowContainer>
         <RowContainer>
           <AddNewContent>結束時間：</AddNewContent>
-          <SelectContainer>
-            {createTimeOptions(startTime).map((item) => (
+          <SelectContainer
+            id="end"
+            onChange={handleCourseTimeChange}
+            value={courseTime.end.time}
+          >
+            {createTimeOptions("end", courseTime.start.time).map((item) => (
               <SelectOption>{item}</SelectOption>
             ))}
           </SelectContainer>
         </RowContainer>
+        <AddButton>確定新增</AddButton>
       </AddNewContainer>
       <Calendar
         onSelectEvent={handleEventClick}
@@ -117,7 +169,11 @@ function CourseCalendar({ className }) {
       />
     </>
   );
-  return <MyCalendar />;
+  return (
+    <CalendarContainer>
+      <MyCalendar />
+    </CalendarContainer>
+  );
 }
 
 export default CourseCalendar;
