@@ -2,6 +2,7 @@ import Nav from "../Nav";
 import Footer from "../Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import TeacherManagePage from "../../pages/TeacherManagePage";
+import TeacherProfilePage from "../../pages/TeacherProfilePage";
 import HomePage from "../../pages/HomePage";
 
 function App() {
@@ -16,6 +17,10 @@ function App() {
           <Route
             path="/teacher/manage/:teacherId"
             element={<TeacherManagePage />}
+          />
+          <Route
+            path="/teacher/profile/:teacherId"
+            element={<TeacherProfilePage />}
           />
         </Routes>
         <Footer />

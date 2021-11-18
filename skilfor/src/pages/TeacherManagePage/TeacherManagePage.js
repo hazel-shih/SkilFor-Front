@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
-import CourseCalendar from "../../components/Calendar";
+import CourseCalendar from "../../components/Calendar/CourseCalendar";
 import Avatar from "../../components/Avatar";
 
 //styled component
