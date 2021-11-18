@@ -1,8 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
+import close from "../../img/close.png";
 
 //styled component
 const RowContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: end;
@@ -16,10 +18,11 @@ const AddNewContainer = styled.div`
   width: 300px;
   background: white;
   border-top: 8px solid ${(props) => props.theme.colors.green_dark};
-  padding: 20px;
+  padding: 30px;
   text-align: center;
   box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.2);
   z-index: 5;
+  display: ${(props) => (props.addAlertShow ? "block" : "none")};
 `;
 
 const AddNewTitle = styled.h1`
@@ -38,16 +41,15 @@ const AddNewContent = styled.p`
 const SelectContainer = styled.select`
   height: 25px;
   font-size: 1rem;
+  width: 65px;
 `;
 
-const SelectOption = styled.option`
-  over-flow: scroll;
-`;
+const SelectOption = styled.option``;
 
 const AddButton = styled.button`
   border: none;
   border-radius: 5px;
-  width: 80px;
+  width: 90px;
   color: white;
   background: ${(props) => props.theme.colors.green_dark};
   margin: 0 auto;
@@ -56,6 +58,17 @@ const AddButton = styled.button`
   cursor: pointer;
   :hover {
     opacity: 0.8;
+  }
+`;
+
+const CloseButton = styled.img`
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 18px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.6;
   }
 `;
 
@@ -85,7 +98,7 @@ const createTimeOptions = (timeType, time) => {
   }
 };
 
-function AddTaskAlertCard() {
+function AddTaskAlertCard({ date, addAlertShow, setAddAlertShow }) {
   const [courseTime, setCourseTime] = useState({
     start: {
       time: "0:00",
@@ -103,8 +116,12 @@ function AddTaskAlertCard() {
       },
     });
   };
+  const handleCloseClick = () => {
+    setAddAlertShow(false);
+  };
   return (
-    <AddNewContainer>
+    <AddNewContainer addAlertShow={addAlertShow}>
+      <CloseButton src={close} onClick={handleCloseClick} />
       <AddNewTitle>新增一個上課時段</AddNewTitle>
       <AddNewTitle>11月17日(星期三)</AddNewTitle>
       <RowContainer>

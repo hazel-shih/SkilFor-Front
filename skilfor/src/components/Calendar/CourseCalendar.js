@@ -12,6 +12,7 @@ const CalendarContainer = styled.div`
 
 function CourseCalendar({ courseName }) {
   const localizer = momentLocalizer(moment);
+  const [addAlertShow, setAddAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState(events);
   const [newEvent, setNewEvent] = useState({
     title: courseName,
@@ -43,7 +44,10 @@ function CourseCalendar({ courseName }) {
   );
   return (
     <CalendarContainer>
-      <AddTaskAlertCard />
+      <AddTaskAlertCard
+        addAlertShow={addAlertShow}
+        setAddAlertShow={setAddAlertShow}
+      />
       <MyCalendar />
     </CalendarContainer>
   );
