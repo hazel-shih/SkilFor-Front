@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import teacher from "../../img/teacher.jpeg";
 import FormItem from "./FormItem";
+import AvatarBlock from "../../components/AvatarBlock";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -34,30 +34,6 @@ const UserInfoContainer = styled(ColumnContainer)`
   background: ${(props) => props.theme.colors.grey_bg};
   min-width: 200px;
   margin-right: 50px;
-`;
-
-const AvatarContainer = styled(ColumnContainer)`
-  height: 200px;
-  background: ${(props) => props.theme.colors.green_dark};
-  align-items: center;
-  justify-content: center;
-`;
-
-const Avatar = styled.div`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: white;
-  background-image: url(${(props) => props.imgSrc});
-  background-position: center center;
-  background-size: cover;
-  background-repeat: no-repeat;
-`;
-
-const AvatarName = styled.p`
-  color: white;
-  font-size: 1.2rem;
-  margin-top: 12px;
 `;
 
 const PageBtnsContainer = styled(ColumnContainer)`
@@ -148,10 +124,7 @@ function TeacherManagePage() {
       <PageTitle>後台管理</PageTitle>
       <TeacherManageContainer>
         <UserInfoContainer>
-          <AvatarContainer>
-            <Avatar imgSrc={teacher} />
-            <AvatarName>Kelly</AvatarName>
-          </AvatarContainer>
+          <AvatarBlock identity="teacher" />
           <PageBtnsContainer>
             <PageBtn
               id="self"
