@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import CourseCalendar from "../../components/Calendar/CourseCalendar";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -89,30 +87,15 @@ const SectionText = styled.h3`
 const COURSE_MAPPING = ["程式", "音樂", "數學"];
 const COURSE_INFOS = {
   category: "程式",
-  className: "一起來學習超潮的 Ruby 吧！",
+  courseName: "一起來學習超潮的 Ruby 吧！",
   classIntro:
     "經過幾年的發展，Spring Boot 的功能已經非常成熟，並且在近幾年軟體業盛行微服務（microservice）的設計模式下，也帶動越來越多企業選擇使用 Spring Boot 作為主流的開發工具。Spring Boot 之所以能夠成為目前業界最流行的開發工具，原因就在於 Spring Boot 憑借著 簡化 Spring 開發 以及 快速整合主流框架 的優點，讓工程師們可以更專注的在解決問題上，進而提升了前期開發和後續部署的效率。",
   price: 1000,
 };
 
-//calendar
-const localizer = momentLocalizer(moment);
-
-const MyCalendar = (props) => (
-  <div>
-    <Calendar
-      localizer={localizer}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    />
-  </div>
-);
-
 function TeacherManagePage() {
   const [page, setPage] = useState("self");
   const [courseType, setCourseType] = useState(COURSE_MAPPING[0]);
-  const [courseInfos, setCourseInfos] = useState(COURSE_INFOS);
   const handlePageBtnClick = (e) => {
     setPage(e.target.id);
   };
@@ -168,14 +151,14 @@ function TeacherManagePage() {
               )}
               <SectionText>課程資訊</SectionText>
               <FormItem itemName="Category" value={COURSE_INFOS.category} />
-              <FormItem itemName="Class Name" value={COURSE_INFOS.className} />
+              <FormItem itemName="Class Name" value={COURSE_INFOS.courseName} />
               <FormItem
                 itemName="Class Intro"
                 value={COURSE_INFOS.classIntro}
               />
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
               <SectionText>課程時間</SectionText>
-              <MyCalendar />
+              <CourseCalendar courseName={COURSE_INFOS.courseName} />
             </>
           )}
         </FormContainer>
