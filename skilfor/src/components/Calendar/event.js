@@ -1,7 +1,7 @@
-const events = [
+const COURSE_EVENTS = [
   {
     id: 0,
-    title: "[程式]一起學Ruby",
+    title: "[程式]coding",
     allDay: false,
     start: new Date(2021, 10, 1, 14, 0),
     end: new Date(2021, 10, 1, 15, 0),
@@ -26,4 +26,4 @@ const events = [
   },
 ];
 
-export default events;
+export default COURSE_EVENTS;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
+import { nanoid } from "nanoid";
 
 //styled component
 const RowContainer = styled.div`
@@ -72,7 +73,7 @@ const CloseButton = styled.img`
   }
 `;
 
-//產出開始時間與結束時間選項
+//產出初始化下拉式選單課程時間選項
 const createTimeOptionsList = () => {
   let arr = [];
   for (let i = 0; i < 24; i++) {
@@ -82,6 +83,7 @@ const createTimeOptionsList = () => {
   arr.push("24:00");
   return arr;
 };
+//使用者選定開始的選項後，產出結束的選項
 const createTimeOptions = (timeType, time) => {
   let list = createTimeOptionsList();
   //沒給定開始時間的結束時間選單
@@ -103,12 +105,19 @@ let dayArr = ["日", "一", "二", "三", "四", "五", "六"];
 const getDay = (dayNum) => {
   return dayArr[dayNum];
 };
+//處理文字時間轉數字時間格式
+const getTimeNumber = (timeStr) => {
+  let timeArr = timeStr.split(":").map((item) => Number(item));
+  return timeArr;
+};
 
 function AddTaskAlertCard({
   addAlertShow,
   setAddAlertShow,
   newEvent,
   setNewEvent,
+  setAllEvents,
+  allEvents,
 }) {
   const [courseTime, setCourseTime] = useState({
     start: {
@@ -126,16 +135,43 @@ function AddTaskAlertCard({
         time: value,
       },
     });
+    setNewEvent({
+      ...newEvent,
+      [id]: value,
+    });
   };
-  console.log(courseTime);
   const handleCloseClick = () => {
     setAddAlertShow(false);
   };
+  const handleAddNewEvent = () => {
+    const { year, month, date } = newEvent.dateData;
+    const { start, end } = newEvent;
+    let startTimeNumArr = getTimeNumber(start);
+    let endTimeNumArr = getTimeNumber(end);
+    setAllEvents([
+      ...allEvents,
+      {
+        id: nanoid(),
+        title: `${newEvent.start} - ${newEvent.end}`,
+        start: new Date(
+          year,
+          month,
+          date,
+          startTimeNumArr[0],
+          startTimeNumArr[1]
+        ),
+        end: new Date(year, month, date, endTimeNumArr[0], endTimeNumArr[1]),
+      },
+    ]);
+    setAddAlertShow(false);
+  };
+
+  console.log("allEvents: ", allEvents);
   return (
     <AddNewContainer addAlertShow={addAlertShow}>
       <CloseButton src={close} onClick={handleCloseClick} />
       <AddNewTitle>新增一個上課時段</AddNewTitle>
-      <AddNewTitle>{`${newEvent.dateData.month}月${
+      <AddNewTitle>{`${newEvent.dateData.month + 1}月${
         newEvent.dateData.date
       }日 星期${getDay(newEvent.dateData.day)}`}</AddNewTitle>
       <RowContainer>
@@ -162,7 +198,7 @@ function AddTaskAlertCard({
           ))}
         </SelectContainer>
       </RowContainer>
-      <AddButton>確定新增</AddButton>
+      <AddButton onClick={handleAddNewEvent}>確定新增</AddButton>
     </AddNewContainer>
   );
 }
