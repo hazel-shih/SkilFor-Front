@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import COURSE_EVENTS from "./event";
 import AddTaskAlertCard from "./AddTaskAlertCard";
 
 const CalendarContainer = styled.div`
@@ -24,7 +23,7 @@ let newEventInit = {
 function CourseCalendar({ courseName }) {
   const localizer = momentLocalizer(moment);
   const [addAlertShow, setAddAlertShow] = useState(false);
-  const [allEvents, setAllEvents] = useState(COURSE_EVENTS);
+  const [allEvents, setAllEvents] = useState([]);
   const [newEvent, setNewEvent] = useState(newEventInit);
 
   const handleDateClick = (e) => {
@@ -46,7 +45,7 @@ function CourseCalendar({ courseName }) {
     console.log(e);
   };
 
-  const MyCalendar = (props) => (
+  const MyCalendar = () => (
     <>
       <Calendar
         onSelectEvent={handleEventClick}

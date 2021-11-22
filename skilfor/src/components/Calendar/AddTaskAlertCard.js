@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
@@ -73,6 +74,12 @@ const CloseButton = styled.img`
   }
 `;
 
+const ErrorMessage = styled.p`
+  font-weight: bold;
+  color: #b61919;
+  margin-top: 10px;
+`;
+
 //使用者選定開始的選項後，產出結束的選項
 const createTimeOptions = (timeType, time) => {
   //沒給定開始時間的結束時間選單
@@ -105,6 +112,36 @@ const getTimeNumber = (timeStr) => {
   return timeArr;
 };
 
+//檢查新增的 event 是否和既有的 events 有時間衝突
+const checkOverlap = (a, b) => {
+  if ((a[0] > b[0] && a[0] < b[1]) || (a[1] > b[0] && a[1] < b[1])) {
+    return true;
+  } else {
+    return false;
+  }
+};
+const checkEventsConflict = (events, formatedStartTime, formatedEndTime) => {
+  let today = formatedStartTime.getDate();
+  let todayEvents = events.filter((event) => event.start.getDate() === today);
+  if (todayEvents.length === 0) {
+    return false;
+  } else {
+    let startPoint = formatedStartTime.getTime();
+    let endPoint = formatedEndTime.getTime();
+    for (let i = 0; i < todayEvents.length; i++) {
+      let eventStartTime = todayEvents[i].start.getTime();
+      let eventEndTime = todayEvents[i].end.getTime();
+      if (
+        checkOverlap([startPoint, endPoint], [eventStartTime, eventEndTime]) ||
+        checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+};
+
 function AddTaskAlertCard({
   addAlertShow,
   setAddAlertShow,
@@ -113,7 +150,9 @@ function AddTaskAlertCard({
   setAllEvents,
   allEvents,
 }) {
+  const [error, setError] = useState(null);
   const handleCourseTimeChange = (e) => {
+    setError(false);
     const { id: timeType, value } = e.target;
     if (timeType === "start") {
       let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 1];
@@ -131,25 +170,38 @@ function AddTaskAlertCard({
   };
   const handleCloseClick = () => {
     setAddAlertShow(false);
+    setError(false);
   };
   const handleAddNewEvent = () => {
     const { year, month, date } = newEvent.dateData;
     const { start, end } = newEvent;
     let startTimeNumArr = getTimeNumber(start);
     let endTimeNumArr = getTimeNumber(end);
+    let formatedStartTime = new Date(
+      year,
+      month,
+      date,
+      startTimeNumArr[0],
+      startTimeNumArr[1]
+    );
+    let formatedEndTime = new Date(
+      year,
+      month,
+      date,
+      endTimeNumArr[0],
+      endTimeNumArr[1]
+    );
+    if (checkEventsConflict(allEvents, formatedStartTime, formatedEndTime)) {
+      setError("此時段與當天其他時段重疊！");
+      return;
+    }
     setAllEvents([
       ...allEvents,
       {
         id: nanoid(),
         title: `${newEvent.start} - ${newEvent.end}`,
-        start: new Date(
-          year,
-          month,
-          date,
-          startTimeNumArr[0],
-          startTimeNumArr[1]
-        ),
-        end: new Date(year, month, date, endTimeNumArr[0], endTimeNumArr[1]),
+        start: formatedStartTime,
+        end: formatedEndTime,
       },
     ]);
     setAddAlertShow(false);
@@ -186,6 +238,7 @@ function AddTaskAlertCard({
           })}
         </SelectContainer>
       </RowContainer>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       <AddButton onClick={handleAddNewEvent}>確定新增</AddButton>
     </AddNewContainer>
   );
