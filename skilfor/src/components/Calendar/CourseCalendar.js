@@ -11,14 +11,14 @@ const CalendarContainer = styled.div`
 `;
 
 let newEventInit = {
-  title: "預計會放開始時間",
+  title: "",
   dateData: {
     month: "",
     date: "",
     day: "",
   },
-  start: "",
-  end: "",
+  start: "0:00",
+  end: "0:30",
 };
 
 function CourseCalendar({ courseName }) {
@@ -41,8 +41,6 @@ function CourseCalendar({ courseName }) {
       },
     });
   };
-
-  console.log(newEvent);
 
   const handleEventClick = (e) => {
     console.log(e);

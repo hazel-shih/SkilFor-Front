@@ -1,7 +1,7 @@
-import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
+import { TIME_OPTIONS } from "./constants";
 
 //styled component
 const RowContainer = styled.div`
@@ -73,30 +73,24 @@ const CloseButton = styled.img`
   }
 `;
 
-//產出初始化下拉式選單課程時間選項
-const createTimeOptionsList = () => {
-  let arr = [];
-  for (let i = 0; i < 24; i++) {
-    arr.push(`${i}:00`);
-    arr.push(`${i}:30`);
-  }
-  arr.push("24:00");
-  return arr;
-};
 //使用者選定開始的選項後，產出結束的選項
 const createTimeOptions = (timeType, time) => {
-  let list = createTimeOptionsList();
   //沒給定開始時間的結束時間選單
   if (!time && timeType === "end") {
-    return list.slice(1, list.length);
+    let endOptions = TIME_OPTIONS.slice(1, TIME_OPTIONS.length);
+    return endOptions;
   }
   //給定開始時間的結束時間選單
   if (time && timeType === "end") {
-    return list.slice(list.indexOf(time) + 1, list.length);
+    let endOptions = TIME_OPTIONS.slice(
+      TIME_OPTIONS.indexOf(time) + 1,
+      TIME_OPTIONS.length
+    );
+    return endOptions;
   }
   //開始時間選單
   if (timeType === "start") {
-    return list.slice(0, list.length - 1);
+    return TIME_OPTIONS.slice(0, TIME_OPTIONS.length - 1);
   }
 };
 
@@ -119,26 +113,21 @@ function AddTaskAlertCard({
   setAllEvents,
   allEvents,
 }) {
-  const [courseTime, setCourseTime] = useState({
-    start: {
-      time: "0:00",
-    },
-    end: {
-      time: "0:30",
-    },
-  });
   const handleCourseTimeChange = (e) => {
-    const { id, value } = e.target;
-    setCourseTime({
-      ...courseTime,
-      [id]: {
-        time: value,
-      },
-    });
-    setNewEvent({
-      ...newEvent,
-      [id]: value,
-    });
+    const { id: timeType, value } = e.target;
+    if (timeType === "start") {
+      let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 1];
+      setNewEvent({
+        ...newEvent,
+        start: value,
+        end: endTime,
+      });
+    } else {
+      setNewEvent({
+        ...newEvent,
+        [timeType]: value,
+      });
+    }
   };
   const handleCloseClick = () => {
     setAddAlertShow(false);
@@ -166,7 +155,6 @@ function AddTaskAlertCard({
     setAddAlertShow(false);
   };
 
-  console.log("allEvents: ", allEvents);
   return (
     <AddNewContainer addAlertShow={addAlertShow}>
       <CloseButton src={close} onClick={handleCloseClick} />
@@ -179,11 +167,11 @@ function AddTaskAlertCard({
         <SelectContainer
           id="start"
           onChange={handleCourseTimeChange}
-          value={courseTime.start.time}
+          value={newEvent.start}
         >
-          {createTimeOptions("start", courseTime.end.time).map((item) => (
-            <SelectOption>{item}</SelectOption>
-          ))}
+          {createTimeOptions("start").map((item) => {
+            return <SelectOption key={nanoid()}>{item}</SelectOption>;
+          })}
         </SelectContainer>
       </RowContainer>
       <RowContainer>
@@ -191,11 +179,11 @@ function AddTaskAlertCard({
         <SelectContainer
           id="end"
           onChange={handleCourseTimeChange}
-          value={courseTime.end.time}
+          value={newEvent.end}
         >
-          {createTimeOptions("end", courseTime.start.time).map((item) => (
-            <SelectOption>{item}</SelectOption>
-          ))}
+          {createTimeOptions("end", newEvent.start).map((item) => {
+            return <SelectOption key={nanoid()}>{item}</SelectOption>;
+          })}
         </SelectContainer>
       </RowContainer>
       <AddButton onClick={handleAddNewEvent}>確定新增</AddButton>
