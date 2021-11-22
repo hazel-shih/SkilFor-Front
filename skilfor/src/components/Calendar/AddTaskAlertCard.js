@@ -114,7 +114,11 @@ const getTimeNumber = (timeStr) => {
 
 //檢查新增的 event 是否和既有的 events 有時間衝突
 const checkOverlap = (a, b) => {
-  if ((a[0] > b[0] && a[0] < b[1]) || (a[1] > b[0] && a[1] < b[1])) {
+  if (
+    (a[0] > b[0] && a[0] < b[1]) ||
+    (a[1] > b[0] && a[1] < b[1]) ||
+    (a[0] === b[0] && a[1] === b[1])
+  ) {
     return true;
   } else {
     return false;
