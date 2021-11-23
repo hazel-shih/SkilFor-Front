@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useParams } from "react-router";
 import Avatar from "../../components/Avatar";
 import TeacherManageCalendar from "../../components/Calendar/TeacherManageCalendar";
 import teacher from "../../img/teacher.jpeg";
@@ -66,6 +67,7 @@ const SectionIntro = styled(ItemContent)`
 const CommentsContainer = styled(ColumnContainer)``;
 
 function TeacherProfilePage() {
+  const { teacherId } = useParams();
   return (
     <TeacherProfileWrapper>
       <TeacherProfileContainer>
@@ -86,7 +88,7 @@ function TeacherProfilePage() {
             </ItemContainer>
           </CourseInfosContainer>
         </TeacherInfosContainer>
-        <TeacherManageCalendar courseName="一起來學習超潮的 Ruby 吧！" />
+        <TeacherManageCalendar teacherId={teacherId} />
       </TeacherProfileContainer>
       <SectionTitle>課程介紹</SectionTitle>
       <SectionIntro>

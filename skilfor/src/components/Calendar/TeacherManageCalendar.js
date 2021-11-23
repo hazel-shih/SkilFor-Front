@@ -57,7 +57,6 @@ function TeacherManageCalendar({ teacherId }) {
   // };
 
   const handlePageChange = (currentMonthPage) => {
-    console.log(currentMonthPage);
     setCurrentPage(currentMonthPage);
   };
 
@@ -77,9 +76,6 @@ function TeacherManageCalendar({ teacherId }) {
         views={["month", "day", "week"]}
         onNavigate={handlePageChange}
         date={currentPage}
-        // eventPropGetter={() => ({
-        //   style: { backgroundColor: "green" },
-        // })}
         eventPropGetter={eventStyleGetter}
       />
       {alertShow === "add" && (
