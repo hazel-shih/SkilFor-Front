@@ -1,4 +1,4 @@
-import CourseCalendar from "../../components/Calendar/CourseCalendar";
+import TeacherManageCalendar from "../../components/Calendar/TeacherManageCalendar";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 
@@ -10,7 +10,7 @@ function TeacherCalendarPage() {
   return (
     <TeacherCalendarWrapper>
       <PageTitle>行事曆</PageTitle>
-      <CourseCalendar />
+      <TeacherManageCalendar />
     </TeacherCalendarWrapper>
   );
 }

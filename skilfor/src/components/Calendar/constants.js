@@ -50,8 +50,29 @@ export const TIME_OPTIONS = [
   "24:00",
 ];
 
-export const COURSE_NAME_LIST = [
-  "一起來學 Ruby 囉！",
-  "教你煮超美味紅豆湯",
-  "彈生日快樂歌不求人",
+//需要打 API
+export const COURSE_LIST = [
+  { courseId: 1, courseName: "一起來學 Ruby 囉！" },
+  { courseId: 2, courseName: "教你煮超美味紅豆湯" },
+  { courseId: 3, courseName: "彈生日快樂歌不求人" },
 ];
+
+export const COLOR_HEX_LIST = [
+  { displayName: "藍", value: "#22577A" },
+  { displayName: "紅", value: "#A9333A" },
+  { displayName: "橙", value: "#D06224" },
+  { displayName: "黃", value: "#FFCE45" },
+  { displayName: "綠", value: "#66806A" },
+  { displayName: "靛", value: "#3D56B2" },
+  { displayName: "紫", value: "#4B3869" },
+];
+
+export const NEW_EVENT_INIT = {
+  title: "",
+  start: "0:00",
+  end: "0:30",
+  resource: {
+    reserved: false,
+    eventColor: "",
+  },
+};

@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
-import { TIME_OPTIONS, COURSE_NAME_LIST } from "./constants";
+import { TIME_OPTIONS, COURSE_LIST, COLOR_HEX_LIST } from "./constants";
 import {
   createTimeOptions,
   getDay,
@@ -61,15 +61,6 @@ const SelectContainer = styled.select`
 
 const SelectOption = styled.option``;
 
-const ColorOption = styled.div`
-  width: 20px;
-  height: 20px;
-  background: ${(props) => props.colorHex};
-  border-radius: 50%;
-  margin: 10px 10px 0 0;
-  cursor: pointer;
-`;
-
 export const AlertButton = styled.button`
   border: none;
   border-radius: 5px;
@@ -104,27 +95,52 @@ const ErrorMessage = styled.p`
 
 function AddTaskAlertCard({
   setAlertShow,
-  newEvent,
-  setNewEvent,
+  selectedDate,
   setAllEvents,
   allEvents,
-  courseName,
+  teacherId,
 }) {
   const [error, setError] = useState(null);
-  const handleCourseTimeChange = (e) => {
+  const [newEvent, setNewEvent] = useState({
+    title: COURSE_LIST[0].courseName,
+    start: "0:00",
+    end: "0:30",
+    resource: {
+      teacherId,
+      reserved: false,
+      eventColor: "#22577A",
+    },
+  });
+  const handleNewEventAnswerChange = (e) => {
     setError(false);
-    const { id: timeType, value } = e.target;
-    if (timeType === "start") {
+    const { id, value } = e.target;
+    if (id === "title") {
+      setNewEvent({
+        ...newEvent,
+        title: value,
+      });
+    }
+    if (id === "start") {
       let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 1];
       setNewEvent({
         ...newEvent,
         start: value,
         end: endTime,
       });
-    } else {
+    }
+    if (id === "end") {
       setNewEvent({
         ...newEvent,
-        [timeType]: value,
+        end: value,
+      });
+    }
+    if (id === "eventColor") {
+      setNewEvent({
+        ...newEvent,
+        resource: {
+          ...newEvent.resource,
+          eventColor: value,
+        },
       });
     }
   };
@@ -133,7 +149,7 @@ function AddTaskAlertCard({
     setError(false);
   };
   const handleAddNewEvent = () => {
-    const { year, month, date } = newEvent.dateData;
+    const { year, month, date } = selectedDate;
     const { start, end } = newEvent;
     let startTimeNumArr = getTimeNumber(start);
     let endTimeNumArr = getTimeNumber(end);
@@ -158,13 +174,10 @@ function AddTaskAlertCard({
     setAllEvents([
       ...allEvents,
       {
+        ...newEvent,
         id: nanoid(),
-        title: `${newEvent.start} - ${newEvent.end}`,
         start: formatedStartTime,
         end: formatedEndTime,
-        resource: {
-          courseName,
-        },
       },
     ]);
     setAlertShow(null);
@@ -174,14 +187,20 @@ function AddTaskAlertCard({
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
       <AlertTitle>新增一個上課時段</AlertTitle>
-      <AlertTitle>{`${newEvent.dateData.month + 1}月${
-        newEvent.dateData.date
-      }日 星期${getDay(newEvent.dateData.day)}`}</AlertTitle>
+      <AlertTitle>{`${selectedDate.month + 1}月${
+        selectedDate.date
+      }日 星期${getDay(selectedDate.day)}`}</AlertTitle>
       <RowContainer>
         <AlertContent>課程名稱：</AlertContent>
-        <SelectContainer id="courseName">
-          {COURSE_NAME_LIST.map((item) => {
-            return <SelectOption key={nanoid()}>{item}</SelectOption>;
+        <SelectContainer
+          onChange={handleNewEventAnswerChange}
+          id="title"
+          value={newEvent.title}
+        >
+          {COURSE_LIST.map((item) => {
+            return (
+              <SelectOption key={nanoid()}>{item.courseName}</SelectOption>
+            );
           })}
         </SelectContainer>
       </RowContainer>
@@ -189,7 +208,7 @@ function AddTaskAlertCard({
         <AlertContent>開始時間：</AlertContent>
         <SelectContainer
           id="start"
-          onChange={handleCourseTimeChange}
+          onChange={handleNewEventAnswerChange}
           value={newEvent.start}
         >
           {createTimeOptions("start").map((item) => {
@@ -201,7 +220,7 @@ function AddTaskAlertCard({
         <AlertContent>結束時間：</AlertContent>
         <SelectContainer
           id="end"
-          onChange={handleCourseTimeChange}
+          onChange={handleNewEventAnswerChange}
           value={newEvent.end}
         >
           {createTimeOptions("end", newEvent.start).map((item) => {
@@ -209,18 +228,22 @@ function AddTaskAlertCard({
           })}
         </SelectContainer>
       </RowContainer>
-      <ColumnContainer>
+      <RowContainer>
         <AlertContent>設定活動顏色：</AlertContent>
-        <RowContainer>
-          <ColorOption colorHex="#d50001" />
-          <ColorOption colorHex="#f4511e" />
-          <ColorOption colorHex="#f6be25" />
-          <ColorOption colorHex="#34b579" />
-          <ColorOption colorHex="#009ce5" />
-          <ColorOption colorHex="#3f50b5" />
-          <ColorOption colorHex="#8e24aa" />
-        </RowContainer>
-      </ColumnContainer>
+        <SelectContainer
+          id="eventColor"
+          onChange={handleNewEventAnswerChange}
+          value={newEvent.resource.eventColor}
+        >
+          {COLOR_HEX_LIST.map((color) => {
+            return (
+              <SelectOption key={nanoid()} value={color.value}>
+                {color.displayName}
+              </SelectOption>
+            );
+          })}
+        </SelectContainer>
+      </RowContainer>
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <AlertButton onClick={handleAddNewEvent} color="#75A29E">
         確定新增

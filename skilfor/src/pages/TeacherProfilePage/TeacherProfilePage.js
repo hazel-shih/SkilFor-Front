@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Avatar from "../../components/Avatar";
-import CourseCalendar from "../../components/Calendar/CourseCalendar";
+import TeacherManageCalendar from "../../components/Calendar/TeacherManageCalendar";
 import teacher from "../../img/teacher.jpeg";
 import student1 from "../../img/student1.png";
 import student2 from "../../img/student2.jpeg";
@@ -86,7 +86,7 @@ function TeacherProfilePage() {
             </ItemContainer>
           </CourseInfosContainer>
         </TeacherInfosContainer>
-        <CourseCalendar courseName="一起來學習超潮的 Ruby 吧！" />
+        <TeacherManageCalendar courseName="一起來學習超潮的 Ruby 吧！" />
       </TeacherProfileContainer>
       <SectionTitle>課程介紹</SectionTitle>
       <SectionIntro>

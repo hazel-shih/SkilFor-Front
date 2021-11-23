@@ -10,36 +10,25 @@ const CalendarContainer = styled.div`
   position: relative;
 `;
 
-let newEventInit = {
-  title: "",
-  dateData: {
-    month: "",
-    date: "",
-    day: "",
-  },
-  start: "0:00",
-  end: "0:30",
-};
-
-function CourseCalendar({ courseName }) {
+function TeacherManageCalendar({ teacherId }) {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState(newEventInit);
   const [selectedEvent, setSelectedEvent] = useState(false);
   const [currentPage, setCurrentPage] = useState(new Date());
-
+  const [selectedDate, setSelectedDate] = useState({
+    month: "",
+    date: "",
+    day: "",
+  });
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     setAlertShow("add");
-    setNewEvent({
-      ...newEvent,
-      dateData: {
-        year: dateDataObj.getFullYear(),
-        month: dateDataObj.getMonth(),
-        date: dateDataObj.getDate(),
-        day: dateDataObj.getDay(),
-      },
+    setSelectedDate({
+      year: dateDataObj.getFullYear(),
+      month: dateDataObj.getMonth(),
+      date: dateDataObj.getDate(),
+      day: dateDataObj.getDay(),
     });
   };
 
@@ -48,9 +37,8 @@ function CourseCalendar({ courseName }) {
     setSelectedEvent(e);
   };
 
-  const eventStyleGetter = (event, start, end, isSelected) => {
-    console.log(event);
-    var backgroundColor = "#" + event.hexColor;
+  const eventStyleGetter = (event) => {
+    var backgroundColor = event.resource.eventColor;
     var style = {
       backgroundColor: backgroundColor,
     };
@@ -98,11 +86,10 @@ function CourseCalendar({ courseName }) {
         <AddTaskAlertCard
           alertShow={alertShow}
           setAlertShow={setAlertShow}
-          newEvent={newEvent}
-          setNewEvent={setNewEvent}
+          selectedDate={selectedDate}
           setAllEvents={setAllEvents}
           allEvents={allEvents}
-          courseName={courseName}
+          teacherId={teacherId}
         />
       )}
       {alertShow === "delete" && (
@@ -111,7 +98,7 @@ function CourseCalendar({ courseName }) {
           setAlertShow={setAlertShow}
           setAllEvents={setAllEvents}
           allEvents={allEvents}
-          courseName={courseName}
+          teacherId={teacherId}
           selectedEvent={selectedEvent}
         />
       )}
@@ -119,4 +106,4 @@ function CourseCalendar({ courseName }) {
   );
 }
 
-export default CourseCalendar;
+export default TeacherManageCalendar;
