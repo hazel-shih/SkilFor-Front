@@ -113,13 +113,21 @@ function LoginPage() {
   const handleSubmit = (e) => {
     setErrorMessage("");
     e.preventDefault();
+
+    if (email === "") {
+      setErrorMessage("請輸入Email");
+    } else if (password === "") {
+      setErrorMessage("請輸入密碼");
+    }
   };
 
   const handleEmailChange = (e) => {
+    setErrorMessage("");
     setEmail(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
+    setErrorMessage("");
     setPassword(e.target.value);
   };
 
