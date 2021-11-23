@@ -1,2 +1,2 @@
-import CourseCalendar from "./Calendar";
+import CourseCalendar from "./CourseCalendar";
 export default CourseCalendar;
