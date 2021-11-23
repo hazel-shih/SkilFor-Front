@@ -11,7 +11,6 @@ function DeleteTaskAlertCard({
   setAlertShow,
   setAllEvents,
   allEvents,
-  courseName,
   selectedEvent,
 }) {
   const handleDeleteEvent = () => {
@@ -26,12 +25,12 @@ function DeleteTaskAlertCard({
       <CloseButton src={close} onClick={handleCloseClick} />
       <AlertTitle>
         刪除
-        {` ${
-          selectedEvent.start.getMonth() + 1
-        }/${selectedEvent.start.getDate()} `}
+        {` "${selectedEvent.title}" `}
         的課程時段
       </AlertTitle>
-      <AlertContent>確定要刪除 {selectedEvent.title} 這個時段嗎？</AlertContent>
+      <AlertContent>
+        確定要刪除 {selectedEvent.resource.timePeriod} 這個時段嗎？
+      </AlertContent>
       <AlertButton onClick={handleDeleteEvent} color="#A45D5D">
         確定刪除
       </AlertButton>

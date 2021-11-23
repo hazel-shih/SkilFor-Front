@@ -31,7 +31,7 @@ export const AlertContainer = styled.div`
   min-width: 300px;
   background: white;
   border-top: 8px solid ${(props) => props.color};
-  padding: 30px;
+  padding: 40px 40px 30px 30px;
   text-align: center;
   box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.2);
   z-index: 5;
@@ -109,6 +109,7 @@ function AddTaskAlertCard({
       teacherId,
       reserved: false,
       eventColor: "#22577A",
+      timePeriod: "",
     },
   });
   const handleNewEventAnswerChange = (e) => {
@@ -178,6 +179,10 @@ function AddTaskAlertCard({
         id: nanoid(),
         start: formatedStartTime,
         end: formatedEndTime,
+        resource: {
+          ...newEvent.resource,
+          timePeriod: `${start} ~ ${end}`,
+        },
       },
     ]);
     setAlertShow(null);
