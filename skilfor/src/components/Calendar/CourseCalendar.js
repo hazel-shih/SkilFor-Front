@@ -23,13 +23,13 @@ let newEventInit = {
 
 function CourseCalendar({ courseName }) {
   const localizer = momentLocalizer(moment);
-  const [alertShow, setAlertShow] = useState(null);
+  const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
   const [newEvent, setNewEvent] = useState(newEventInit);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  console.log(allEvents);
+  const [selectedEvent, setSelectedEvent] = useState(false);
+  const [currentPage, setCurrentPage] = useState(new Date());
+
   const handleDateClick = (e) => {
-    setNewEvent(newEventInit);
     let dateDataObj = e.slots[0];
     setAlertShow("add");
     setNewEvent({
@@ -48,8 +48,33 @@ function CourseCalendar({ courseName }) {
     setSelectedEvent(e);
   };
 
-  const MyCalendar = () => (
-    <>
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    console.log(event);
+    var backgroundColor = "#" + event.hexColor;
+    var style = {
+      backgroundColor: backgroundColor,
+    };
+    return {
+      style: style,
+    };
+  };
+
+  // //點擊month week day
+  // const handleViewChange = (e) => {
+  //   console.log("handleViewChange: ", e);
+  // };
+  // //點擊上下個月 or month、week 時觸發
+  // const handleRangeChange = (e) => {
+  //   console.log(e);
+  // };
+
+  const handlePageChange = (currentMonthPage) => {
+    console.log(currentMonthPage);
+    setCurrentPage(currentMonthPage);
+  };
+
+  return (
+    <CalendarContainer>
       <Calendar
         onSelectEvent={handleEventClick}
         onSelectSlot={handleDateClick}
@@ -59,12 +84,17 @@ function CourseCalendar({ courseName }) {
         endAccessor="end"
         style={{ height: 500 }}
         events={allEvents}
+        // onView={handleViewChange}
+        // onRangeChange={handleRangeChange}
+        views={["month", "day", "week"]}
+        onNavigate={handlePageChange}
+        date={currentPage}
+        // eventPropGetter={() => ({
+        //   style: { backgroundColor: "green" },
+        // })}
+        eventPropGetter={eventStyleGetter}
       />
-    </>
-  );
-  return (
-    <CalendarContainer>
-      {alertShow && alertShow === "add" && (
+      {alertShow === "add" && (
         <AddTaskAlertCard
           alertShow={alertShow}
           setAlertShow={setAlertShow}
@@ -75,7 +105,7 @@ function CourseCalendar({ courseName }) {
           courseName={courseName}
         />
       )}
-      {alertShow && alertShow === "delete" && (
+      {alertShow === "delete" && (
         <DeleteTaskAlertCard
           alertShow={alertShow}
           setAlertShow={setAlertShow}
@@ -85,7 +115,6 @@ function CourseCalendar({ courseName }) {
           selectedEvent={selectedEvent}
         />
       )}
-      <MyCalendar />
     </CalendarContainer>
   );
 }
