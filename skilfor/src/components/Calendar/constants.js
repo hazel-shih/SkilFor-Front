@@ -49,3 +49,9 @@ export const TIME_OPTIONS = [
   "23:30",
   "24:00",
 ];
+
+export const COURSE_NAME_LIST = [
+  "一起來學 Ruby 囉！",
+  "教你煮超美味紅豆湯",
+  "彈生日快樂歌不求人",
+];

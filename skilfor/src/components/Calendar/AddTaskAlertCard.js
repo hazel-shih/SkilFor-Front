@@ -2,7 +2,13 @@ import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
-import { TIME_OPTIONS } from "./constants";
+import { TIME_OPTIONS, COURSE_NAME_LIST } from "./constants";
+import {
+  createTimeOptions,
+  getDay,
+  getTimeNumber,
+  checkEventsConflict,
+} from "./utils";
 
 //styled component
 export const RowContainer = styled.div`
@@ -12,12 +18,17 @@ export const RowContainer = styled.div`
   align-items: end;
 `;
 
+export const ColumnContainer = styled(RowContainer)`
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const AlertContainer = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 300px;
+  min-width: 300px;
   background: white;
   border-top: 8px solid ${(props) => props.color};
   padding: 30px;
@@ -31,6 +42,9 @@ export const AlertTitle = styled.h1`
   color: ${(props) => props.theme.colors.grey_dark};
   margin: 0 auto;
   width: fit-content;
+  :last-of-type {
+    margin-bottom: 10px;
+  }
 `;
 
 export const AlertContent = styled.p`
@@ -42,10 +56,19 @@ export const AlertContent = styled.p`
 const SelectContainer = styled.select`
   height: 25px;
   font-size: 1rem;
-  width: 65px;
+  width: fit-content;
 `;
 
 const SelectOption = styled.option``;
+
+const ColorOption = styled.div`
+  width: 20px;
+  height: 20px;
+  background: ${(props) => props.colorHex};
+  border-radius: 50%;
+  margin: 10px 10px 0 0;
+  cursor: pointer;
+`;
 
 export const AlertButton = styled.button`
   border: none;
@@ -54,7 +77,7 @@ export const AlertButton = styled.button`
   color: white;
   background: ${(props) => props.color};
   margin: 0 auto;
-  margin-top: 15px;
+  margin-top: 25px;
   padding: 6px 10px;
   cursor: pointer;
   :hover {
@@ -78,72 +101,6 @@ const ErrorMessage = styled.p`
   color: #b61919;
   margin-top: 10px;
 `;
-
-//使用者選定開始的選項後，產出結束的選項
-const createTimeOptions = (timeType, time) => {
-  //沒給定開始時間的結束時間選單
-  if (!time && timeType === "end") {
-    let endOptions = TIME_OPTIONS.slice(1, TIME_OPTIONS.length);
-    return endOptions;
-  }
-  //給定開始時間的結束時間選單
-  if (time && timeType === "end") {
-    let endOptions = TIME_OPTIONS.slice(
-      TIME_OPTIONS.indexOf(time) + 1,
-      TIME_OPTIONS.length
-    );
-    return endOptions;
-  }
-  //開始時間選單
-  if (timeType === "start") {
-    return TIME_OPTIONS.slice(0, TIME_OPTIONS.length - 1);
-  }
-};
-
-//處理星期格式
-let dayArr = ["日", "一", "二", "三", "四", "五", "六"];
-const getDay = (dayNum) => {
-  return dayArr[dayNum];
-};
-//處理文字時間轉數字時間格式
-const getTimeNumber = (timeStr) => {
-  let timeArr = timeStr.split(":").map((item) => Number(item));
-  return timeArr;
-};
-
-//檢查新增的 event 是否和既有的 events 有時間衝突
-const checkOverlap = (a, b) => {
-  if (
-    (a[0] > b[0] && a[0] < b[1]) ||
-    (a[1] > b[0] && a[1] < b[1]) ||
-    (a[0] === b[0] && a[1] === b[1])
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
-const checkEventsConflict = (events, formatedStartTime, formatedEndTime) => {
-  let today = formatedStartTime.getDate();
-  let todayEvents = events.filter((event) => event.start.getDate() === today);
-  if (todayEvents.length === 0) {
-    return false;
-  } else {
-    let startPoint = formatedStartTime.getTime();
-    let endPoint = formatedEndTime.getTime();
-    for (let i = 0; i < todayEvents.length; i++) {
-      let eventStartTime = todayEvents[i].start.getTime();
-      let eventEndTime = todayEvents[i].end.getTime();
-      if (
-        checkOverlap([startPoint, endPoint], [eventStartTime, eventEndTime]) ||
-        checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
-};
 
 function AddTaskAlertCard({
   setAlertShow,
@@ -221,6 +178,14 @@ function AddTaskAlertCard({
         newEvent.dateData.date
       }日 星期${getDay(newEvent.dateData.day)}`}</AlertTitle>
       <RowContainer>
+        <AlertContent>課程名稱：</AlertContent>
+        <SelectContainer id="courseName">
+          {COURSE_NAME_LIST.map((item) => {
+            return <SelectOption key={nanoid()}>{item}</SelectOption>;
+          })}
+        </SelectContainer>
+      </RowContainer>
+      <RowContainer>
         <AlertContent>開始時間：</AlertContent>
         <SelectContainer
           id="start"
@@ -244,6 +209,18 @@ function AddTaskAlertCard({
           })}
         </SelectContainer>
       </RowContainer>
+      <ColumnContainer>
+        <AlertContent>設定活動顏色：</AlertContent>
+        <RowContainer>
+          <ColorOption colorHex="#d50001" />
+          <ColorOption colorHex="#f4511e" />
+          <ColorOption colorHex="#f6be25" />
+          <ColorOption colorHex="#34b579" />
+          <ColorOption colorHex="#009ce5" />
+          <ColorOption colorHex="#3f50b5" />
+          <ColorOption colorHex="#8e24aa" />
+        </RowContainer>
+      </ColumnContainer>
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <AlertButton onClick={handleAddNewEvent} color="#75A29E">
         確定新增
