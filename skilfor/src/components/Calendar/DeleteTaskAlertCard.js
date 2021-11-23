@@ -16,7 +16,8 @@ function DeleteTaskAlertCard({
   selectedEvent,
 }) {
   const handleDeleteEvent = () => {
-    setAlertShow("delete");
+    setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
+    setAlertShow(null);
   };
   const handleCloseClick = () => {
     setAlertShow(null);
