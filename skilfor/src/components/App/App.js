@@ -5,6 +5,7 @@ import TeacherManagePage from "../../pages/TeacherManagePage";
 import TeacherProfilePage from "../../pages/TeacherProfilePage";
 import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
+import TeacherCalendarPage from "../../pages/TeacherCalendarPage";
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
           <Route
             path="/teacher/profile/:teacherId"
             element={<TeacherProfilePage />}
+          />
+          <Route
+            path="/teacher/calendar/:teacherId"
+            element={<TeacherCalendarPage />}
           />
         </Routes>
         <Footer />

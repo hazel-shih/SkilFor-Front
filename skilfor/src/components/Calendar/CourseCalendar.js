@@ -27,7 +27,7 @@ function CourseCalendar({ courseName }) {
   const [allEvents, setAllEvents] = useState([]);
   const [newEvent, setNewEvent] = useState(newEventInit);
   const [selectedEvent, setSelectedEvent] = useState(null);
-
+  console.log(allEvents);
   const handleDateClick = (e) => {
     setNewEvent(newEventInit);
     let dateDataObj = e.slots[0];

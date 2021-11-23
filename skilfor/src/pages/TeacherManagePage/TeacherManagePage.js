@@ -157,8 +157,6 @@ function TeacherManagePage() {
                 value={COURSE_INFOS.classIntro}
               />
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
-              <SectionText>課程時間</SectionText>
-              <CourseCalendar courseName={COURSE_INFOS.courseName} />
             </>
           )}
         </FormContainer>
