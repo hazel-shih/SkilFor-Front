@@ -5,36 +5,35 @@ import { nanoid } from "nanoid";
 import { TIME_OPTIONS } from "./constants";
 
 //styled component
-const RowContainer = styled.div`
+export const RowContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
   align-items: end;
 `;
 
-const AddNewContainer = styled.div`
+export const AlertContainer = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 300px;
   background: white;
-  border-top: 8px solid ${(props) => props.theme.colors.green_dark};
+  border-top: 8px solid ${(props) => props.color};
   padding: 30px;
   text-align: center;
   box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.2);
   z-index: 5;
-  display: ${(props) => (props.addAlertShow ? "block" : "none")};
 `;
 
-const AddNewTitle = styled.h1`
+export const AlertTitle = styled.h1`
   font-size: 1.2rem;
   color: ${(props) => props.theme.colors.grey_dark};
   margin: 0 auto;
   width: fit-content;
 `;
 
-const AddNewContent = styled.p`
+export const AlertContent = styled.p`
   font-size: 1.1rem;
   margin-top: 10px;
   color: ${(props) => props.theme.colors.grey_dark};
@@ -48,12 +47,12 @@ const SelectContainer = styled.select`
 
 const SelectOption = styled.option``;
 
-const AddButton = styled.button`
+export const AlertButton = styled.button`
   border: none;
   border-radius: 5px;
   width: 90px;
   color: white;
-  background: ${(props) => props.theme.colors.green_dark};
+  background: ${(props) => props.color};
   margin: 0 auto;
   margin-top: 15px;
   padding: 6px 10px;
@@ -63,7 +62,7 @@ const AddButton = styled.button`
   }
 `;
 
-const CloseButton = styled.img`
+export const CloseButton = styled.img`
   position: absolute;
   right: 15px;
   top: 15px;
@@ -147,12 +146,12 @@ const checkEventsConflict = (events, formatedStartTime, formatedEndTime) => {
 };
 
 function AddTaskAlertCard({
-  addAlertShow,
-  setAddAlertShow,
+  setAlertShow,
   newEvent,
   setNewEvent,
   setAllEvents,
   allEvents,
+  courseName,
 }) {
   const [error, setError] = useState(null);
   const handleCourseTimeChange = (e) => {
@@ -173,7 +172,7 @@ function AddTaskAlertCard({
     }
   };
   const handleCloseClick = () => {
-    setAddAlertShow(false);
+    setAlertShow(null);
     setError(false);
   };
   const handleAddNewEvent = () => {
@@ -206,20 +205,23 @@ function AddTaskAlertCard({
         title: `${newEvent.start} - ${newEvent.end}`,
         start: formatedStartTime,
         end: formatedEndTime,
+        resource: {
+          courseName,
+        },
       },
     ]);
-    setAddAlertShow(false);
+    setAlertShow(null);
   };
 
   return (
-    <AddNewContainer addAlertShow={addAlertShow}>
+    <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AddNewTitle>新增一個上課時段</AddNewTitle>
-      <AddNewTitle>{`${newEvent.dateData.month + 1}月${
+      <AlertTitle>新增一個上課時段</AlertTitle>
+      <AlertTitle>{`${newEvent.dateData.month + 1}月${
         newEvent.dateData.date
-      }日 星期${getDay(newEvent.dateData.day)}`}</AddNewTitle>
+      }日 星期${getDay(newEvent.dateData.day)}`}</AlertTitle>
       <RowContainer>
-        <AddNewContent>開始時間：</AddNewContent>
+        <AlertContent>開始時間：</AlertContent>
         <SelectContainer
           id="start"
           onChange={handleCourseTimeChange}
@@ -231,7 +233,7 @@ function AddTaskAlertCard({
         </SelectContainer>
       </RowContainer>
       <RowContainer>
-        <AddNewContent>結束時間：</AddNewContent>
+        <AlertContent>結束時間：</AlertContent>
         <SelectContainer
           id="end"
           onChange={handleCourseTimeChange}
@@ -243,8 +245,10 @@ function AddTaskAlertCard({
         </SelectContainer>
       </RowContainer>
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      <AddButton onClick={handleAddNewEvent}>確定新增</AddButton>
-    </AddNewContainer>
+      <AlertButton onClick={handleAddNewEvent} color="#75A29E">
+        確定新增
+      </AlertButton>
+    </AlertContainer>
   );
 }
 

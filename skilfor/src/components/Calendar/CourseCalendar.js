@@ -4,6 +4,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
+import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -22,14 +23,15 @@ let newEventInit = {
 
 function CourseCalendar({ courseName }) {
   const localizer = momentLocalizer(moment);
-  const [addAlertShow, setAddAlertShow] = useState(false);
+  const [alertShow, setAlertShow] = useState(null);
   const [allEvents, setAllEvents] = useState([]);
   const [newEvent, setNewEvent] = useState(newEventInit);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const handleDateClick = (e) => {
     setNewEvent(newEventInit);
     let dateDataObj = e.slots[0];
-    setAddAlertShow(true);
+    setAlertShow("add");
     setNewEvent({
       ...newEvent,
       dateData: {
@@ -42,7 +44,8 @@ function CourseCalendar({ courseName }) {
   };
 
   const handleEventClick = (e) => {
-    console.log(e);
+    setAlertShow("delete");
+    setSelectedEvent(e);
   };
 
   const MyCalendar = () => (
@@ -61,14 +64,27 @@ function CourseCalendar({ courseName }) {
   );
   return (
     <CalendarContainer>
-      <AddTaskAlertCard
-        addAlertShow={addAlertShow}
-        setAddAlertShow={setAddAlertShow}
-        newEvent={newEvent}
-        setNewEvent={setNewEvent}
-        setAllEvents={setAllEvents}
-        allEvents={allEvents}
-      />
+      {alertShow && alertShow === "add" && (
+        <AddTaskAlertCard
+          alertShow={alertShow}
+          setAlertShow={setAlertShow}
+          newEvent={newEvent}
+          setNewEvent={setNewEvent}
+          setAllEvents={setAllEvents}
+          allEvents={allEvents}
+          courseName={courseName}
+        />
+      )}
+      {alertShow && alertShow === "delete" && (
+        <DeleteTaskAlertCard
+          alertShow={alertShow}
+          setAlertShow={setAlertShow}
+          setAllEvents={setAllEvents}
+          allEvents={allEvents}
+          courseName={courseName}
+          selectedEvent={selectedEvent}
+        />
+      )}
       <MyCalendar />
     </CalendarContainer>
   );
