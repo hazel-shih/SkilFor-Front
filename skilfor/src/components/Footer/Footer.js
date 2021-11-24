@@ -17,7 +17,7 @@ const Container = styled.div`
 
   ${MEDIA_QUERY_SM} {
     font-size: 8px;
-    min-width: 768px;
+    max-width: 768px;
     width: 100%;
   }
 `;

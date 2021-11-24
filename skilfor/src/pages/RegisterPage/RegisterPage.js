@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   background: linear-gradient(
@@ -13,9 +14,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   height: 100%;
-
   ${MEDIA_QUERY_SM} {
-    min-width: 768px;
+    max-width: 768px;
   }
 `;
 
@@ -24,9 +24,9 @@ const Container = styled.div`
   width: 700px;
   height: 100%;
   min-height: 1000px;
-
   ${MEDIA_QUERY_SM} {
-    width: 500px;
+    max-width: 500px;
+    padding: 140px 50px 200px 50px;
   }
 `;
 
@@ -35,6 +35,9 @@ const Title = styled.h1`
   font-size: 30px;
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};
+  ${MEDIA_QUERY_SM} {
+    font-size: 26px;
+  }
 `;
 
 const FormContainer = styled.form`
@@ -48,6 +51,9 @@ const FormContainer = styled.form`
   border-radius: 10px;
   padding: 35px 50px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+  ${MEDIA_QUERY_SM} {
+    padding: 30px 35px;
+  }
 `;
 
 const FormItemContainer = styled.div`
@@ -62,6 +68,9 @@ const ItemName = styled.h1`
   font-size: 1.5rem;
   margin: 5px 0;
   position: relative;
+  ${MEDIA_QUERY_SM} {
+    font-size: 1.2rem;
+  }
 
   & > a {
     position: absolute;
@@ -69,6 +78,9 @@ const ItemName = styled.h1`
     bottom: 0;
     font-size: 1.2rem;
     text-decoration: none;
+    ${MEDIA_QUERY_SM} {
+      font-size: 0.5rem;
+    }
   }
 `;
 
@@ -80,6 +92,7 @@ const ItemLabel = styled.label`
   padding: 10px;
   float: left;
   ${MEDIA_QUERY_SM} {
+    padding: 2px;
   }
 `;
 
@@ -118,12 +131,20 @@ const Btn = styled.button`
   :hover {
     opacity: 0.7;
   }
+
+  ${MEDIA_QUERY_SM} {
+    padding: 15px;
+    min-width: 100px;
+  }
 `;
 
 const ErrorMessage = styled.span`
   color: red;
   font-weight: bold;
   font-size: 1.5rem;
+  ${MEDIA_QUERY_SM} {
+    font-size: 1rem;
+  }
 `;
 
 function RegisterPage() {
@@ -133,24 +154,40 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     setErrorMessage("");
     e.preventDefault();
 
     if (username === "") {
+      scrollTop();
       setErrorMessage("請輸入使用者名稱");
     } else if (identity === "") {
+      scrollTop();
       setErrorMessage("請選擇註冊身分");
     } else if (email === "") {
+      scrollTop();
       setErrorMessage("請輸入Email");
     } else if (password === "") {
+      scrollTop();
       setErrorMessage("請輸入密碼");
     } else if (checkPassword === "") {
+      scrollTop();
       setErrorMessage("請再次輸入密碼");
     } else if (password !== checkPassword) {
+      scrollTop();
       setErrorMessage("密碼不相同");
+    } else {
+      navigate("/");
     }
+  };
+
+  const scrollTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const handleUsernameChange = (e) => {
@@ -198,7 +235,7 @@ function RegisterPage() {
               <ItemRadioInput
                 value="student"
                 type="radio"
-                name={identity}
+                name="identity"
                 onClick={handleIdentityToggle}
               />
               學生
@@ -207,7 +244,7 @@ function RegisterPage() {
               <ItemRadioInput
                 value="teacher"
                 type="radio"
-                name={identity}
+                name="identity"
                 onClick={handleIdentityToggle}
               />
               老師

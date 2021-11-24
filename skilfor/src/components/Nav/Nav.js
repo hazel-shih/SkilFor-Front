@@ -16,6 +16,11 @@ const Container = styled.div`
   right: 0px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   z-index: 10;
+  width: 100%;
+  ${MEDIA_QUERY_SM} {
+    max-width: 768px;
+    width: 100%;
+  }
 `;
 
 const Logo = styled.img`
@@ -29,6 +34,7 @@ const Navbar = styled.div`
   align-items: center;
   justify-content: space-between;
 `;
+
 const NavbarList = styled.ul`
   display: flex;
   align-items: center;
@@ -42,7 +48,6 @@ const NavbarList = styled.ul`
     margin: 8px;
     padding: 6px;
     cursor: pointer;
-
     ${MEDIA_QUERY_SM} {
       padding: 2px;
       margin: 4px;
