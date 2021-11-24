@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 const RowContainer = styled.div`
@@ -38,7 +39,6 @@ const EditInput = styled.input`
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
-  display: ${(props) => (props.show ? "block" : "none")};
 `;
 
 const EditTextArea = styled.textarea`
@@ -46,11 +46,35 @@ const EditTextArea = styled.textarea`
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
-  display: ${(props) => (props.show ? "block" : "none")};
 `;
 
-function CourseInfosForm({ isEditing, courseInfos }) {
-  const handleInputChange = () => {};
+function CourseInfosForm({
+  isEditing,
+  courseInfos,
+  editContent,
+  setEditContent,
+}) {
+  const handleInputChange = (e) => {
+    const { id: inputName, value } = e.target;
+    if (inputName === "courseName") {
+      setEditContent({
+        ...editContent,
+        courseName: value,
+      });
+    }
+    if (inputName === "courseIntro") {
+      setEditContent({
+        ...editContent,
+        courseIntro: value,
+      });
+    }
+    if (inputName === "price") {
+      setEditContent({
+        ...editContent,
+        price: value,
+      });
+    }
+  };
   return (
     <ColumnContainer>
       <FormItemContainer show={!isEditing}>
@@ -58,12 +82,7 @@ function CourseInfosForm({ isEditing, courseInfos }) {
           <ItemName>Category</ItemName>
         </ItemTop>
         <ItemBottom>
-          <ItemValue show={!isEditing}>{courseInfos.category}</ItemValue>
-          <EditInput
-            show={isEditing}
-            value={courseInfos.category}
-            onChange={handleInputChange}
-          />
+          <ItemValue show={true}>{courseInfos.category}</ItemValue>
         </ItemBottom>
       </FormItemContainer>
       <FormItemContainer show={!isEditing}>
@@ -72,11 +91,13 @@ function CourseInfosForm({ isEditing, courseInfos }) {
         </ItemTop>
         <ItemBottom>
           <ItemValue show={!isEditing}>{courseInfos.courseName}</ItemValue>
-          <EditInput
-            show={isEditing}
-            value={courseInfos.courseName}
-            onChange={handleInputChange}
-          />
+          {isEditing && courseInfos && (
+            <EditInput
+              defaultValue={courseInfos.courseName}
+              onChange={handleInputChange}
+              id="courseName"
+            />
+          )}
         </ItemBottom>
       </FormItemContainer>
       <FormItemContainer show={!isEditing}>
@@ -85,11 +106,13 @@ function CourseInfosForm({ isEditing, courseInfos }) {
         </ItemTop>
         <ItemBottom>
           <ItemValue show={!isEditing}>{courseInfos.courseIntro}</ItemValue>
-          <EditTextArea
-            show={isEditing}
-            value={courseInfos.courseIntro}
-            onChange={handleInputChange}
-          />
+          {isEditing && courseInfos && (
+            <EditTextArea
+              defaultValue={courseInfos.courseIntro}
+              onChange={handleInputChange}
+              id="courseIntro"
+            />
+          )}
         </ItemBottom>
       </FormItemContainer>
       <FormItemContainer show={!isEditing}>
@@ -98,11 +121,13 @@ function CourseInfosForm({ isEditing, courseInfos }) {
         </ItemTop>
         <ItemBottom>
           <ItemValue show={!isEditing}>{courseInfos.price}</ItemValue>
-          <EditInput
-            show={isEditing}
-            value={courseInfos.price}
-            onChange={handleInputChange}
-          />
+          {isEditing && courseInfos && (
+            <EditInput
+              defaultValue={courseInfos.price}
+              onChange={handleInputChange}
+              id="price"
+            />
+          )}
         </ItemBottom>
       </FormItemContainer>
     </ColumnContainer>

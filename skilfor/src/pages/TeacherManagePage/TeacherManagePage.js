@@ -113,10 +113,12 @@ const PassImgBlock = styled.img`
 
 const RadioContainer = styled(RowContainer)`
   align-items: center;
-  margin-bottom: 10px;
 `;
 
-const RadioInput = styled.input``;
+const RadioInput = styled.input`
+  width: 20px;
+  height: 15px;
+`;
 
 const RadioLabel = styled.label`
   color: ${(props) => props.theme.colors.grey_dark};
@@ -126,6 +128,7 @@ const RadioLabel = styled.label`
 const EditContainer = styled(RowContainer)`
   justify-content: space-between;
   align-items: baseline;
+  margin-top: 10px;
 `;
 
 const EditButton = styled.button`
@@ -141,34 +144,49 @@ const EditButton = styled.button`
   }
 `;
 
+const SubmitButton = styled(EditButton)`
+  margin-left: 15px;
+`;
+
 function TeacherManagePage() {
+  //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
+  //存取老師的資料與老師擁有的課程資料
   const [teacherInfos, setTeacherInfos] = useState(TEACHER_INFOS);
   const [courseInfos, setCourseInfos] = useState(COURSE_LIST);
+  //課程資訊下的課程按鈕
   const [selectedCategory, setSelectedCategory] = useState(
     teacherInfos.categories[0]
   );
-  const [displayCourseInfos, setDisplayCourseInfos] = useState(
-    courseInfos.filter(
-      (course) => course.category === teacherInfos.categories[0]
-    )
+  //課程資訊呈現的資料
+  const displayCourseInfos = courseInfos.filter(
+    (course) => course.category === selectedCategory
   );
+  //是否為編輯狀態
   const [edit, setEdit] = useState({
     isEditing: false,
     buttonText: "編輯課程資訊",
   });
-
+  //編輯內容
+  const [editContent, setEditContent] = useState(displayCourseInfos[0]);
   const handlePageBtnClick = (e) => {
     const { id: currentPage } = e.target;
     setPage(currentPage);
   };
+  //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
-    const { id: selectedCategory } = e.target;
-    setSelectedCategory(e.target.id);
-    setDisplayCourseInfos(
-      courseInfos.filter((course) => course.category === selectedCategory)
-    );
+    setEdit({
+      isEditing: false,
+      buttonText: "編輯課程資訊",
+    });
+    const { id: categoryName } = e.target;
+    setSelectedCategory(categoryName);
   };
+  useEffect(() => {
+    setEditContent(
+      courseInfos.find((info) => info.category === selectedCategory)
+    );
+  }, [selectedCategory, courseInfos]);
   const handleEditClick = () => {
     if (edit.isEditing) {
       setEdit({
@@ -182,8 +200,25 @@ function TeacherManagePage() {
       });
     }
   };
-
-  console.log(edit);
+  const handleSubmitClick = () => {
+    setEdit({
+      isEditing: false,
+      buttonText: "編輯課程資訊",
+    });
+    //將更改後的課程資訊 post 給後端
+    setCourseInfos(
+      courseInfos.map((course) => {
+        if (course.id !== editContent.id) {
+          return course;
+        } else {
+          return editContent;
+        }
+      })
+    );
+  };
+  const handleRadioClick = (e) => {
+    //將是否發布到前台的資料 post 給後端
+  };
 
   return (
     <TeacherManageWrapper>
@@ -228,15 +263,19 @@ function TeacherManagePage() {
                   </PassContainer>
                   <RadioContainer>
                     <RadioInput
+                      onClick={handleRadioClick}
+                      defaultChecked={displayCourseInfos[0].published}
                       type="radio"
                       name="publish"
                       id="true"
                       value="true"
                     />
-                    <RadioLabel htmlFor="true">我要發布</RadioLabel>
+                    <RadioLabel htmlFor="true">發布至前台</RadioLabel>
                   </RadioContainer>
                   <RadioContainer>
                     <RadioInput
+                      onClick={handleRadioClick}
+                      defaultChecked={!displayCourseInfos[0].published}
                       type="radio"
                       name="publish"
                       id="false"
@@ -245,7 +284,7 @@ function TeacherManagePage() {
                     <RadioLabel htmlFor="false">不發布</RadioLabel>
                   </RadioContainer>
                 </SuccessContainer>
-              ) : displayCourseInfos.isPass === "pending" ? (
+              ) : displayCourseInfos[0].isPass === "pending" ? (
                 <PassContainer warn>
                   <PassText warn>
                     課程審核中，審核成功後將以電子郵件通知您
@@ -261,9 +300,16 @@ function TeacherManagePage() {
               )}
               <EditContainer>
                 <SectionText>課程資訊</SectionText>
-                <EditButton onClick={handleEditClick}>
-                  {edit.buttonText}
-                </EditButton>
+                <RowContainer>
+                  <EditButton onClick={handleEditClick}>
+                    {edit.buttonText}
+                  </EditButton>
+                  {edit.isEditing && (
+                    <SubmitButton onClick={handleSubmitClick}>
+                      編輯完成
+                    </SubmitButton>
+                  )}
+                </RowContainer>
               </EditContainer>
               {teacherInfos.categories.length !== 0 && (
                 <CourseBtnsContainer>
@@ -284,6 +330,8 @@ function TeacherManagePage() {
                   <CourseInfosForm
                     isEditing={edit.isEditing}
                     courseInfos={displayCourseInfos[0]}
+                    editContent={editContent}
+                    setEditContent={setEditContent}
                   />
                 </>
               )}
