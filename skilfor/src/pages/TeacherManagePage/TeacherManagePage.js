@@ -79,6 +79,8 @@ const SectionText = styled.h3`
   margin: 10px 0 20px 0;
 `;
 
+const SuccessContainer = styled(ColumnContainer)``;
+
 const PassContainer = styled(RowContainer)`
   align-items: center;
   background: ${(props) =>
@@ -105,6 +107,18 @@ const PassImgBlock = styled.img`
   width: 25px;
   height: 25px;
   margin-right: 10px;
+`;
+
+const RadioContainer = styled(RowContainer)`
+  align-items: center;
+  margin-bottom: 10px;
+`;
+
+const RadioInput = styled.input``;
+
+const RadioLabel = styled.label`
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin-left: 5px;
 `;
 
 //fake data
@@ -159,16 +173,32 @@ function TeacherManagePage() {
           )}
           {page === "course" && (
             <>
-              <PassContainer success>
-                <PassImgBlock src={happy} />
-                <PassText success>
-                  課程已通過審核，將你的課程頁面發佈吧！
-                  <label for="true">我要發布</label>
-                  <input type="radio" name="publish" id="true" value="true" />
-                  <label for="false">不發布</label>
-                  <input type="radio" name="publish" id="false" value="false" />
-                </PassText>
-              </PassContainer>
+              <SuccessContainer>
+                <PassContainer success>
+                  <PassImgBlock src={happy} />
+                  <PassText success>
+                    課程已通過審核，將你的課程頁面發佈吧！
+                  </PassText>
+                </PassContainer>
+                <RadioContainer>
+                  <RadioInput
+                    type="radio"
+                    name="publish"
+                    id="true"
+                    value="true"
+                  />
+                  <RadioLabel for="true">我要發布</RadioLabel>
+                </RadioContainer>
+                <RadioContainer>
+                  <RadioInput
+                    type="radio"
+                    name="publish"
+                    id="false"
+                    value="false"
+                  />
+                  <RadioLabel for="false">不發布</RadioLabel>
+                </RadioContainer>
+              </SuccessContainer>
               <PassContainer warn>
                 <PassText warn>
                   課程審核中，審核成功後將以電子郵件通知您
@@ -195,16 +225,29 @@ function TeacherManagePage() {
                   ))}
                 </CourseBtnsContainer>
               )}
-              <FormItem itemName="Category" value={COURSE_INFOS.category} />
               <FormItem
+                edited={false}
+                itemName="Category"
+                value={COURSE_INFOS.category}
+              />
+              <FormItem
+                edited
+                simple
                 itemName="Course Name"
                 value={COURSE_INFOS.courseName}
               />
               <FormItem
+                edited
+                simple={false}
                 itemName="Course Intro"
                 value={COURSE_INFOS.courseIntro}
               />
-              <FormItem itemName="Price" value={COURSE_INFOS.price} />
+              <FormItem
+                edited
+                simple
+                itemName="Price"
+                value={COURSE_INFOS.price}
+              />
             </>
           )}
         </FormContainer>

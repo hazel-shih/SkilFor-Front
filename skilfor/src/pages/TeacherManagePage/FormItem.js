@@ -56,7 +56,15 @@ const EditInput = styled.input`
   display: ${(props) => (props.show ? "block" : "none")};
 `;
 
-function FormItem({ itemName, value }) {
+const EditTextArea = styled.textarea`
+  height: 100px;
+  padding: 5px;
+  color: ${(props) => props.theme.colors.grey_dark};
+  font-size: 1rem;
+  display: ${(props) => (props.show ? "block" : "none")};
+`;
+
+function FormItem({ itemName, value, edited, simple }) {
   const [edit, setEdit] = useState(false);
   const [input, setInput] = useState(value);
   const [editValue, setEditValue] = useState(value);
@@ -81,13 +89,26 @@ function FormItem({ itemName, value }) {
     <FormItemContainer show={!edit}>
       <ItemTop>
         <ItemName>{itemName}</ItemName>
-        <EditBtn show={!edit} src={pencil} onClick={handleEditClick} />
-        <EditBtn show={edit} src={check} onClick={handleEditCheck} />
-        <EditBtn show={edit} src={cancel} onClick={handleCancelCheck} />
+        {edited && (
+          <>
+            <EditBtn show={!edit} src={pencil} onClick={handleEditClick} />
+            <EditBtn show={edit} src={check} onClick={handleEditCheck} />
+            <EditBtn show={edit} src={cancel} onClick={handleCancelCheck} />
+          </>
+        )}
       </ItemTop>
       <ItemBottom>
         <ItemValue show={!edit}>{editValue}</ItemValue>
-        <EditInput show={edit} value={input} onChange={handleInputChange} />
+        {edited && simple && (
+          <EditInput show={edit} value={input} onChange={handleInputChange} />
+        )}
+        {edited && simple === false && (
+          <EditTextArea
+            show={edit}
+            value={input}
+            onChange={handleInputChange}
+          />
+        )}
       </ItemBottom>
     </FormItemContainer>
   );
