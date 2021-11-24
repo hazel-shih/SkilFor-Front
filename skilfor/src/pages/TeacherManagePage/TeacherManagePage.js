@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
-import CourseCalendar from "../../components/Calendar/CourseCalendar";
+import PageTitle from "../../components/PageTitle";
 
 //styled component
 const TeacherManageWrapper = styled.section`
   padding: 196px 100px 182px 100px;
-`;
-
-const PageTitle = styled.h1`
-  color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1.8rem;
-  margin-bottom: 30px;
 `;
 
 const RowContainer = styled.div`
@@ -157,8 +151,6 @@ function TeacherManagePage() {
                 value={COURSE_INFOS.classIntro}
               />
               <FormItem itemName="Price" value={COURSE_INFOS.price} />
-              <SectionText>課程時間</SectionText>
-              <CourseCalendar courseName={COURSE_INFOS.courseName} />
             </>
           )}
         </FormContainer>
