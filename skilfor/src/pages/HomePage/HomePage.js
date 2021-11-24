@@ -11,15 +11,11 @@ import { useEffect, useRef } from "react";
 const Container = styled.div``;
 
 const Banner = styled.section`
-  padding: 196px 100px 182px 100px;
+  padding: 196px 0 0;
   position: relative;
   background: url(${banner}) no-repeat center/cover;
   height: 500px;
   box-shadow: 0 4px 10px 0 rgba(255, 128, 0, 0.5);
-  ${MEDIA_QUERY_SM} {
-    min-width: 768px;
-    width: 100%;
-  }
 
   &:after {
     position: absolute;
@@ -35,24 +31,35 @@ const Banner = styled.section`
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -40%);
+    transform: translate(-50%, -50%);
     margin: 0 auto;
-    padding: 24px 12px;
+    padding: 24px 40px;
     z-index: 2;
     font-size: 30px;
     font-weight: bold;
     color: white;
-    min-width: 605px;
+    max-width: 700px;
+    width: 100%;
+    ${MEDIA_QUERY_SM} {
+      font-size: 20px;
+      padding: 24px 60px;
+    }
   }
 `;
 
 const StudentStep = styled.div`
   padding: 30px;
+  ${MEDIA_QUERY_SM} {
+    padding: 10px;
+  }
 `;
 
 const Title = styled.h1`
   padding: 20px;
   color: ${(props) => props.theme.colors.grey_dark};
+  ${MEDIA_QUERY_SM} {
+    font-size: 20px;
+  }
 `;
 
 const StepDiv = styled.div`
@@ -62,8 +69,7 @@ const StepDiv = styled.div`
   padding: 10px;
   margin: 0 auto;
   ${MEDIA_QUERY_SM} {
-    min-width: 768px;
-    width: 100%;
+    padding: 5px 2px;
   }
 `;
 
@@ -85,14 +91,25 @@ const StepContent = styled.div`
   flex-direction: column;
   font-weight: bold;
   position: relative;
+  ${MEDIA_QUERY_SM} {
+    padding: 0 6px;
+  }
 `;
 
-const StepTitle = styled.h2``;
+const StepTitle = styled.h2`
+  ${MEDIA_QUERY_SM} {
+    font-size: 18px;
+  }
+`;
 
 const StepDescription = styled.p`
   width: 100%;
   margin: 12px 0px;
   font-size: 1rem;
+  ${MEDIA_QUERY_SM} {
+    font-size: 16px;
+    margin: 6px 2px;
+  }
 `;
 
 const TeacherStep = styled(Banner)`
@@ -119,6 +136,13 @@ const Btn = styled.button`
   min-width: 150px;
   z-index: 3;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+
+  ${MEDIA_QUERY_SM} {
+    padding: 15px 0;
+    min-width: 120px;
+    font-size: 0.5rem;
+    margin: 10px 0;
+  }
 `;
 
 const FindATeacherBtn = styled(Btn)`
