@@ -13,6 +13,12 @@ const theme = {
     grey_light: "#c4c4c4",
     grey_bg: "#F0F0F0",
     white_pure: "#fff",
+    success: "#5F9364",
+    success_bg: "#CDF2CA",
+    warn: "#D06224",
+    warn_bg: "#F7E6AD",
+    error: "#A9333A",
+    error_bg: "#F6A9A9",
   },
 };
 
