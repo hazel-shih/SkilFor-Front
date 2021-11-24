@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
 import PageTitle from "../../components/PageTitle";
 import happy from "../../img/happy.png";
 import sad from "../../img/sad.png";
+import { TEACHER_INFOS, COURSE_LIST } from "./Constant";
+import CourseInfosForm from "./CourseInfosForm";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -100,7 +102,7 @@ const PassText = styled.p`
       : props.fail
       ? props.theme.colors.error
       : props.theme.colors.warn};
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 `;
 
 const PassImgBlock = styled.img`
@@ -121,25 +123,68 @@ const RadioLabel = styled.label`
   margin-left: 5px;
 `;
 
-//fake data
-const COURSE_MAPPING = ["程式", "音樂", "數學"];
-const COURSE_INFOS = {
-  category: "程式",
-  courseName: "一起來學習超潮的 Ruby 吧！",
-  courseIntro:
-    "經過幾年的發展，Spring Boot 的功能已經非常成熟，並且在近幾年軟體業盛行微服務（microservice）的設計模式下，也帶動越來越多企業選擇使用 Spring Boot 作為主流的開發工具。Spring Boot 之所以能夠成為目前業界最流行的開發工具，原因就在於 Spring Boot 憑借著 簡化 Spring 開發 以及 快速整合主流框架 的優點，讓工程師們可以更專注的在解決問題上，進而提升了前期開發和後續部署的效率。",
-  price: 1000,
-};
+const EditContainer = styled(RowContainer)`
+  justify-content: space-between;
+  align-items: baseline;
+`;
+
+const EditButton = styled.button`
+  background: ${(props) => props.theme.colors.green_dark};
+  border: none;
+  color: white;
+  font-size: 1rem;
+  height: fit-content;
+  padding: 7px 14px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
+`;
 
 function TeacherManagePage() {
   const [page, setPage] = useState("self");
-  const [courseType, setCourseType] = useState(COURSE_MAPPING[0]);
+  const [teacherInfos, setTeacherInfos] = useState(TEACHER_INFOS);
+  const [courseInfos, setCourseInfos] = useState(COURSE_LIST);
+  const [selectedCategory, setSelectedCategory] = useState(
+    teacherInfos.categories[0]
+  );
+  const [displayCourseInfos, setDisplayCourseInfos] = useState(
+    courseInfos.filter(
+      (course) => course.category === teacherInfos.categories[0]
+    )
+  );
+  const [edit, setEdit] = useState({
+    isEditing: false,
+    buttonText: "編輯課程資訊",
+  });
+
   const handlePageBtnClick = (e) => {
-    setPage(e.target.id);
+    const { id: currentPage } = e.target;
+    setPage(currentPage);
   };
   const handleCourseBtnClick = (e) => {
-    setCourseType(e.target.id);
+    const { id: selectedCategory } = e.target;
+    setSelectedCategory(e.target.id);
+    setDisplayCourseInfos(
+      courseInfos.filter((course) => course.category === selectedCategory)
+    );
   };
+  const handleEditClick = () => {
+    if (edit.isEditing) {
+      setEdit({
+        isEditing: false,
+        buttonText: "編輯課程資訊",
+      });
+    } else {
+      setEdit({
+        isEditing: true,
+        buttonText: "取消編輯",
+      });
+    }
+  };
+
+  console.log(edit);
+
   return (
     <TeacherManageWrapper>
       <PageTitle>後台管理</PageTitle>
@@ -166,88 +211,82 @@ function TeacherManagePage() {
         <FormContainer>
           {page === "self" && (
             <>
-              <FormItem itemName="Name" value="Kelly" />
-              <FormItem itemName="Avatar" value="https://Kelly.png" />
-              <FormItem itemName="Email" value="kelly123@gmail.com" />
+              <FormItem itemName="Name" value={teacherInfos.name} />
+              <FormItem itemName="Avatar" value={teacherInfos.avatar} />
+              <FormItem itemName="Email" value={teacherInfos.email} />
             </>
           )}
-          {page === "course" && (
+          {page === "course" && courseInfos.length !== 0 && (
             <>
-              <SuccessContainer>
-                <PassContainer success>
-                  <PassImgBlock src={happy} />
-                  <PassText success>
-                    課程已通過審核，將你的課程頁面發佈吧！
+              {displayCourseInfos[0].isPass === "success" ? (
+                <SuccessContainer>
+                  <PassContainer success>
+                    <PassImgBlock src={happy} />
+                    <PassText success>
+                      課程已通過審核，將你的課程頁面發佈吧！
+                    </PassText>
+                  </PassContainer>
+                  <RadioContainer>
+                    <RadioInput
+                      type="radio"
+                      name="publish"
+                      id="true"
+                      value="true"
+                    />
+                    <RadioLabel htmlFor="true">我要發布</RadioLabel>
+                  </RadioContainer>
+                  <RadioContainer>
+                    <RadioInput
+                      type="radio"
+                      name="publish"
+                      id="false"
+                      value="false"
+                    />
+                    <RadioLabel htmlFor="false">不發布</RadioLabel>
+                  </RadioContainer>
+                </SuccessContainer>
+              ) : displayCourseInfos.isPass === "pending" ? (
+                <PassContainer warn>
+                  <PassText warn>
+                    課程審核中，審核成功後將以電子郵件通知您
                   </PassText>
                 </PassContainer>
-                <RadioContainer>
-                  <RadioInput
-                    type="radio"
-                    name="publish"
-                    id="true"
-                    value="true"
-                  />
-                  <RadioLabel for="true">我要發布</RadioLabel>
-                </RadioContainer>
-                <RadioContainer>
-                  <RadioInput
-                    type="radio"
-                    name="publish"
-                    id="false"
-                    value="false"
-                  />
-                  <RadioLabel for="false">不發布</RadioLabel>
-                </RadioContainer>
-              </SuccessContainer>
-              <PassContainer warn>
-                <PassText warn>
-                  課程審核中，審核成功後將以電子郵件通知您
-                </PassText>
-              </PassContainer>
-              <PassContainer fail>
-                <PassImgBlock src={sad} />
-                <PassText fail>
-                  課程未通過審核，請調整課程資訊後再重新送審
-                </PassText>
-              </PassContainer>
-              <SectionText>課程資訊</SectionText>
-              {COURSE_MAPPING.length !== 0 && (
+              ) : (
+                <PassContainer fail>
+                  <PassImgBlock src={sad} />
+                  <PassText fail>
+                    課程未通過審核，請調整課程資訊後再重新送審
+                  </PassText>
+                </PassContainer>
+              )}
+              <EditContainer>
+                <SectionText>課程資訊</SectionText>
+                <EditButton onClick={handleEditClick}>
+                  {edit.buttonText}
+                </EditButton>
+              </EditContainer>
+              {teacherInfos.categories.length !== 0 && (
                 <CourseBtnsContainer>
-                  {COURSE_MAPPING.map((item) => (
+                  {teacherInfos.categories.map((category) => (
                     <CourseButton
-                      key={item}
-                      id={item}
-                      isClick={item === courseType}
+                      key={category}
+                      id={category}
+                      isClick={selectedCategory === category}
                       onClick={handleCourseBtnClick}
                     >
-                      {item}
+                      {category}
                     </CourseButton>
                   ))}
                 </CourseBtnsContainer>
               )}
-              <FormItem
-                edited={false}
-                itemName="Category"
-                value={COURSE_INFOS.category}
-              />
-              <FormItem
-                edited
-                simple
-                itemName="Course Name"
-                value={COURSE_INFOS.courseName}
-              />
-              <FormItem
-                edited
-                simple={false}
-                itemName="Course Intro"
-                value={COURSE_INFOS.courseIntro}
-              />
-              <FormItem
-                edited
-                simple
-                itemName="Price"
-                value={COURSE_INFOS.price}
-              />
+              {displayCourseInfos && (
+                <>
+                  <CourseInfosForm
+                    isEditing={edit.isEditing}
+                    courseInfos={displayCourseInfos[0]}
+                  />
+                </>
+              )}
             </>
           )}
         </FormContainer>
