@@ -72,6 +72,17 @@ const ItemName = styled.h1`
   }
 `;
 
+const ItemLabel = styled.label`
+  margin: 10px 0px;
+  width: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 10px;
+  float: left;
+  ${MEDIA_QUERY_SM} {
+  }
+`;
+
 const ItemInput = styled.input`
   height: 30px;
   padding: 5px;
@@ -80,6 +91,16 @@ const ItemInput = styled.input`
   font-size: 1rem;
   border: none;
   border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
+`;
+
+const ItemRadioInput = styled(ItemInput)`
+  height: 30px;
+  width: 50%;
+  zoom: 0.6;
+  ${MEDIA_QUERY_SM} {
+    width: 20%;
+    margin-right: 8px;
+  }
 `;
 
 const Btn = styled.button`
@@ -105,20 +126,36 @@ const ErrorMessage = styled.span`
   font-size: 1.5rem;
 `;
 
-function LoginPage() {
+function RegisterPage() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
+  const [checkPassword, setCheckPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = (e) => {
     setErrorMessage("");
     e.preventDefault();
 
-    if (email === "") {
+    if (username === "") {
+      setErrorMessage("請輸入使用者名稱");
+    } else if (identity === "") {
+      setErrorMessage("請選擇註冊身分");
+    } else if (email === "") {
       setErrorMessage("請輸入Email");
     } else if (password === "") {
       setErrorMessage("請輸入密碼");
+    } else if (checkPassword === "") {
+      setErrorMessage("請再次輸入密碼");
+    } else if (password !== checkPassword) {
+      setErrorMessage("密碼不相同");
     }
+  };
+
+  const handleUsernameChange = (e) => {
+    setErrorMessage("");
+    setUsername(e.target.value);
   };
 
   const handleEmailChange = (e) => {
@@ -126,17 +163,56 @@ function LoginPage() {
     setEmail(e.target.value);
   };
 
+  const handleIdentityToggle = (e) => {
+    setErrorMessage("");
+    setIdentity(e.target.value);
+  };
+
   const handlePasswordChange = (e) => {
     setErrorMessage("");
     setPassword(e.target.value);
   };
 
+  const handleCheckPasswordChange = (e) => {
+    setErrorMessage("");
+    setCheckPassword(e.target.value);
+  };
+
   return (
     <Wrapper>
       <Container>
-        <Title>登入帳戶</Title>
+        <Title>註冊帳戶</Title>
         <FormContainer onSubmit={handleSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          <FormItemContainer>
+            <ItemName>使用者名稱</ItemName>
+            <ItemInput
+              value={username}
+              type="text"
+              onChange={handleUsernameChange}
+            />
+          </FormItemContainer>
+          <FormItemContainer>
+            <ItemName>身分</ItemName>
+            <ItemLabel>
+              <ItemRadioInput
+                value="student"
+                type="radio"
+                name={identity}
+                onClick={handleIdentityToggle}
+              />
+              學生
+            </ItemLabel>
+            <ItemLabel>
+              <ItemRadioInput
+                value="teacher"
+                type="radio"
+                name={identity}
+                onClick={handleIdentityToggle}
+              />
+              老師
+            </ItemLabel>
+          </FormItemContainer>
           <FormItemContainer>
             <ItemName>Email</ItemName>
             <ItemInput
@@ -146,20 +222,26 @@ function LoginPage() {
             />
           </FormItemContainer>
           <FormItemContainer>
-            <ItemName>
-              密碼<a href="./reset_password">忘記密碼</a>
-            </ItemName>
+            <ItemName>密碼</ItemName>
             <ItemInput
               value={password}
               type="password"
               onChange={handlePasswordChange}
             />
           </FormItemContainer>
-          <Btn>登入</Btn>
+          <FormItemContainer>
+            <ItemName>再次確認密碼</ItemName>
+            <ItemInput
+              value={checkPassword}
+              type="password"
+              onChange={handleCheckPasswordChange}
+            />
+          </FormItemContainer>
+          <Btn>註冊</Btn>
         </FormContainer>
       </Container>
     </Wrapper>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;
