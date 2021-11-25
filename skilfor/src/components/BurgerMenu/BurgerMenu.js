@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
-import AvatarBlock from "../../components/AvatarBlock";
+import Avatar from "../../components/Avatar";
+import studentPic from "../../img/student.jpg";
 
 const Burger = styled.div`
   position: relative;
@@ -70,7 +71,7 @@ function BurgerMenu() {
         </IconDiv>
       </BurgerBtn>
       <BurgerContent show={burgerContent}>
-        <AvatarBlock identity="student" />
+        <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
         <a href="./cart">購物車</a>
         <a href="./calendar">行事曆</a>
         <a href="./charge_points">儲值點數</a>

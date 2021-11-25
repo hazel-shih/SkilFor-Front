@@ -29,11 +29,23 @@ const AvatarName = styled.p`
   margin-top: 12px;
 `;
 
-function Avatar({ imgSrc, name }) {
+const AvatarStatus = styled.p`
+  color: white;
+  font-size: 8px;
+  border-radius: 40px;
+  background-color: ${(props) => props.theme.colors.white_pure};
+  color: ${(props) => props.theme.colors.grey_dark};
+  padding: 0px 8px;
+  margin-top: 5px;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+`;
+
+function Avatar({ imgSrc, name, status }) {
   return (
     <AvatarWrapper>
       <AvatarContainer imgSrc={imgSrc} />
       <AvatarName>{name}</AvatarName>
+      <AvatarStatus>{status}</AvatarStatus>
     </AvatarWrapper>
   );
 }
