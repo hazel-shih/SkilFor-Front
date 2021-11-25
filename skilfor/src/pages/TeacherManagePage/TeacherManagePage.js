@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
 import AvatarBlock from "../../components/AvatarBlock";
 import PageTitle from "../../components/PageTitle";
+import happy from "../../img/happy.png";
+import sad from "../../img/sad.png";
+import { TEACHER_INFOS, COURSE_LIST } from "./Constant";
+import CourseInfosForm from "./CourseInfosForm";
+import { sleep } from "../../utils";
 
 //styled component
 const TeacherManageWrapper = styled.section`
-  padding: 196px 100px 182px 100px;
+  padding: 186px 100px 232px 100px;
 `;
 
 const RowContainer = styled.div`
@@ -74,28 +79,150 @@ const CourseButton = styled.button`
 const SectionText = styled.h3`
   font-size: 1.3rem;
   color: ${(props) => props.theme.colors.green_dark};
-  margin: 10px 0 30px 0;
+  margin: 10px 0 20px 0;
 `;
 
-//fake data
-const COURSE_MAPPING = ["程式", "音樂", "數學"];
-const COURSE_INFOS = {
-  category: "程式",
-  courseName: "一起來學習超潮的 Ruby 吧！",
-  classIntro:
-    "經過幾年的發展，Spring Boot 的功能已經非常成熟，並且在近幾年軟體業盛行微服務（microservice）的設計模式下，也帶動越來越多企業選擇使用 Spring Boot 作為主流的開發工具。Spring Boot 之所以能夠成為目前業界最流行的開發工具，原因就在於 Spring Boot 憑借著 簡化 Spring 開發 以及 快速整合主流框架 的優點，讓工程師們可以更專注的在解決問題上，進而提升了前期開發和後續部署的效率。",
-  price: 1000,
-};
+const SuccessContainer = styled(ColumnContainer)``;
+
+const PassContainer = styled(RowContainer)`
+  align-items: center;
+  background: ${(props) =>
+    props.success
+      ? props.theme.colors.success_bg
+      : props.fail
+      ? props.theme.colors.error_bg
+      : props.theme.colors.warn_bg};
+  padding: 15px;
+  margin-bottom: 10px;
+`;
+
+const PassText = styled.p`
+  color: ${(props) =>
+    props.success
+      ? props.theme.colors.success
+      : props.fail
+      ? props.theme.colors.error
+      : props.theme.colors.warn};
+  font-size: 1.1rem;
+`;
+
+const PassImgBlock = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+`;
+
+const RadioContainer = styled(RowContainer)`
+  align-items: center;
+`;
+
+const RadioInput = styled.input`
+  width: 20px;
+  height: 15px;
+`;
+
+const RadioLabel = styled.label`
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin-left: 5px;
+`;
+
+const EditContainer = styled(RowContainer)`
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 10px;
+`;
+
+const EditButton = styled.button`
+  background: ${(props) => props.theme.colors.green_dark};
+  border: none;
+  color: white;
+  font-size: 1rem;
+  height: fit-content;
+  padding: 7px 14px;
+  cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
+`;
+
+const SubmitButton = styled(EditButton)`
+  margin-left: 15px;
+`;
 
 function TeacherManagePage() {
+  //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
-  const [courseType, setCourseType] = useState(COURSE_MAPPING[0]);
+  //存取老師的資料與老師擁有的課程資料
+  const [teacherInfos, setTeacherInfos] = useState(null);
+  const [courseInfos, setCourseInfos] = useState(null);
+  //課程資訊下的課程按鈕
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  //是否為編輯狀態
+  const [edit, setEdit] = useState(false);
+  //拿取 teacher infos 和 course infos 資料
+  useEffect(() => {
+    async function fetchData() {
+      await sleep(500);
+      setTeacherInfos(TEACHER_INFOS);
+      setCourseInfos(COURSE_LIST);
+    }
+    fetchData();
+  }, []);
+  //設定最初被選定的課程按鈕
+  useEffect(() => {
+    if (teacherInfos) {
+      setSelectedCategory(teacherInfos.categories[0]);
+    }
+  }, [teacherInfos]);
+  //課程資訊呈現的資料
+  let displayCourseInfos;
+  if (courseInfos) {
+    displayCourseInfos = courseInfos.filter(
+      (course) => course.category === selectedCategory
+    )[0];
+  }
+  //編輯內容
+  const [editContent, setEditContent] = useState(displayCourseInfos);
+  //當個人資訊與課程資訊按鈕被按時
   const handlePageBtnClick = (e) => {
-    setPage(e.target.id);
+    const { id: currentPage } = e.target;
+    setPage(currentPage);
   };
+  //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
-    setCourseType(e.target.id);
+    setEdit(false);
+    const { id: categoryName } = e.target;
+    setSelectedCategory(categoryName);
   };
+  //設定預設編輯 value
+  useEffect(() => {
+    if (courseInfos) {
+      setEditContent(
+        courseInfos.find((info) => info.category === selectedCategory)
+      );
+    }
+  }, [selectedCategory, courseInfos]);
+  //當編輯課程資訊按鈕被按時
+  const handleEditClick = () => setEdit(!edit);
+  //當編輯完成按鈕被按時
+  const handleSubmitClick = () => {
+    setEdit(false);
+    //將更改後的課程資訊 post 給後端
+    setCourseInfos(
+      courseInfos.map((course) => {
+        if (course.id !== editContent.id) {
+          return course;
+        } else {
+          return editContent;
+        }
+      })
+    );
+  };
+  //當是否發布到前台被按時
+  const handleRadioClick = (e) => {
+    //將是否發布到前台的資料 post 給後端
+  };
+
   return (
     <TeacherManageWrapper>
       <PageTitle>後台管理</PageTitle>
@@ -120,37 +247,97 @@ function TeacherManagePage() {
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
-          {page === "self" && (
+          {page === "self" && teacherInfos && (
             <>
-              <FormItem itemName="Name" value="Kelly" />
-              <FormItem itemName="Avatar" value="https://Kelly.png" />
-              <FormItem itemName="Email" value="kelly123@gmail.com" />
+              <FormItem itemName="Name" value={teacherInfos.name} />
+              <FormItem itemName="Avatar" value={teacherInfos.avatar} />
+              <FormItem itemName="Email" value={teacherInfos.email} />
             </>
           )}
-          {page === "course" && (
+          {page === "course" && displayCourseInfos && (
             <>
-              {COURSE_MAPPING.length !== 0 && (
+              {displayCourseInfos.isPass === "success" ? (
+                <SuccessContainer>
+                  <PassContainer success>
+                    <PassImgBlock src={happy} />
+                    <PassText success>
+                      課程已通過審核，將你的課程頁面發佈吧！
+                    </PassText>
+                  </PassContainer>
+                  <RadioContainer>
+                    <RadioInput
+                      onClick={handleRadioClick}
+                      defaultChecked={displayCourseInfos.published}
+                      type="radio"
+                      name="publish"
+                      id="true"
+                      value="true"
+                    />
+                    <RadioLabel htmlFor="true">發布至前台</RadioLabel>
+                  </RadioContainer>
+                  <RadioContainer>
+                    <RadioInput
+                      onClick={handleRadioClick}
+                      defaultChecked={!displayCourseInfos.published}
+                      type="radio"
+                      name="publish"
+                      id="false"
+                      value="false"
+                    />
+                    <RadioLabel htmlFor="false">不發布</RadioLabel>
+                  </RadioContainer>
+                </SuccessContainer>
+              ) : displayCourseInfos.isPass === "pending" ? (
+                <PassContainer warn>
+                  <PassText warn>
+                    課程審核中，審核成功後將以電子郵件通知您
+                  </PassText>
+                </PassContainer>
+              ) : (
+                <PassContainer fail>
+                  <PassImgBlock src={sad} />
+                  <PassText fail>
+                    課程未通過審核，請調整課程資訊後再重新送審
+                  </PassText>
+                </PassContainer>
+              )}
+              <EditContainer>
+                <SectionText>課程資訊</SectionText>
+                <RowContainer>
+                  <EditButton onClick={handleEditClick}>
+                    {edit ? "取消編輯" : "編輯課程資訊"}
+                  </EditButton>
+                  {edit && (
+                    <SubmitButton onClick={handleSubmitClick}>
+                      編輯完成
+                    </SubmitButton>
+                  )}
+                </RowContainer>
+              </EditContainer>
+              {teacherInfos && teacherInfos.categories.length !== 0 && (
                 <CourseBtnsContainer>
-                  {COURSE_MAPPING.map((item) => (
+                  {teacherInfos.categories.map((category) => (
                     <CourseButton
-                      key={item}
-                      id={item}
-                      isClick={item === courseType}
+                      key={category}
+                      id={category}
+                      isClick={selectedCategory === category}
                       onClick={handleCourseBtnClick}
                     >
-                      {item}
+                      {category}
                     </CourseButton>
                   ))}
                 </CourseBtnsContainer>
               )}
-              <SectionText>課程資訊</SectionText>
-              <FormItem itemName="Category" value={COURSE_INFOS.category} />
-              <FormItem itemName="Class Name" value={COURSE_INFOS.courseName} />
-              <FormItem
-                itemName="Class Intro"
-                value={COURSE_INFOS.classIntro}
-              />
-              <FormItem itemName="Price" value={COURSE_INFOS.price} />
+              {displayCourseInfos && (
+                <>
+                  <CourseInfosForm
+                    isEditing={edit}
+                    courseInfos={displayCourseInfos}
+                    editContent={editContent}
+                    setEditContent={setEditContent}
+                  />
+                </>
+              )}
             </>
           )}
         </FormContainer>
