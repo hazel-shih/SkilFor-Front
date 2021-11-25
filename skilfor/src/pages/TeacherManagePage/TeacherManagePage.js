@@ -156,7 +156,7 @@ function TeacherManagePage() {
   //存取老師的資料與老師擁有的課程資料
   const [teacherInfos, setTeacherInfos] = useState(null);
   const [courseInfos, setCourseInfos] = useState(null);
-  //課程資訊下的課程按鈕
+  //課程領域按鈕
   const [selectedCategory, setSelectedCategory] = useState(null);
   //是否為編輯狀態
   const [edit, setEdit] = useState(false);
@@ -171,16 +171,21 @@ function TeacherManagePage() {
   }, []);
   //設定最初被選定的課程按鈕
   useEffect(() => {
-    if (teacherInfos) {
+    if (teacherInfos && teacherInfos.categories !== 0) {
       setSelectedCategory(teacherInfos.categories[0]);
     }
   }, [teacherInfos]);
   //課程資訊呈現的資料
   let displayCourseInfos;
-  if (courseInfos) {
+  if (courseInfos && courseInfos.length !== 0 && selectedCategory) {
     displayCourseInfos = courseInfos.filter(
       (course) => course.category === selectedCategory
     )[0];
+  }
+  //是否發布前台的 radio value
+  let publishValue;
+  if (displayCourseInfos) {
+    publishValue = displayCourseInfos.published;
   }
   //編輯內容
   const [editContent, setEditContent] = useState(displayCourseInfos);
@@ -197,7 +202,7 @@ function TeacherManagePage() {
   };
   //設定預設編輯 value
   useEffect(() => {
-    if (courseInfos) {
+    if (courseInfos && courseInfos.length !== 0) {
       setEditContent(
         courseInfos.find((info) => info.category === selectedCategory)
       );
@@ -220,10 +225,23 @@ function TeacherManagePage() {
     );
   };
   //當是否發布到前台被按時
-  const handleRadioClick = (e) => {
+  const handleRadioChange = (e) => {
+    const { value: publishedValue } = e.target;
+    setCourseInfos(
+      courseInfos.map((course) => {
+        if (course.id !== displayCourseInfos.id) {
+          return course;
+        } else {
+          return {
+            ...displayCourseInfos,
+            published: publishedValue,
+          };
+        }
+      })
+    );
     //將是否發布到前台的資料 post 給後端
   };
-
+  console.log(courseInfos);
   return (
     <TeacherManageWrapper>
       <PageTitle>後台管理</PageTitle>
@@ -267,23 +285,23 @@ function TeacherManagePage() {
                   </PassContainer>
                   <RadioContainer>
                     <RadioInput
-                      onClick={handleRadioClick}
-                      defaultChecked={displayCourseInfos.published}
+                      onChange={handleRadioChange}
                       type="radio"
                       name="publish"
                       id="true"
-                      value="true"
+                      value={true}
+                      defaultValue={publishValue}
                     />
                     <RadioLabel htmlFor="true">發布至前台</RadioLabel>
                   </RadioContainer>
                   <RadioContainer>
                     <RadioInput
-                      onClick={handleRadioClick}
-                      defaultChecked={!displayCourseInfos.published}
+                      onChange={handleRadioChange}
                       type="radio"
                       name="publish"
                       id="false"
-                      value="false"
+                      value={false}
+                      defaultValue={!publishValue}
                     />
                     <RadioLabel htmlFor="false">不發布</RadioLabel>
                   </RadioContainer>
