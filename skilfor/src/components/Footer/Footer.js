@@ -5,7 +5,7 @@ import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 
 const Container = styled.div`
   border-bottom: 20px solid ${(props) => props.theme.colors.green_dark};
-  padding: 30px;
+  padding: 10px 30px;
   margin: 0 auto;
   position: absolute;
   bottom: 0;

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import FormItem from "./FormItem";
-import AvatarBlock from "../../components/AvatarBlock";
+import Avatar from "../../components/Avatar";
+import teacherPic from "../../img/teacher.jpeg";
 import PageTitle from "../../components/PageTitle";
 import happy from "../../img/happy.png";
 import sad from "../../img/sad.png";
@@ -228,7 +229,7 @@ function TeacherManagePage() {
       <PageTitle>後台管理</PageTitle>
       <TeacherManageContainer>
         <UserInfoContainer>
-          <AvatarBlock identity="teacher" />
+          <Avatar imgSrc={teacherPic} name="Kelly" />
           <PageBtnsContainer>
             <PageBtn
               id="self"

@@ -8,7 +8,7 @@ import BurgerMenu from "../BurgerMenu";
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
   background: white;
-  padding: 20px 30px;
+  padding: 10px 30px;
   margin: 0 auto;
   position: fixed;
   top: 0px;

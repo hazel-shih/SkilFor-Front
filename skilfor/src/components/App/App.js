@@ -7,6 +7,7 @@ import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
 import RegisterPage from "../../pages/RegisterPage";
 import TeacherCalendarPage from "../../pages/TeacherCalendarPage";
+import FilterPage from "../../pages/FilterPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route exact path="/login" element={<LoginPage />}></Route>
           <Route exact path="/register" element={<RegisterPage />}></Route>
           <Route exact path="/" element={<HomePage />}></Route>
+          <Route exact path="/filter" element={<FilterPage />}></Route>
           <Route
             path="/teacher/manage/:teacherId"
             element={<TeacherManagePage />}
