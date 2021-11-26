@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { IconDiv } from "../Icon/IconDiv";
 import Icons from "../Icon/Icons";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   border-bottom: 20px solid ${(props) => props.theme.colors.green_dark};
-  padding: 10px 30px;
+  padding: 20px 30px;
   margin: 0 auto;
   position: absolute;
   bottom: 0;
@@ -36,18 +37,17 @@ const FooterList = styled.ul`
     margin: 8px;
     padding: 6px;
     cursor: pointer;
+  }
+`;
 
-    a {
-      text-decoration: none;
-      color: ${(props) => props.theme.colors.white_pure};
-      border-bottom: 3px solid transparent;
-      opacity: 1;
-      font-weight: bold;
-
-      :hover {
-        opacity: 0.7;
-      }
-    }
+const IconLink = styled(Link)`
+  text-decoration: none;
+  color: ${(props) => props.theme.colors.white_pure};
+  border-bottom: 3px solid transparent;
+  opacity: 1;
+  font-weight: bold;
+  :hover {
+    opacity: 0.7;
   }
 `;
 
@@ -57,39 +57,39 @@ function Footer() {
       <div>
         <FooterList>
           <li>
-            <a href="./twitter">
+            <IconLink to="./twitter">
               <IconDiv>
                 <Icons.SocialMediaIcons.Twitter />
               </IconDiv>
-            </a>
+            </IconLink>
           </li>
           <li>
-            <a href="./youtube">
+            <IconLink to="./youtube">
               <IconDiv>
                 <Icons.SocialMediaIcons.Youtube />
               </IconDiv>
-            </a>
+            </IconLink>
           </li>
           <li>
-            <a href="./telegram">
+            <IconLink to="./telegram">
               <IconDiv>
                 <Icons.SocialMediaIcons.Telegram />
               </IconDiv>
-            </a>
+            </IconLink>
           </li>
           <li>
-            <a href="./instagram">
+            <IconLink to="./instagram">
               <IconDiv>
                 <Icons.SocialMediaIcons.Instagram />
               </IconDiv>
-            </a>
+            </IconLink>
           </li>
           <li>
-            <a href="./facebook">
+            <IconLink to="./facebook">
               <IconDiv>
                 <Icons.SocialMediaIcons.Facebook />
               </IconDiv>
-            </a>
+            </IconLink>
           </li>
         </FooterList>
       </div>

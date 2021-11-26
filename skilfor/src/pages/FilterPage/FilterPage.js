@@ -1,35 +1,38 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import teacherPic from "../../img/teacher.jpeg";
 
 const Container = styled.div`
-  padding: 140px 100px 160px 100px;
+  padding: 120px 100px 160px 100px;
   position: relative;
   text-align: center;
   margin: 0 auto;
   max-width: 1440px;
   ${MEDIA_QUERY_SM} {
-    padding: 140px 50px 160px 50px;
+    padding: 120px 10px 160px 10px;
   }
 `;
 
 const Title = styled.h1`
   padding: 5px 0px;
+  margin-bottom: 10px;
+  font-size: 1.7rem;
   color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
-    font-size: 20px;
+    font-size: 1.4rem;
   }
 `;
 
 const DropdownLabel = styled.label`
   position: relative;
   display: inline-block;
-  width: 400px;
+  width: 370px;
   margin: 0 auto;
   ${MEDIA_QUERY_SM} {
-    max-width: 200px;
+    max-width: 300px;
   }
 `;
 
@@ -37,12 +40,12 @@ const DropdownBtn = styled.button`
   display: inline-block;
   border: 1px solid ${(props) => props.theme.colors.grey_light};
   border-radius: 4px;
-  padding: 10px 30px 10px 20px;
+  padding: 10px 30px 10px 24px;
   background-color: white;
   cursor: pointer;
   white-space: nowrap;
   width: 100%;
-  font-size: 18px;
+  font-size: 1.2rem;
   color: ${(props) => props.theme.colors.grey_dark};
   margin: 0 auto;
 
@@ -61,7 +64,7 @@ const DropdownBtn = styled.button`
 
   ${MEDIA_QUERY_SM} {
     padding: 8px 5px;
-    font-size: 12px;
+    font-size: 1rem;
   }
 `;
 
@@ -87,22 +90,24 @@ const DropdownContent = styled.li`
   padding: 10px 20px;
   cursor: pointer;
   white-space: nowrap;
-  font-size: 18px;
+  font-size: 1.2rem;
   text-align: left;
-
   :hover {
     background-color: #f6f6f6;
     font-weight: bold;
   }
-
-  & > a {
-    display: block;
-    text-decoration: none;
-    color: ${(props) => props.theme.colors.grey_dark};
-    margin: -10px -20px;
-    padding: 10px 20px;
-    border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
+  ${MEDIA_QUERY_SM} {
+    font-size: 1rem;
   }
+`;
+
+const DropdownItem = styled(Link)`
+  display: block;
+  text-decoration: none;
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin: -10px -20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
 `;
 
 const ResultList = styled.div`
@@ -111,7 +116,7 @@ const ResultList = styled.div`
   justify-content: center;
   align-content: flex-start;
   width: 100%;
-  margin: 0 auto;
+  margin: 10px auto 0px;
   min-height: 50vh;
   ${MEDIA_QUERY_SM} {
     max-width: 768px;
@@ -129,7 +134,7 @@ const TeacherBlock = styled.div`
   ${MEDIA_QUERY_SM} {
     max-width: 300px;
     display: block;
-    height: 350px;
+    height: 370px;
   }
 `;
 
@@ -141,8 +146,8 @@ const EmptyBlock = styled.div`
 
 const CourseBlock = styled.div`
   color: ${(props) => props.theme.colors.grey_dark};
-  padding: 10px 20px;
-  width: 250px;
+  padding: 10px 6px;
+  width: 620px;
   border: 2px dotted ${(props) => props.theme.colors.green_dark};
   ${MEDIA_QUERY_SM} {
     padding: 5px;
@@ -151,20 +156,25 @@ const CourseBlock = styled.div`
 `;
 
 const CourseName = styled.h2`
+  font-size: 1.3rem;
+  text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  padding-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  padding-bottom: 4px;
   border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
   ${MEDIA_QUERY_SM} {
-    padding: 5px;
-    font-size: 16px;
+    margin: 5px;
+    font-size: 1.2rem;
   }
 `;
 
 const CourseIntro = styled.p`
-  margin: 10px 0px;
-  font-size: 16px;
+  margin: 10px 8px;
+  line-height: 1.5rem;
+  font-size: 1.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -172,7 +182,7 @@ const CourseIntro = styled.p`
   -webkit-box-orient: vertical;
   text-align: justify;
   ${MEDIA_QUERY_SM} {
-    font-size: 12px;
+    font-size: 1rem;
   }
 `;
 
@@ -188,16 +198,19 @@ const Btn = styled.button`
   cursor: pointer;
   background-color: ${(props) => props.theme.colors.orange};
   color: white;
-  font-weight: bold;
-  padding: 15px 0px;
-  width: 90px;
-  height: 50px;
+  width: 95px;
+  height: 33px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   text-align: center;
-  font-size: 12px;
+  font-size: 1.2rem;
+  :hover {
+    opacity: 0.9;
+    font-weight: bold;
+  }
   ${MEDIA_QUERY_SM} {
     padding: 6px 0px;
     width: 80px;
+    font-size: 1rem;
   }
 `;
 
@@ -215,10 +228,10 @@ function FilterPage() {
         <DropdownInput type="checkbox" id="searchbox" />
         <DropdownMenu show={categoryList}>
           <DropdownContent>
-            <a href="/category/1">程式</a>
+            <DropdownItem to="/category/1">程式</DropdownItem>
           </DropdownContent>
           <DropdownContent>
-            <a href="/category/2">音樂</a>
+            <DropdownItem to="/category/2">音樂</DropdownItem>
           </DropdownContent>
         </DropdownMenu>
       </DropdownLabel>

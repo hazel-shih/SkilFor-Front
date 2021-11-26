@@ -6,6 +6,7 @@ const ColumnContainer = styled.div`
 `;
 
 const AvatarWrapper = styled(ColumnContainer)`
+  width: 100%;
   height: 200px;
   background: ${(props) => props.theme.colors.green_dark};
   align-items: center;

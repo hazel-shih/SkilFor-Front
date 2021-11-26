@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
 import Avatar from "../../components/Avatar";
@@ -25,22 +26,22 @@ const BurgerContent = styled.div`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   color: white;
+`;
 
-  & > a {
-    background-color: ${(props) => props.theme.colors.orange};
-    color: ${(props) => props.theme.colors.white_pure};
-    border-radius: 40px;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    margin: 12px;
-    text-align: center;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
-    font-size: 1.2rem;
-    :hover {
-      opacity: 0.8;
-      font-weight: bold;
-    }
+const BurgerItem = styled(Link)`
+  background-color: ${(props) => props.theme.colors.orange};
+  color: ${(props) => props.theme.colors.white_pure};
+  border-radius: 40px;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  margin: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+  font-size: 1.2rem;
+  :hover {
+    opacity: 0.8;
+    font-weight: bold;
   }
 `;
 
@@ -72,10 +73,10 @@ function BurgerMenu() {
       </BurgerBtn>
       <BurgerContent show={burgerContent}>
         <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
-        <a href="./cart">購物車</a>
-        <a href="./calendar">行事曆</a>
-        <a href="./charge_points">儲值點數</a>
-        <a href="./identity/manage">管理個人資料</a>
+        <BurgerItem to="./cart">購物車</BurgerItem>
+        <BurgerItem to="./calendar">行事曆</BurgerItem>
+        <BurgerItem to="./charge_points">儲值點數</BurgerItem>
+        <BurgerItem to="./identity/manage">管理個人資料</BurgerItem>
       </BurgerContent>
     </Burger>
   );
