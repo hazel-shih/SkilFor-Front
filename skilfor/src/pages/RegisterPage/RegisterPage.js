@@ -148,6 +148,7 @@ const ErrorMessage = styled.span`
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
   const [checkPassword, setCheckPassword] = useState("");
@@ -167,6 +168,9 @@ function RegisterPage() {
     } else if (email === "") {
       scrollTop();
       setErrorMessage("請輸入Email");
+    } else if (contactEmail === "") {
+      scrollTop();
+      setErrorMessage("請輸入聯絡用Email");
     } else if (password === "") {
       scrollTop();
       setErrorMessage("請輸入密碼");
@@ -196,6 +200,11 @@ function RegisterPage() {
   const handleEmailChange = (e) => {
     setErrorMessage("");
     setEmail(e.target.value);
+  };
+
+  const handleContactEmailChange = (e) => {
+    setErrorMessage("");
+    setContactEmail(e.target.value);
   };
 
   const handleIdentityToggle = (e) => {
@@ -254,6 +263,14 @@ function RegisterPage() {
               value={email}
               type="email"
               onChange={handleEmailChange}
+            />
+          </FormItemContainer>
+          <FormItemContainer>
+            <ItemName>聯絡用 Email</ItemName>
+            <ItemInput
+              value={contactEmail}
+              type="email"
+              onChange={handleContactEmailChange}
             />
           </FormItemContainer>
           <FormItemContainer>
