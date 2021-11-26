@@ -29,7 +29,7 @@ const Title = styled.h1`
 const DropdownLabel = styled.label`
   position: relative;
   display: inline-block;
-  width: 370px;
+  width: 490px;
   margin: 0 auto;
   ${MEDIA_QUERY_SM} {
     max-width: 300px;
@@ -129,41 +129,47 @@ const TeacherBlock = styled.div`
   justify-content: center;
   align-content: center;
   height: 200px;
-  width: 395px;
-  margin: 25px 5px;
+  width: 560px;
+  margin: 25px 20px;
   ${MEDIA_QUERY_SM} {
     max-width: 300px;
     display: block;
     height: 370px;
+    margin: 30px 0px;
+    :first-child {
+      margin: 20px 0px 30px;
+    }
   }
 `;
 
 const EmptyBlock = styled.div`
   height: 200px;
-  width: 395px;
-  margin: 25px 5px;
+  width: 560px;
+  margin: 25px 20px;
+  ${MEDIA_QUERY_SM} {
+    max-width: 300px;
+    display: block;
+    margin: 30px 0px;
 `;
 
 const CourseBlock = styled.div`
   color: ${(props) => props.theme.colors.grey_dark};
-  padding: 10px 6px;
+  padding: 8px 6px;
   width: 620px;
+  height: 200px;
   border: 2px dotted ${(props) => props.theme.colors.green_dark};
+  position: relative;
   ${MEDIA_QUERY_SM} {
     padding: 5px;
     width: 300px;
+    height: 215px;
   }
 `;
 
 const CourseName = styled.h2`
   font-size: 1.3rem;
   text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  padding-bottom: 4px;
+  padding: 4px;
   border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
   ${MEDIA_QUERY_SM} {
     margin: 5px;
@@ -172,7 +178,6 @@ const CourseName = styled.h2`
 `;
 
 const CourseIntro = styled.p`
-  margin: 10px 8px;
   line-height: 1.5rem;
   font-size: 1.2rem;
   overflow: hidden;
@@ -180,9 +185,12 @@ const CourseIntro = styled.p`
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  text-align: justify;
+  text-align: left;
+  margin: 10px 15px 8px;
+  align-items: center;
   ${MEDIA_QUERY_SM} {
     font-size: 1rem;
+    margin: 10px 15px;
   }
 `;
 
@@ -190,6 +198,10 @@ const BtnDiv = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(-20%, -35%);
 `;
 
 const Btn = styled.button`
@@ -240,7 +252,7 @@ function FilterPage() {
           <Avatar imgSrc={teacherPic} name="Jack" />
           <CourseBlock>
             <CourseName>
-              用吉他彈出嚇嚇叫的生日快樂歌用吉他彈出嚇嚇叫的生日快樂歌
+              用吉他彈出嚇嚇叫的生日快樂歌用吉他彈出嚇嚇叫的生日快
             </CourseName>
             <CourseIntro>
               吉他（英語：guitar，港澳稱結他），是一種彈撥樂器。通常有六條弦，形狀與提琴相似。吉他在流行音樂、搖滾音樂、藍調、民歌、佛朗明哥中，常被視為主要樂器；在古典音樂的領域裡，吉他常以獨奏或二重奏的型式演出；在室內樂和管弦樂中，吉他亦扮演著相當程度的陪襯角色。
