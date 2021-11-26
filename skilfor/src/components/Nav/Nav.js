@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import Icons from "../Icon/Icons";
 import LogoSrc from "../../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
@@ -52,18 +53,18 @@ const NavbarList = styled.ul`
       padding: 2px;
       margin: 4px;
     }
+  }
+`;
 
-    & > a {
-      text-decoration: none;
-      color: ${(props) => props.theme.colors.grey_dark};
-      border-bottom: 3px solid transparent;
-      opacity: 1;
-      font-weight: bold;
+const NavItem = styled(Link)`
+  text-decoration: none;
+  color: ${(props) => props.theme.colors.grey_dark};
+  border-bottom: 3px solid transparent;
+  opacity: 1;
+  font-weight: bold;
 
-      &:hover {
-        opacity: 0.7;
-      }
-    }
+  &:hover {
+    opacity: 0.7;
   }
 `;
 
@@ -77,20 +78,20 @@ function Nav() {
         <div>
           <NavbarList>
             <li>
-              <a href="./filter">找老師</a>
+              <NavItem to="./filter">找老師</NavItem>
             </li>
             <li>
-              <a href="./login">登入</a>
+              <NavItem to="./login">登入</NavItem>
             </li>
             <li>
-              <a href="./register">註冊</a>
+              <NavItem to="./register">註冊</NavItem>
             </li>
             <li>
-              <a href="./question_and_answer">
+              <NavItem to="./question_and_answer">
                 <IconDiv>
                   <Icons.NavIcons.Question />
                 </IconDiv>
-              </a>
+              </NavItem>
             </li>
             <li>
               <BurgerMenu />

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Wrapper = styled.div`
   background: linear-gradient(
@@ -75,16 +76,16 @@ const ItemName = styled.h1`
     font-size: 1.3rem;
     margin: 2px 0;
   }
+`;
 
-  & > a {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 1.4rem;
-    text-decoration: none;
-    ${MEDIA_QUERY_SM} {
-      font-size: 1rem;
-    }
+const ForgetPassword = styled(Link)`
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 1.2rem;
+  text-decoration: none;
+  ${MEDIA_QUERY_SM} {
+    font-size: 1rem;
   }
 `;
 
@@ -226,7 +227,8 @@ function LoginPage() {
           </FormItemContainer>
           <FormItemContainer>
             <ItemName>
-              密碼<a href="./reset_password">忘記密碼</a>
+              密碼
+              <ForgetPassword to="./reset_password">忘記密碼</ForgetPassword>
             </ItemName>
             <ItemInput
               value={password}

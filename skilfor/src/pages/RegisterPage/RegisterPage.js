@@ -76,17 +76,6 @@ const ItemName = styled.h1`
     font-size: 1.3rem;
     margin: 2px 0;
   }
-
-  & > a {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 1.4rem;
-    text-decoration: none;
-    ${MEDIA_QUERY_SM} {
-      font-size: 1rem;
-    }
-  }
 `;
 
 const ItemLabel = styled.label`
