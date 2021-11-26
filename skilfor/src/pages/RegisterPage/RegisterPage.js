@@ -20,23 +20,24 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  padding: 140px 100px 200px 100px;
+  padding: 120px 100px 200px 100px;
   width: 700px;
   height: 100%;
   min-height: 1000px;
   ${MEDIA_QUERY_SM} {
     max-width: 500px;
-    padding: 140px 50px 200px 50px;
+    padding: 120px 50px 200px 50px;
   }
 `;
 
 const Title = styled.h1`
   padding: 6px 0px 10px;
-  font-size: 30px;
+  margin-bottom: 10px;
+  font-size: 1.7rem;
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
-    font-size: 26px;
+    font-size: 1.4rem;
   }
 `;
 
@@ -47,12 +48,12 @@ const FormContainer = styled.form`
   align-items: center;
   width: 100%;
   min-height: 300px;
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
+  border: 1px solid ${(props) => props.theme.colors.grey_light};
   border-radius: 10px;
-  padding: 35px 50px;
+  padding: 15px 40px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   ${MEDIA_QUERY_SM} {
-    padding: 30px 35px;
+    padding: 15px;
   }
 `;
 
@@ -61,25 +62,29 @@ const FormItemContainer = styled.div`
   padding: 10px 0 0;
   width: 80%;
   height: 100px;
+  ${MEDIA_QUERY_SM} {
+    height: 66px;
+  }
 `;
 
 const ItemName = styled.h1`
   color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   margin: 5px 0;
   position: relative;
   ${MEDIA_QUERY_SM} {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    margin: 2px 0;
   }
 
   & > a {
     position: absolute;
     right: 0;
     bottom: 0;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-decoration: none;
     ${MEDIA_QUERY_SM} {
-      font-size: 0.5rem;
+      font-size: 1rem;
     }
   }
 `;
@@ -88,11 +93,12 @@ const ItemLabel = styled.label`
   margin: 10px 0px;
   width: 50%;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.4rem;
   padding: 10px;
   float: left;
   ${MEDIA_QUERY_SM} {
     padding: 2px;
+    font-size: 1rem;
   }
 `;
 
@@ -104,6 +110,9 @@ const ItemInput = styled.input`
   font-size: 1rem;
   border: none;
   border-bottom: 1px solid ${(props) => props.theme.colors.grey_light};
+  ${MEDIA_QUERY_SM} {
+    height: 20px;
+  }
 `;
 
 const ItemRadioInput = styled(ItemInput)`
@@ -133,8 +142,8 @@ const Btn = styled.button`
   }
 
   ${MEDIA_QUERY_SM} {
-    padding: 15px;
-    min-width: 100px;
+    padding: 10px;
+    min-width: 80px;
   }
 `;
 
