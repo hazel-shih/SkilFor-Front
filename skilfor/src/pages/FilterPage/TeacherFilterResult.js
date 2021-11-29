@@ -21,7 +21,7 @@ const TeacherBlock = styled.div`
   }
 `;
 
-const EmptyBlock = styled.div`
+/*const EmptyBlock = styled.div`
   height: 200px;
   width: 560px;
   margin: 25px 20px;
@@ -29,7 +29,7 @@ const EmptyBlock = styled.div`
     max-width: 300px;
     display: block;
     margin: 30px 0px;
-`;
+`;*/
 
 const CourseBlock = styled.div`
   color: ${(props) => props.theme.colors.grey_dark};
@@ -70,7 +70,7 @@ const CourseIntro = styled.p`
   ${MEDIA_QUERY_SM} {
     line-height: 1.5rem;
     font-size: 1rem;
-    margin: 10px;
+    margin: 10px 10px 4px;
   }
 `;
 
@@ -84,8 +84,11 @@ const BtnDiv = styled.div`
 const CoursePrice = styled.p`
   text-align: left;
   font-weight: bold;
-  padding-left: 10px;
+  padding: 10px 0px 10px 10px;
   color: ${(props) => props.theme.colors.green_dark};
+  ${MEDIA_QUERY_SM} {
+    padding: 6px 0px 6px 6px;
+  }
 `;
 
 const Btn = styled.button`
@@ -95,7 +98,7 @@ const Btn = styled.button`
   background-color: ${(props) => props.theme.colors.orange};
   color: white;
   width: 95px;
-  height: 33px;
+  padding: 10px 0px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   text-align: center;
   font-size: 1.2rem;
@@ -110,16 +113,16 @@ const Btn = styled.button`
   }
 `;
 
-function TeacherFilterResult({ course }) {
+function TeacherFilterResult({ result }) {
   return (
     <>
       <TeacherBlock>
-        <Avatar imgSrc={course.teacherAvatar} name={course.teacherName} />
+        <Avatar imgSrc={result.teacherAvatar} name={result.teacherName} />
         <CourseBlock>
-          <CourseName>{course.courseName}</CourseName>
-          <CourseIntro>{course.courseIntro}</CourseIntro>
+          <CourseName>{result.courseName}</CourseName>
+          <CourseIntro>{result.courseIntro}</CourseIntro>
           <BtnDiv>
-            <CoursePrice>{course.price}</CoursePrice>
+            <CoursePrice>{result.price}</CoursePrice>
             <Btn>更多資訊</Btn>
           </BtnDiv>
         </CourseBlock>

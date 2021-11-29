@@ -4,14 +4,17 @@ export const CATEGORY_LIST = [
   {
     id: "1",
     category: "coding",
+    chineseName: "程式",
   },
   {
     id: "2",
     category: "music",
+    chineseName: "音樂",
   },
   {
     id: "3",
     category: "math",
+    chineseName: "數學",
   },
 ];
 

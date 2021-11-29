@@ -2,7 +2,9 @@ import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { useState } from "react";
 import TeacherFilterResult from "../FilterPage/TeacherFilterResult";
-import { COURSE_LIST } from "./Constant";
+import { CATEGORY_LIST, COURSE_LIST } from "./Constant";
+import { useEffect, useRef } from "react";
+import { sleep } from "../../utils";
 
 const Container = styled.div`
   padding: 120px 100px 160px 100px;
@@ -25,7 +27,7 @@ const Title = styled.h1`
   }
 `;
 
-const DropdownLabel = styled.label`
+const DropdownLabel = styled.div`
   position: relative;
   display: inline-block;
   width: 560px;
@@ -81,12 +83,11 @@ const DropdownMenu = styled.ul`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   background-color: #ffffff;
   list-style-type: none;
-  display: ${(props) => (props.show ? "block" : "none")};
   width: 100%;
   z-index: 2;
 `;
 
-const DropdownContent = styled.li`
+const DropdownContent = styled.option`
   padding: 10px 20px;
   cursor: pointer;
   white-space: nowrap;
@@ -117,47 +118,75 @@ const ResultList = styled.div`
 `;
 
 function FilterPage() {
-  const [categoryList, setCategoryList] = useState(false);
-  const handleDropdownBtnToggle = () => {
-    setCategoryList(!categoryList);
+  // 控制 dropdownMenu 出現與否
+  const [dropdownMenu, setDropdownMenu] = useState(false);
+  const handleDropdownMenuToggle = () => {
+    setDropdownMenu(!dropdownMenu);
   };
 
-  const fetchData = () => {
-    console.log(COURSE_LIST);
-    setCourses(COURSE_LIST);
+  // 點選 dropdown 以外的地方 dropdown auto close
+  const dropdownLabel = useRef(null);
+  const handleClickDropdownMenuOutside = (e) => {
+    if (dropdownLabel.current && !dropdownLabel.current.contains(e.target)) {
+      setDropdownMenu(false);
+    }
   };
 
-  const [courses, setCourses] = useState([]);
-  const handleCategoryClick = (e) => {
-    const { id: selectedCategory } = e.target;
-    setCurrentCategory(selectedCategory);
+  // 點選 dropdown 後從資料庫拿目前有哪些 category
+  const [dropdownContent, setDropdownContent] = useState([]);
+  // 拿取某 category 的所有 result
+  const [results, setResults] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      await sleep(500);
+      setResults(COURSE_LIST);
+      setDropdownContent(CATEGORY_LIST);
+    }
     fetchData();
-  };
+  }, [results, dropdownContent]);
 
+  // 點選某 category 後顯示資料
   const [currentCategory, setCurrentCategory] = useState(null);
+  const [currentCategoryInput, setCurrentCategoryInput] =
+    useState("請選擇領域");
+
+  const handleCategoryClick = (e) => {
+    const { id: selectedCategory, value } = e.target;
+    setCurrentCategory(selectedCategory);
+    setCurrentCategoryInput(value);
+    setDropdownMenu(false);
+  };
 
   return (
-    <Container>
+    <Container onClick={handleClickDropdownMenuOutside}>
       <Title>搜尋老師</Title>
-      <DropdownLabel>
-        <DropdownBtn onClick={handleDropdownBtnToggle}>請選擇領域</DropdownBtn>
+      <DropdownLabel ref={dropdownLabel}>
+        <DropdownBtn onClick={handleDropdownMenuToggle}>
+          {currentCategoryInput}
+        </DropdownBtn>
         <DropdownInput type="checkbox" id="select" />
-        <DropdownMenu show={categoryList}>
-          <DropdownContent onClick={handleCategoryClick} id="coding">
-            程式
-          </DropdownContent>
-          <DropdownContent onClick={handleCategoryClick} id="music">
-            音樂
-          </DropdownContent>
-        </DropdownMenu>
+        {dropdownMenu && (
+          <DropdownMenu>
+            {dropdownContent.map((categories) => (
+              <DropdownContent
+                onClick={handleCategoryClick}
+                key={categories.id}
+                id={categories.category}
+                value={categories.chineseName}
+              >
+                {categories.chineseName}
+              </DropdownContent>
+            ))}
+          </DropdownMenu>
+        )}
       </DropdownLabel>
       <ResultList>
-        {courses
-          .filter((course) => {
-            return course.category === currentCategory;
+        {results
+          .filter((result) => {
+            return result.category === currentCategory;
           })
-          .map((course) => (
-            <TeacherFilterResult course={course} />
+          .map((result) => (
+            <TeacherFilterResult key={result.id} result={result} />
           ))}
       </ResultList>
     </Container>
