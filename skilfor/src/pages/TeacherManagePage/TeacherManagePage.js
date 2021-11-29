@@ -87,17 +87,39 @@ export const SubmitButton = styled(EditButton)`
 function TeacherManagePage() {
   //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
-  //存取老師的資料與老師擁有的課程資料
+  //存取老師個人資訊
   const [teacherInfos, setTeacherInfos] = useState(null);
+  //個人資訊是否為編輯狀態
+  const [isEditingSelf, setIsEditingSelf] = useState(false);
+  //編輯個人資料內容
+  const [editSelfContent, setEditSelfContent] = useState(null);
+  //當個人資訊與課程資訊按鈕被按時
+  const handlePageBtnClick = (e) => {
+    const { id: currentPage } = e.target;
+    setPage(currentPage);
+  };
+  //設定預設課程個人編輯 value
+  useEffect(() => {
+    setEditSelfContent(teacherInfos);
+  }, [teacherInfos]);
+  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
+  //編輯個人資訊按鈕被按時
+  const handleSelfEditClick = () => setIsEditingSelf(!isEditingSelf);
+  //完成編輯個人資訊按鈕被按時
+  const handleSelfSubmitClick = () => {
+    setIsEditingSelf(false);
+    //將更改後的課程資訊 post 給後端
+    setTeacherInfos(editSelfContent);
+  };
+
+  //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
   const [selectedCourseInfos, setSelectedCourseInfos] = useState(null);
-  //個人資訊是否為編輯狀態
-  const [isEditingSelf, setIsEditingSelf] = useState(false);
+
   //課程資訊是否為編輯狀態
   const [isEditingCourse, setIsEditingCourse] = useState(false);
-  //編輯個人資料內容
-  const [editSelfContent, setEditSelfContent] = useState(null);
+
   //編輯課程內容
   const [editCourseContent, setEditCourseContent] = useState(null);
   //拿取 teacher infos 和 course infos 資料
@@ -115,11 +137,7 @@ function TeacherManagePage() {
       setSelectedCourseInfos(courseInfos[0]);
     }
   }, [courseInfos]);
-  //當個人資訊與課程資訊按鈕被按時
-  const handlePageBtnClick = (e) => {
-    const { id: currentPage } = e.target;
-    setPage(currentPage);
-  };
+
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
     setIsEditingCourse(false);
@@ -128,25 +146,11 @@ function TeacherManagePage() {
       (course) => course.category === categoryName
     );
     setSelectedCourseInfos(targetCourseInfos);
+    setEditCourseContent(targetCourseInfos);
   };
-  //設定預設課程個人編輯 value
-  useEffect(() => {
-    setEditSelfContent(teacherInfos);
-  }, [teacherInfos]);
-  //設定預設課程資料編輯 value
-  useEffect(() => {
-    setEditCourseContent(selectedCourseInfos);
-  }, [selectedCourseInfos]);
+
   //當編輯課程資訊按鈕被按時
-  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
-  //當編輯個人資訊按鈕被按時
-  const handleSelfEditClick = () => setIsEditingSelf(!isEditingSelf);
-  //當編輯個人完成按鈕被按時
-  const handleSelfSubmitClick = () => {
-    setIsEditingSelf(false);
-    //將更改後的課程資訊 post 給後端
-    setTeacherInfos(editSelfContent);
-  };
+
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
     setIsEditingCourse(false);
@@ -178,6 +182,7 @@ function TeacherManagePage() {
     );
     //將是否發布到前台的資料 post 給後端
   };
+  console.log(selectedCourseInfos);
   return (
     <TeacherManageWrapper>
       <PageTitle>後台管理</PageTitle>
@@ -223,6 +228,8 @@ function TeacherManagePage() {
               handleCourseBtnClick={handleCourseBtnClick}
               editCourseContent={editCourseContent}
               setEditCourseContent={setEditCourseContent}
+              setCourseInfos={setCourseInfos}
+              setSelectedCourseInfos={setSelectedCourseInfos}
             />
           )}
         </FormContainer>

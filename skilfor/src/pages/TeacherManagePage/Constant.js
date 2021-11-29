@@ -37,13 +37,19 @@ export const COURSE_LIST = [
     audit: "fail",
     published: false,
   },
-  {
-    id: "course_2229",
-    category: "烹飪",
-    courseName: "教你煮好吃火鍋",
-    courseIntro: "火鍋好好吃",
-    price: 4000,
-    audit: false,
-    published: false,
-  },
+];
+
+export const CATEGORY_LIST = [
+  "音樂",
+  "語言",
+  "攝影",
+  "藝術",
+  "設計",
+  "人文",
+  "行銷",
+  "程式",
+  "投資理財",
+  "職場技能",
+  "生活品味",
+  "其他",
 ];
