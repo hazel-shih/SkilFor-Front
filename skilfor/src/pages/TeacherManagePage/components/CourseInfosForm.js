@@ -9,31 +9,31 @@ const ColumnContainer = styled.div`
   flex-direction: column;
 `;
 
-const FormItemContainer = styled(ColumnContainer)`
+export const FormItemContainer = styled(ColumnContainer)`
   border-bottom: 1px solid
     ${(props) => (props.show ? props.theme.colors.grey_light : "transparent")};
   margin-bottom: 20px;
 `;
 
-const ItemTop = styled(RowContainer)``;
+export const ItemTop = styled(RowContainer)``;
 
-const ItemBottom = styled(ColumnContainer)`
+export const ItemBottom = styled(ColumnContainer)`
   padding: 0 15px;
   margin-bottom: 10px;
 `;
 
-const ItemName = styled.p`
+export const ItemName = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
   margin-bottom: 10px;
 `;
 
-const ItemValue = styled(ItemName)`
+export const ItemValue = styled(ItemName)`
   margin-bottom: 0px;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
 
-const EditInput = styled.input`
+export const EditInput = styled.input`
   height: 30px;
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
@@ -50,26 +50,26 @@ const EditTextArea = styled.textarea`
 function CourseInfosForm({
   isEditing,
   courseInfos,
-  editContent,
-  setEditContent,
+  editCourseContent,
+  setEditCourseContent,
 }) {
   const handleInputChange = (e) => {
     const { id: inputName, value } = e.target;
     if (inputName === "courseName") {
-      setEditContent({
-        ...editContent,
+      setEditCourseContent({
+        ...editCourseContent,
         courseName: value,
       });
     }
     if (inputName === "courseIntro") {
-      setEditContent({
-        ...editContent,
+      setEditCourseContent({
+        ...editCourseContent,
         courseIntro: value,
       });
     }
     if (inputName === "price") {
-      setEditContent({
-        ...editContent,
+      setEditCourseContent({
+        ...editCourseContent,
         price: value,
       });
     }
