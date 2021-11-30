@@ -150,7 +150,7 @@ const ErrorMessage = styled.span`
 `;
 
 function RegisterPage() {
-  const { setUser } = useContext(AuthContext);
+  const { setUser, setIsLoading } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -161,32 +161,38 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
+    setIsLoading(true);
     setErrorMessage("");
     e.preventDefault();
 
     if (username === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請輸入使用者名稱");
+      return setErrorMessage("請輸入使用者名稱");
     } else if (identity === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請選擇註冊身分");
+      return setErrorMessage("請選擇註冊身分");
     } else if (email === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請輸入Email");
+      return setErrorMessage("請輸入Email");
     } else if (contactEmail === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請輸入聯絡用Email");
+      return setErrorMessage("請輸入聯絡用Email");
     } else if (password === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請輸入密碼");
+      return setErrorMessage("請輸入密碼");
     } else if (checkPassword === "") {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("請再次輸入密碼");
+      return setErrorMessage("請再次輸入密碼");
     } else if (password !== checkPassword) {
+      setIsLoading(false);
       scrollTop();
-      setErrorMessage("密碼不相同");
-    } else {
-      navigate("/");
+      return setErrorMessage("密碼不相同");
     }
 
     register(
@@ -197,15 +203,25 @@ function RegisterPage() {
       password,
       checkPassword
     ).then((data) => {
+      if (!data) {
+        setIsLoading(false);
+        scrollTop();
+        return setErrorMessage("伺服器維修中");
+      }
       if (data.success === false) {
-        return setErrorMessage(data.ErrMessage);
+        setIsLoading(false);
+        scrollTop();
+        return setErrorMessage(data.errMessage);
       }
       setAuthToken(data.token);
       getMyUserData().then((response) => {
         if (response.success === false) {
-          return setErrorMessage(response.ErrMessage);
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage(response.errMessage);
         }
         setUser(response.user);
+        setIsLoading(false);
         navigate("/");
       });
     });
@@ -284,7 +300,7 @@ function RegisterPage() {
             </ItemLabel>
           </FormItemContainer>
           <FormItemContainer>
-            <ItemName>Email</ItemName>
+            <ItemName>登入用 Email</ItemName>
             <ItemInput
               value={email}
               type="email"

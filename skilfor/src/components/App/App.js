@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import Nav from "../Nav";
 import Footer from "../Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -13,26 +14,46 @@ import RegisterPage from "../../pages/RegisterPage";
 import TeacherCalendarPage from "../../pages/TeacherCalendarPage";
 import FilterPage from "../../pages/FilterPage";
 
+const Loading = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-align: center;
+`;
+
 function App() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     const token = getAuthToken();
     if (!token) {
+      setIsLoading(false);
       return;
     }
     getMyUserData().then((response) => {
+      setIsLoading(false);
       if (response.success === true) {
         setUser(response.user);
       }
     });
-  });
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
       <Router>
         <>
-          <Nav />
+          {!isLoading && <Nav />}
+          {isLoading && <Loading>載入中...</Loading>}
           <Routes>
             <Route exact path="/login" element={<LoginPage />}></Route>
             <Route exact path="/register" element={<RegisterPage />}></Route>
