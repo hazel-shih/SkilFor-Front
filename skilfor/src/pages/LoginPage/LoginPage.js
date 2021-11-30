@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login, getMyUserData } from "../../WebAPI";
+import { setAuthToken } from "../../utils";
+import { AuthContext } from "../../contexts";
 
 const Wrapper = styled.div`
   background: linear-gradient(
@@ -157,10 +160,12 @@ const ErrorMessage = styled.span`
 `;
 
 function LoginPage() {
+  const { setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [identity, setIdentity] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     setErrorMessage("");
@@ -173,6 +178,21 @@ function LoginPage() {
     } else if (identity === "") {
       setErrorMessage("請選擇身分");
     }
+
+    login(identity, email, password).then((data) => {
+      if (data.success === false) {
+        return setErrorMessage(data.errMessage);
+      }
+      setAuthToken(data.token);
+      getMyUserData().then((response) => {
+        if (response.success === false) {
+          setAuthToken("");
+          return setErrorMessage(response.errMessage);
+        }
+        setUser(response.user);
+        navigate("/");
+      });
+    });
   };
 
   const handleEmailChange = (e) => {

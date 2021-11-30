@@ -1,7 +1,11 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { register } from "../../WebAPI";
+import { setAuthToken } from "../../utils";
+import { getMyUserData } from "../../WebAPI";
+import { AuthContext } from "../../contexts";
 
 const Wrapper = styled.div`
   background: linear-gradient(
@@ -146,6 +150,7 @@ const ErrorMessage = styled.span`
 `;
 
 function RegisterPage() {
+  const { setUser } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -183,6 +188,27 @@ function RegisterPage() {
     } else {
       navigate("/");
     }
+
+    register(
+      username,
+      identity,
+      email,
+      contactEmail,
+      password,
+      checkPassword
+    ).then((data) => {
+      if (data.success === false) {
+        return setErrorMessage(data.ErrMessage);
+      }
+      setAuthToken(data.token);
+      getMyUserData().then((response) => {
+        if (response.success === false) {
+          return setErrorMessage(response.ErrMessage);
+        }
+        setUser(response.user);
+        navigate("/");
+      });
+    });
   };
 
   const scrollTop = () => {
