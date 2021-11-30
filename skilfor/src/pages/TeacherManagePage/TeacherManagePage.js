@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Avatar from "../../components/Avatar";
 import teacherPic from "../../img/teacher.jpeg";
 import PageTitle from "../../components/PageTitle";
-import { TEACHER_INFOS, COURSE_LIST } from "./Constant";
+import { COURSE_LIST } from "./Constant";
 import { sleep } from "../../utils";
 import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
@@ -87,29 +87,11 @@ export const SubmitButton = styled(EditButton)`
 function TeacherManagePage() {
   //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
-  //存取老師個人資訊
-  const [teacherInfos, setTeacherInfos] = useState(null);
-  //個人資訊是否為編輯狀態
-  const [isEditingSelf, setIsEditingSelf] = useState(false);
-  //編輯個人資料內容
-  const [editSelfContent, setEditSelfContent] = useState(null);
+
   //當個人資訊與課程資訊按鈕被按時
   const handlePageBtnClick = (e) => {
     const { id: currentPage } = e.target;
     setPage(currentPage);
-  };
-  //設定預設課程個人編輯 value
-  useEffect(() => {
-    setEditSelfContent(teacherInfos);
-  }, [teacherInfos]);
-  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
-  //編輯個人資訊按鈕被按時
-  const handleSelfEditClick = () => setIsEditingSelf(!isEditingSelf);
-  //完成編輯個人資訊按鈕被按時
-  const handleSelfSubmitClick = () => {
-    setIsEditingSelf(false);
-    //將更改後的課程資訊 post 給後端
-    setTeacherInfos(editSelfContent);
   };
 
   //存取老師擁有的課程資料
@@ -122,11 +104,11 @@ function TeacherManagePage() {
 
   //編輯課程內容
   const [editCourseContent, setEditCourseContent] = useState(null);
+
   //拿取 teacher infos 和 course infos 資料
   useEffect(() => {
     async function fetchData() {
       await sleep(500);
-      setTeacherInfos(TEACHER_INFOS);
       setCourseInfos(COURSE_LIST);
     }
     fetchData();
@@ -150,7 +132,7 @@ function TeacherManagePage() {
   };
 
   //當編輯課程資訊按鈕被按時
-
+  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
     setIsEditingCourse(false);
@@ -207,16 +189,7 @@ function TeacherManagePage() {
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
-          {page === "self" && teacherInfos && (
-            <SelfPage
-              teacherInfos={teacherInfos}
-              handleSelfEditClick={handleSelfEditClick}
-              handleSelfSubmitClick={handleSelfSubmitClick}
-              isEditingSelf={isEditingSelf}
-              editSelfContent={editSelfContent}
-              setEditSelfContent={setEditSelfContent}
-            />
-          )}
+          {page === "self" && <SelfPage />}
           {page === "course" && selectedCourseInfos && (
             <CoursePage
               selectedCourseInfos={selectedCourseInfos}
