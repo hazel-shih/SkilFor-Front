@@ -3,6 +3,7 @@ export const TEACHER_INFOS = {
   name: "Kelly",
   avatar: "https://Kelly.png",
   email: "kelly123@gmail.com",
+  contactEmail: "Howhow@gmail.com",
   categories: ["程式", "音樂", "數學"],
 };
 export const COURSE_LIST = [
@@ -13,7 +14,7 @@ export const COURSE_LIST = [
     courseIntro:
       "經過幾年的發展，Spring Boot 的功能已經非常成熟，並且在近幾年軟體業盛行微服務（microservice）的設計模式下，也帶動越來越多企業選擇使用 Spring Boot 作為主流的開發工具。Spring Boot 之所以能夠成為目前業界最流行的開發工具，原因就在於 Spring Boot 憑借著 簡化 Spring 開發 以及 快速整合主流框架 的優點，讓工程師們可以更專注的在解決問題上，進而提升了前期開發和後續部署的效率。",
     price: 1000,
-    isPass: "success",
+    audit: "success",
     published: true,
   },
   {
@@ -23,7 +24,7 @@ export const COURSE_LIST = [
     courseIntro:
       "吉他（英語：guitar，港澳稱結他），是一種彈撥樂器。通常有六條弦，形狀與提琴相似。吉他在流行音樂、搖滾音樂、藍調、民歌、佛朗明哥中，常被視為主要樂器；在古典音樂的領域裡，吉他常以獨奏或二重奏的型式演出；在室內樂和管弦樂中，吉他亦扮演著相當程度的陪襯角色。",
     price: 2000,
-    isPass: "pending",
+    audit: "pending",
     published: false,
   },
   {
@@ -33,7 +34,22 @@ export const COURSE_LIST = [
     courseIntro:
       "微積分學也稱微分積分學，主要包括微分學和積分學兩個部分，是研究極限、微分、積分和無窮級數等的一個數學分支。更本質的講，微積分學是一門研究連續變化的學問 微積分學在商學、科學和工程學領域有廣泛的應用，並成為了現代大學教育的重要組成部分，用來解決那些僅依靠代數學和幾何學不能有效解決的問題。",
     price: 1000,
-    isPass: "fail",
+    audit: "fail",
     published: false,
   },
+];
+
+export const CATEGORY_LIST = [
+  "音樂",
+  "語言",
+  "攝影",
+  "藝術",
+  "設計",
+  "人文",
+  "行銷",
+  "程式",
+  "投資理財",
+  "職場技能",
+  "生活品味",
+  "其他",
 ];
