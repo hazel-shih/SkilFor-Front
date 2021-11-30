@@ -318,7 +318,6 @@ function CoursePage() {
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
     if (confirmDelete) {
-      console.log("delete");
       setCourseInfos(
         courseInfos.filter((course) => course.id !== selectedCourseInfos.id)
       );
@@ -326,8 +325,6 @@ function CoursePage() {
       return;
     }
   };
-  console.log("course:", courseInfos);
-  console.log("edit", editCourseContent);
   return (
     <>
       <SectionText>新增課程</SectionText>
