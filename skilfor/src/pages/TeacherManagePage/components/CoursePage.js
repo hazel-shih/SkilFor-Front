@@ -109,6 +109,10 @@ export const SubmitButton = styled(EditButton)`
   margin-left: 15px;
 `;
 
+const DeleteButton = styled(EditButton)`
+  margin-right: 15px;
+`;
+
 export const SectionText = styled.h3`
   font-size: 1.3rem;
   color: ${(props) => props.theme.colors.green_dark};
@@ -234,7 +238,11 @@ function CoursePage() {
   useEffect(() => {
     async function fetchData() {
       await sleep(100);
-      setCourseInfos(COURSE_LIST);
+      if (COURSE_LIST) {
+        setCourseInfos(COURSE_LIST);
+      } else {
+        setCourseInfos([]);
+      }
     }
     fetchData();
   }, []);
@@ -243,6 +251,10 @@ function CoursePage() {
     if (courseInfos && courseInfos.length !== 0) {
       setSelectedCourseInfos(courseInfos[0]);
       setEditCourseContent(courseInfos[0]);
+    }
+    if (courseInfos && courseInfos.length === 0) {
+      setEditCourseContent(null);
+      setSelectedCourseInfos(null);
     }
   }, [courseInfos]);
   //當課程資訊下的按鈕被點選時
@@ -300,6 +312,22 @@ function CoursePage() {
     //將是否發布到前台的資料 patch 給後端
     console.log("PATCH", selectedCourseInfos.id, publishedValue === "true");
   };
+  //當刪除課程被按時
+  const handleCourseDeleteClick = (e) => {
+    let confirmDelete = window.confirm(
+      "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
+    );
+    if (confirmDelete) {
+      console.log("delete");
+      setCourseInfos(
+        courseInfos.filter((course) => course.id !== selectedCourseInfos.id)
+      );
+    } else {
+      return;
+    }
+  };
+  console.log("course:", courseInfos);
+  console.log("edit", editCourseContent);
   return (
     <>
       <SectionText>新增課程</SectionText>
@@ -368,6 +396,11 @@ function CoursePage() {
             <SectionText>課程資訊</SectionText>
             {selectedCourseInfos && (
               <RowContainer>
+                {!isEditingCourse && (
+                  <DeleteButton onClick={handleCourseDeleteClick}>
+                    刪除課程
+                  </DeleteButton>
+                )}
                 {selectedCourseInfos.audit !== "pending" && (
                   <EditButton onClick={handleCourseEditClick}>
                     {isEditingCourse ? "取消編輯" : "編輯課程資訊"}
