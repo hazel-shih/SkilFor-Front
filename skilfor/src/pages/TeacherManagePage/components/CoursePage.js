@@ -167,7 +167,12 @@ const ChooseCategoryButton = styled.button`
     opacity: 0.85;
   }
 `;
-const SelectCategory = ({ courseInfos, setCourseInfos }) => {
+const SelectCategory = ({
+  courseInfos,
+  setCourseInfos,
+  setSelectedCourseInfos,
+  setEditCourseContent,
+}) => {
   const [selectOptions, setSelectOptions] = useState(null);
   const makeSelectOptions = useCallback((categoryArr, courseArr) => {
     if (!categoryArr || !courseArr) return;
@@ -178,7 +183,6 @@ const SelectCategory = ({ courseInfos, setCourseInfos }) => {
     let result = categoryArr.filter((category) => !temp.includes(category));
     return result;
   }, []);
-
   useEffect(() => {
     async function fetchData() {
       await sleep(100);
@@ -190,7 +194,6 @@ const SelectCategory = ({ courseInfos, setCourseInfos }) => {
   const handleSelectCategorySubmit = (e) => {
     if (!selectedCategory.current.value) return;
     let newCourseInfos = {
-      id: nanoid(),
       category: selectedCategory.current.value,
       courseName: "",
       courseIntro: "",
@@ -199,6 +202,8 @@ const SelectCategory = ({ courseInfos, setCourseInfos }) => {
       published: false,
     };
     setCourseInfos([newCourseInfos, ...courseInfos]);
+    setSelectedCourseInfos(newCourseInfos);
+    setEditCourseContent(newCourseInfos);
   };
   return (
     <SelectContainer>
@@ -238,25 +243,16 @@ function CoursePage() {
   useEffect(() => {
     async function fetchData() {
       await sleep(100);
-      if (COURSE_LIST) {
+      if (COURSE_LIST.length > 0) {
         setCourseInfos(COURSE_LIST);
+        setSelectedCourseInfos(COURSE_LIST[0]);
+        setEditCourseContent(COURSE_LIST[0]);
       } else {
         setCourseInfos([]);
       }
     }
     fetchData();
   }, []);
-  //設定最初被選定的課程按鈕
-  useEffect(() => {
-    if (courseInfos && courseInfos.length !== 0) {
-      setSelectedCourseInfos(courseInfos[0]);
-      setEditCourseContent(courseInfos[0]);
-    }
-    if (courseInfos && courseInfos.length === 0) {
-      setEditCourseContent(null);
-      setSelectedCourseInfos(null);
-    }
-  }, [courseInfos]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
     setIsEditingCourse(false);
@@ -283,15 +279,16 @@ function CoursePage() {
     }
     setCourseInfos(
       courseInfos.map((course) => {
-        if (course.id !== editCourseContent.id) {
+        if (course.category !== editCourseContent.category) {
           return course;
         } else {
           return updatedCourseInfos;
         }
       })
     );
+    setSelectedCourseInfos(editCourseContent);
     //將更改後的課程資訊 put 給後端
-    console.log("PUT", updatedCourseInfos.id, updatedCourseInfos);
+    console.log("PUT", updatedCourseInfos);
   };
   //當是否發布到前台被按時
   const handleRadioClick = (e) => {
@@ -310,20 +307,26 @@ function CoursePage() {
       })
     );
     //將是否發布到前台的資料 patch 給後端
-    console.log("PATCH", selectedCourseInfos.id, publishedValue === "true");
+    console.log("PATCH", publishedValue === "true");
   };
   //當刪除課程被按時
   const handleCourseDeleteClick = (e) => {
     let confirmDelete = window.confirm(
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
-    if (confirmDelete) {
-      setCourseInfos(
-        courseInfos.filter((course) => course.id !== selectedCourseInfos.id)
-      );
-    } else {
+    if (!confirmDelete) return;
+    let newCourseInfos = courseInfos.filter(
+      (course) => course.category !== selectedCourseInfos.category
+    );
+    if (newCourseInfos.length === 0) {
+      setCourseInfos([]);
+      setEditCourseContent(null);
+      setSelectedCourseInfos(null);
       return;
     }
+    setCourseInfos(newCourseInfos);
+    setSelectedCourseInfos(newCourseInfos[0]);
+    setEditCourseContent(newCourseInfos[0]);
   };
   return (
     <>
@@ -333,6 +336,7 @@ function CoursePage() {
         setCourseInfos={setCourseInfos}
         courseInfos={courseInfos}
         setSelectedCourseInfos={setSelectedCourseInfos}
+        setEditCourseContent={setEditCourseContent}
       />
       <EditContainer>
         <SectionText>目前擁有的課程</SectionText>
@@ -341,7 +345,7 @@ function CoursePage() {
         <CourseBtnsContainer>
           {courseInfos.map((course) => (
             <CourseButton
-              key={course.id}
+              key={nanoid()}
               id={course.category}
               isClick={selectedCourseInfos.category === course.category}
               onClick={handleCourseBtnClick}
