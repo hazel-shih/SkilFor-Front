@@ -146,14 +146,11 @@ function FilterPage() {
   }, [results, dropdownContent]);
 
   // 點選某 category 後顯示資料
-  const [currentCategory, setCurrentCategory] = useState(null);
-  const [currentCategoryInput, setCurrentCategoryInput] =
-    useState("請選擇領域");
+  const [currentCategory, setCurrentCategory] = useState("請選擇領域");
 
   const handleCategoryClick = (e) => {
-    const { id: selectedCategory, value } = e.target;
+    const { id: selectedCategory } = e.target;
     setCurrentCategory(selectedCategory);
-    setCurrentCategoryInput(value);
     setDropdownMenu(false);
   };
 
@@ -162,7 +159,7 @@ function FilterPage() {
       <Title>搜尋老師</Title>
       <DropdownLabel ref={dropdownLabel}>
         <DropdownBtn onClick={handleDropdownMenuToggle}>
-          {currentCategoryInput}
+          {currentCategory}
         </DropdownBtn>
         <DropdownInput type="checkbox" id="select" />
         {dropdownMenu && (
@@ -172,9 +169,8 @@ function FilterPage() {
                 onClick={handleCategoryClick}
                 key={categories.id}
                 id={categories.category}
-                value={categories.chineseName}
               >
-                {categories.chineseName}
+                {categories.category}
               </DropdownContent>
             ))}
           </DropdownMenu>

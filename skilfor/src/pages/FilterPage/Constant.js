@@ -3,25 +3,22 @@ import teacherPic from "../../img/teacher.jpeg";
 export const CATEGORY_LIST = [
   {
     id: "1",
-    category: "coding",
-    chineseName: "程式",
+    category: "程式",
   },
   {
     id: "2",
-    category: "music",
-    chineseName: "音樂",
+    category: "音樂",
   },
   {
     id: "3",
-    category: "math",
-    chineseName: "數學",
+    category: "數學",
   },
 ];
 
 export const COURSE_LIST = [
   {
     id: "1",
-    category: "coding",
+    category: "程式",
     teacherName: "Kelly",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 Ruby 吧！",
@@ -31,7 +28,7 @@ export const COURSE_LIST = [
   },
   {
     id: "2",
-    category: "coding",
+    category: "程式",
     teacherName: "Jack",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 React 吧！",
@@ -41,7 +38,7 @@ export const COURSE_LIST = [
   },
   {
     id: "3",
-    category: "coding",
+    category: "程式",
     teacherName: "Nick",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 JS 吧！",
@@ -51,7 +48,7 @@ export const COURSE_LIST = [
   },
   {
     id: "4",
-    category: "music",
+    category: "音樂",
     teacherName: "Jessica",
     teacherAvatar: teacherPic,
     courseName: "一起來學都~瑞~咪~發~搜~",
@@ -61,7 +58,7 @@ export const COURSE_LIST = [
   },
   {
     id: "5",
-    category: "music",
+    category: "音樂",
     teacherName: "May",
     teacherAvatar: teacherPic,
     courseName: "一起來飆高音！",
