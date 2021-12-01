@@ -79,6 +79,20 @@ const GoToCalendar = styled(Link)`
     opacity: 0.8;
   }
 `;
+const formDataVerify = (formData) => {
+  let errorArr = [];
+  for (let question in formData) {
+    if (
+      (question === "courseName" ||
+        question === "courseIntro" ||
+        question === "price") &&
+      formData[question] === ""
+    ) {
+      errorArr.push(question);
+    }
+  }
+  return errorArr;
+};
 
 function CoursePage() {
   const { teacherId } = useParams();
@@ -86,6 +100,8 @@ function CoursePage() {
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
   const [selectedCourseInfos, setSelectedCourseInfos] = useState(null);
+  //錯誤狀態
+  const [error, setError] = useState([]);
   //處理編輯狀態
   const {
     isEditing,
@@ -93,7 +109,7 @@ function CoursePage() {
     editContent,
     setEditContent,
     handleEditClick,
-  } = useEdit();
+  } = useEdit(setError, selectedCourseInfos);
   //初始化 state
   const initState = useCallback(
     (dataArr) => {
@@ -127,7 +143,11 @@ function CoursePage() {
   };
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
-    setIsEditing(false);
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length > 0) {
+      setError(errorArr);
+      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    }
     let updatedCourseInfos;
     if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
@@ -146,6 +166,7 @@ function CoursePage() {
         }
       })
     );
+    setIsEditing(false);
     setSelectedCourseInfos(updatedCourseInfos);
     //將更改後的課程資訊 put 給後端
     console.log("PUT", updatedCourseInfos);
@@ -180,9 +201,10 @@ function CoursePage() {
     );
     if (newCourseInfos.length === 0) {
       initState([]);
-      return;
+      return setIsEditing(false);
     }
     initState(newCourseInfos);
+    setIsEditing(false);
   };
   return (
     <>
@@ -252,7 +274,7 @@ function CoursePage() {
           <EditContainer>
             <SectionText>課程資訊</SectionText>
             <RowContainer>
-              {!isEditing && (
+              {(isEditing || selectedCourseInfos.audit === "pending") && (
                 <DeleteButton onClick={handleCourseDeleteClick}>
                   刪除課程
                 </DeleteButton>
@@ -281,6 +303,8 @@ function CoursePage() {
             courseInfos={selectedCourseInfos}
             editContent={editContent}
             setEditContent={setEditContent}
+            error={error}
+            setError={setError}
           />
           {selectedCourseInfos.audit === "success" && (
             <>
