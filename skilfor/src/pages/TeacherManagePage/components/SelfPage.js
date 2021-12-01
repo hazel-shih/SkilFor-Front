@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { TEACHER_INFOS } from "../Constant";
 import { sleep } from "../../../utils";
-
 import {
   EditContainer,
   SectionText,
   RowContainer,
   EditButton,
   SubmitButton,
-} from "./CoursePage";
+} from "./PageStyle";
 import {
   FormItemContainer,
   ItemTop,

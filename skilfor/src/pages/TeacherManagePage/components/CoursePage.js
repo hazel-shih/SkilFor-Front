@@ -1,16 +1,22 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import CourseInfosForm from "./CourseInfosForm";
 import happy from "../../../img/happy.png";
 import sad from "../../../img/sad.png";
 import { nanoid } from "nanoid";
-import { CATEGORY_LIST, COURSE_LIST } from "../Constant";
+import { COURSE_LIST } from "../Constant";
 import { sleep } from "../../../utils";
+import CategoryDropDownMenu from "./CategoryDropDownMenu";
+import {
+  EditContainer,
+  SectionText,
+  RowContainer,
+  EditButton,
+  SubmitButton,
+} from "./PageStyle";
+import PublishedRadiosContainer from "./PublishedRadiosContainer";
 
-export const RowContainer = styled.div`
-  display: flex;
-`;
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,84 +47,9 @@ const PassText = styled.p`
       : props.theme.colors.warn};
   font-size: 1.1rem;
 `;
-const RadiosContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-`;
-const RadioContainer = styled(RowContainer)`
-  align-items: center;
-  margin-bottom: 5px;
-`;
-const RadioInput = styled.input`
-  width: 20px;
-  height: 15px;
-`;
-
-const RadioLabel = styled.label`
-  color: ${(props) => props.theme.colors.grey_dark};
-  margin-left: 5px;
-`;
-const PublishedContainer = ({ handleRadioClick, published }) => {
-  return (
-    <RadiosContainer>
-      <RadioContainer>
-        <RadioInput
-          onClick={handleRadioClick}
-          name="published"
-          type="radio"
-          id="true"
-          defaultChecked={published}
-        />
-        <RadioLabel htmlFor="true">一切都 OK！發布至前台</RadioLabel>
-      </RadioContainer>
-      <RadioContainer>
-        <RadioInput
-          defaultChecked={!published}
-          onClick={handleRadioClick}
-          name="published"
-          type="radio"
-          id="false"
-        />
-        <RadioLabel htmlFor="false">還有資訊需要編輯，暫時不發布</RadioLabel>
-      </RadioContainer>
-    </RadiosContainer>
-  );
-};
-
-export const EditContainer = styled(RowContainer)`
-  justify-content: space-between;
-  align-items: baseline;
-  margin-top: 10px;
-`;
-
-export const EditButton = styled.button`
-  background: ${(props) => props.theme.colors.green_dark};
-  border: none;
-  color: white;
-  font-size: 1rem;
-  height: fit-content;
-  padding: 7px 14px;
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
-  }
-`;
-
-export const SubmitButton = styled(EditButton)`
-  margin-left: 15px;
-`;
-
 const DeleteButton = styled(EditButton)`
   margin-right: 15px;
 `;
-
-export const SectionText = styled.h3`
-  font-size: 1.3rem;
-  color: ${(props) => props.theme.colors.green_dark};
-  margin: 10px 0 20px 0;
-`;
-
 const CourseBtnsContainer = styled(RowContainer)`
   margin-bottom: 25px;
   align-items: center;
@@ -138,7 +69,6 @@ const CourseButton = styled.button`
     props.isClick &&
     `background: ${props.theme.colors.green_dark}; color:white; border:2px solid ${props.theme.colors.green_dark}`}
 `;
-
 const GoToCalendar = styled(Link)`
   color: ${(props) => props.theme.colors.grey_dark};
   cursor: pointer;
@@ -148,86 +78,6 @@ const GoToCalendar = styled(Link)`
     opacity: 0.8;
   }
 `;
-const SelectContainer = styled(RowContainer)``;
-const SelectBar = styled.select`
-  padding: 5px;
-  font-size: 1rem;
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  color: ${(props) => props.theme.colors.grey_dark};
-`;
-const ChooseCategoryButton = styled.button`
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  padding: 8px;
-  font-size: 0.8rem;
-  border-left: none;
-  cursor: pointer;
-  background: ${(props) => props.theme.colors.grey_dark};
-  color: white;
-  :hover {
-    opacity: 0.85;
-  }
-`;
-const SelectCategory = ({
-  courseInfos,
-  setCourseInfos,
-  setSelectedCourseInfos,
-  setEditCourseContent,
-}) => {
-  const [selectOptions, setSelectOptions] = useState(null);
-  const makeSelectOptions = useCallback((categoryArr, courseArr) => {
-    if (!categoryArr || !courseArr) return;
-    let temp = [];
-    for (let i = 0; i < courseArr.length; i++) {
-      temp.push(courseArr[i].category);
-    }
-    let result = categoryArr.filter((category) => !temp.includes(category));
-    return result;
-  }, []);
-  useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      setSelectOptions(CATEGORY_LIST);
-    }
-    fetchData();
-  }, []);
-  const selectedCategory = useRef(null);
-  const handleSelectCategorySubmit = (e) => {
-    if (!selectedCategory.current.value) return;
-    let newCourseInfos = {
-      category: selectedCategory.current.value,
-      courseName: "",
-      courseIntro: "",
-      price: "",
-      audit: false,
-      published: false,
-    };
-    setCourseInfos([newCourseInfos, ...courseInfos]);
-    setSelectedCourseInfos(newCourseInfos);
-    setEditCourseContent(newCourseInfos);
-  };
-  return (
-    <SelectContainer>
-      <RowContainer>
-        <SelectBar id="addCategory" ref={selectedCategory}>
-          <option value="">請選擇一個課程領域</option>
-          {selectOptions &&
-            courseInfos &&
-            makeSelectOptions(selectOptions, courseInfos).map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-          {courseInfos &&
-            courseInfos.length === 0 &&
-            selectOptions.map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-        </SelectBar>
-        <ChooseCategoryButton onClick={handleSelectCategorySubmit}>
-          新增
-        </ChooseCategoryButton>
-      </RowContainer>
-    </SelectContainer>
-  );
-};
 
 function CoursePage() {
   const { teacherId } = useParams();
@@ -286,7 +136,7 @@ function CoursePage() {
         }
       })
     );
-    setSelectedCourseInfos(editCourseContent);
+    setSelectedCourseInfos(updatedCourseInfos);
     //將更改後的課程資訊 put 給後端
     console.log("PUT", updatedCourseInfos);
   };
@@ -331,7 +181,7 @@ function CoursePage() {
   return (
     <>
       <SectionText>新增課程</SectionText>
-      <SelectCategory
+      <CategoryDropDownMenu
         show={true}
         setCourseInfos={setCourseInfos}
         courseInfos={courseInfos}
@@ -431,7 +281,7 @@ function CoursePage() {
           {selectedCourseInfos.audit === "success" && (
             <>
               <SectionText>是否發布課程頁面</SectionText>
-              <PublishedContainer
+              <PublishedRadiosContainer
                 handleRadioClick={handleRadioClick}
                 published={selectedCourseInfos.published}
               />
