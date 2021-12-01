@@ -66,3 +66,39 @@ export const register = async (
     return console.log(error.message);
   }
 };
+
+export const getTeacherInfos = async (teacherId) => {
+  let url = `${BASE_URL}/teacher/${teacherId}/info`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    return error.message;
+  }
+};
+
+export const getTeacherCourseInfos = async (teacherId) => {
+  let url = `${BASE_URL}/teacher/${teacherId}/course/info`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    return error.message;
+  }
+};
