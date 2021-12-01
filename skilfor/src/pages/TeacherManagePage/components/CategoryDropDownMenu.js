@@ -6,7 +6,9 @@ import { sleep } from "../../../utils";
 const RowContainer = styled.div`
   display: flex;
 `;
-const SelectContainer = styled(RowContainer)``;
+const SelectContainer = styled(RowContainer)`
+  margin-bottom: 20px;
+`;
 const SelectBar = styled.select`
   padding: 5px;
   font-size: 1rem;

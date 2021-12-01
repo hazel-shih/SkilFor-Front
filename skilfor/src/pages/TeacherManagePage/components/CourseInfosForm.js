@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { MEDIA_QUERY_SM } from "../../../components/constants/breakpoints";
 
 const RowContainer = styled.div`
   display: flex;
@@ -31,14 +32,19 @@ export const EditInput = styled.input`
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.grey_dark};
   ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
 `;
 const EditTextArea = styled.textarea`
-  height: 100px;
+  height: 150px;
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.grey_dark};
   ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
+  ${MEDIA_QUERY_SM} {
+    height: 200px;
+  }
 `;
 function CourseInfosForm({
   isEditing,

@@ -5,35 +5,40 @@ import teacherPic from "../../img/teacher.jpeg";
 import PageTitle from "../../components/PageTitle";
 import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
+import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 
 //styled component
 const TeacherManageWrapper = styled.section`
-  padding: 186px 100px 232px 100px;
+  padding: 156px 80px 232px 80px;
+  ${MEDIA_QUERY_MD} {
+    padding: 156px 30px 182px 30px;
+  }
 `;
-
 export const RowContainer = styled.div`
   display: flex;
 `;
-
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 const TeacherManageContainer = styled(RowContainer)`
   margin-bottom: 30px;
+  ${MEDIA_QUERY_MD} {
+    flex-direction: column;
+  }
 `;
-
 const UserInfoContainer = styled(ColumnContainer)`
   background: ${(props) => props.theme.colors.grey_bg};
   min-width: 200px;
   margin-right: 50px;
+  ${MEDIA_QUERY_MD} {
+    margin-right: 0px;
+    margin-bottom: 40px;
+  }
 `;
-
 const PageBtnsContainer = styled(ColumnContainer)`
   padding: 20px 25px;
 `;
-
 const PageBtn = styled.button`
   color: ${(props) => (props.isClick ? "white" : props.theme.colors.grey_dark)};
   background: ${(props) => props.isClick && props.theme.colors.orange};
@@ -44,7 +49,6 @@ const PageBtn = styled.button`
   border-radius: 10px;
   cursor: pointer;
 `;
-
 const FormContainer = styled(ColumnContainer)`
   width: 100%;
   min-height: 500px;
@@ -52,19 +56,16 @@ const FormContainer = styled(ColumnContainer)`
   border-radius: 10px;
   padding: 20px;
 `;
-
 export const SectionText = styled.h3`
   font-size: 1.3rem;
   color: ${(props) => props.theme.colors.green_dark};
   margin: 10px 0 20px 0;
 `;
-
 export const EditContainer = styled(RowContainer)`
   justify-content: space-between;
   align-items: baseline;
   margin-top: 10px;
 `;
-
 export const EditButton = styled.button`
   background: ${(props) => props.theme.colors.green_dark};
   border: none;
@@ -77,7 +78,6 @@ export const EditButton = styled.button`
     opacity: 0.8;
   }
 `;
-
 export const SubmitButton = styled(EditButton)`
   margin-left: 15px;
 `;

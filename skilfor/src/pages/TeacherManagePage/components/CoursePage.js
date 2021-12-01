@@ -52,8 +52,9 @@ const DeleteButton = styled(EditButton)`
   margin-right: 15px;
 `;
 const CourseBtnsContainer = styled(RowContainer)`
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   align-items: center;
+  flex-wrap: wrap;
 `;
 const CourseButton = styled.button`
   padding: 6px 15px;
@@ -63,6 +64,7 @@ const CourseButton = styled.button`
   border: 2px solid ${(props) => props.theme.colors.grey_dark};
   background: white;
   cursor: pointer;
+  margin-bottom: 15px;
   :not(:last-child) {
     margin-right: 20px;
   }
@@ -216,9 +218,7 @@ function CoursePage() {
         setSelectedCourseInfos={setSelectedCourseInfos}
         setEditContent={setEditContent}
       />
-      <EditContainer>
-        <SectionText>目前擁有的課程</SectionText>
-      </EditContainer>
+      <SectionText>目前擁有的課程</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (
         <CourseBtnsContainer>
           {courseInfos.map((course) => (
