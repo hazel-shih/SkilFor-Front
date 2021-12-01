@@ -9,7 +9,7 @@ export default function useLogin() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [loginData, setLoginData] = useState({
-    email: "abs@gmail.com",
+    email: "",
     password: "",
     identity: "",
   });
