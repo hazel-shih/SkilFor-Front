@@ -18,15 +18,30 @@ import {
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
 
+const formDataVerify = (formData) => {
+  let errorArr = [];
+  for (let question in formData) {
+    if (
+      (question === "name" ||
+        question === "avatar" ||
+        question === "contactEmail") &&
+      formData[question] === ""
+    ) {
+      errorArr.push(question);
+    }
+  }
+  return errorArr;
+};
 function SelfPage() {
   const [teacherInfos, setTeacherInfos] = useState(null);
+  const [error, setError] = useState([]);
   const {
     isEditing,
     setIsEditing,
     editContent,
     setEditContent,
     handleEditClick,
-  } = useEdit();
+  } = useEdit(setError, teacherInfos);
   //拿取 teacher infos
   useEffect(() => {
     async function fetchData() {
@@ -41,8 +56,13 @@ function SelfPage() {
   }, [teacherInfos, setEditContent]);
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
-    setIsEditing(false);
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length > 0) {
+      setError(errorArr);
+      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    }
     setTeacherInfos(editContent);
+    setIsEditing(false);
     //將更改後的課程資訊 post 給後端
     console.log("PUT", editContent);
   };
@@ -95,6 +115,7 @@ function SelfPage() {
             <ItemValue show={!isEditing}>{teacherInfos.name}</ItemValue>
             {isEditing && (
               <EditInput
+                error={error.includes("name")}
                 defaultValue={teacherInfos.name}
                 onChange={handleSelfInputChange}
                 id="name"
@@ -112,6 +133,7 @@ function SelfPage() {
             <ItemValue show={!isEditing}>{teacherInfos.avatar}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
+                error={error.includes("avatar")}
                 defaultValue={teacherInfos.avatar}
                 onChange={handleSelfInputChange}
                 id="avatar"
@@ -129,6 +151,7 @@ function SelfPage() {
             <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
+                error={error.includes("contactEmail")}
                 defaultValue={teacherInfos.contactEmail}
                 onChange={handleSelfInputChange}
                 id="contactEmail"
