@@ -7,62 +7,69 @@ import { AuthContext } from "../../contexts";
 
 export default function useRegister() {
   const { setUser, setIsLoading } = useContext(AuthContext);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [identity, setIdentity] = useState("");
-  const [password, setPassword] = useState("");
-  const [checkPassword, setCheckPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [registerData, setRegisterData] = useState({
+    username: "",
+    identity: "",
+    email: "",
+    contactEmail: "",
+    password: "",
+    checkPassword: "",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleRegister = (e) => {
+  const handleRegisterSubmit = (e) => {
     setIsLoading(true);
     setErrorMessage("");
     e.preventDefault();
 
-    if (username === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入使用者名稱");
-    } else if (identity === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請選擇註冊身分");
-    } else if (email === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入Email");
-    } else if (contactEmail === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入聯絡用Email");
-    } else if (password === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入密碼");
-    } else if (checkPassword === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請再次輸入密碼");
-    } else if (password !== checkPassword) {
+    for (const [inputName, value] of Object.entries(registerData)) {
+      if (value.trim().length === 0) {
+        if (inputName === "username") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請輸入使用者名稱");
+        } else if (inputName === "identity") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請選擇註冊身分");
+        } else if (inputName === "email") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請輸入登入用Email");
+        } else if (inputName === "contactEmail") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請輸入聯絡用Email");
+        } else if (inputName === "password") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請輸入密碼");
+        } else if (inputName === "checkPassword") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請再次輸入密碼");
+        }
+      }
+    }
+    if (registerData.password !== registerData.checkPassword) {
       setIsLoading(false);
       scrollTop();
       return setErrorMessage("密碼不相同");
     }
 
     register(
-      username,
-      identity,
-      email,
-      contactEmail,
-      password,
-      checkPassword
+      registerData.username,
+      registerData.identity,
+      registerData.email,
+      registerData.contactEmail,
+      registerData.password,
+      registerData.checkPassword
     ).then((data) => {
       if (!data) {
         setIsLoading(false);
         scrollTop();
-        return setErrorMessage("伺服器維修中");
+        return setErrorMessage("網站更新中請稍後再登入");
       }
       if (data.success === false) {
         setIsLoading(false);
@@ -90,50 +97,19 @@ export default function useRegister() {
     });
   };
 
-  const handleUsernameChange = (e) => {
+  const handleRegisterDataChange = (e) => {
+    const { name: inputName, value } = e.target;
     setErrorMessage("");
-    setUsername(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setErrorMessage("");
-    setEmail(e.target.value);
-  };
-
-  const handleContactEmailChange = (e) => {
-    setErrorMessage("");
-    setContactEmail(e.target.value);
-  };
-
-  const handleIdentityToggle = (e) => {
-    setErrorMessage("");
-    setIdentity(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setErrorMessage("");
-    setPassword(e.target.value);
-  };
-
-  const handleCheckPasswordChange = (e) => {
-    setErrorMessage("");
-    setCheckPassword(e.target.value);
+    setRegisterData({
+      ...registerData,
+      [inputName]: value,
+    });
   };
 
   return {
-    username,
-    email,
-    contactEmail,
-    identity,
-    password,
-    checkPassword,
+    handleRegisterSubmit,
+    registerData,
+    handleRegisterDataChange,
     errorMessage,
-    handleRegister,
-    handleUsernameChange,
-    handleEmailChange,
-    handleContactEmailChange,
-    handleIdentityToggle,
-    handlePasswordChange,
-    handleCheckPasswordChange,
   };
 }
