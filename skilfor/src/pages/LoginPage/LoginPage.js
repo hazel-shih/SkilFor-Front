@@ -15,28 +15,22 @@ import {
 import useLogin from "../../components/LoginRegisterForm/useLogin";
 
 function LoginPage() {
-  const {
-    email,
-    password,
-    errorMessage,
-    handleLogin,
-    handleEmailChange,
-    handlePasswordChange,
-    handleIdentityToggle,
-  } = useLogin();
+  const { handleLoginSubmit, loginData, handleLoginDataChange, errorMessage } =
+    useLogin();
 
   return (
     <Wrapper>
       <Container>
         <Title>登入帳戶</Title>
-        <FormContainer onSubmit={handleLogin}>
+        <FormContainer onSubmit={handleLoginSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <FormItem
             itemName="Email"
             id="email"
-            value={email}
+            value={loginData.email}
             type="email"
-            handleChange={handleEmailChange}
+            name="email"
+            handleChange={handleLoginDataChange}
           />
           <FormItemContainer>
             <ItemName>登入身分</ItemName>
@@ -46,7 +40,7 @@ function LoginPage() {
               value="student"
               type="radio"
               name="identity"
-              handleClick={handleIdentityToggle}
+              handleChange={handleLoginDataChange}
             />
             <RadioFormItem
               radioItemName="老師"
@@ -54,15 +48,16 @@ function LoginPage() {
               value="teacher"
               type="radio"
               name="identity"
-              handleClick={handleIdentityToggle}
+              handleChange={handleLoginDataChange}
             />
           </FormItemContainer>
           <FormItem
             itemName="密碼"
             id="password"
-            value={password}
+            value={loginData.password}
             type="password"
-            handleChange={handlePasswordChange}
+            name="password"
+            handleChange={handleLoginDataChange}
           />
           <Btn>登入</Btn>
         </FormContainer>

@@ -69,7 +69,7 @@ const ItemRadioInput = styled(ItemInput)`
   }
 `;
 
-export function FormItem({ itemName, id, value, type, handleChange }) {
+export function FormItem({ itemName, id, value, type, name, handleChange }) {
   return (
     <>
       <FormItemContainer>
@@ -79,7 +79,13 @@ export function FormItem({ itemName, id, value, type, handleChange }) {
             <ForgetPassword to="./reset_password">忘記密碼</ForgetPassword>
           )}
         </ItemName>
-        <ItemInput id={id} value={value} type={type} onChange={handleChange} />
+        <ItemInput
+          id={id}
+          value={value}
+          type={type}
+          name={name}
+          onChange={handleChange}
+        />
       </FormItemContainer>
     </>
   );
@@ -87,20 +93,20 @@ export function FormItem({ itemName, id, value, type, handleChange }) {
 
 export function RadioFormItem({
   radioItemName,
-  value,
   id,
+  value,
   type,
   name,
-  handleClick,
+  handleChange,
 }) {
   return (
     <ItemLabel>
       <ItemRadioInput
-        value={value}
         id={id}
+        value={value}
         type={type}
         name={name}
-        onClick={handleClick}
+        onChange={handleChange}
       />
       {radioItemName}
     </ItemLabel>

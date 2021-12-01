@@ -6,55 +6,65 @@ import { AuthContext } from "../../contexts";
 
 export default function useLogin() {
   const { setUser, setIsLoading } = useContext(AuthContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [identity, setIdentity] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+    identity: "",
+  });
 
-  const handleLogin = (e) => {
+  const handleLoginSubmit = (e) => {
     setIsLoading(true);
     setErrorMessage("");
     e.preventDefault();
 
-    if (email === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入Email");
-    } else if (password === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請輸入密碼");
-    } else if (identity === "") {
-      setIsLoading(false);
-      scrollTop();
-      return setErrorMessage("請選擇身分");
-    }
-
-    login(identity, email, password).then((data) => {
-      if (!data) {
-        setIsLoading(false);
-        scrollTop();
-        return setErrorMessage("伺服器維修中");
-      }
-      if (data.success === false) {
-        setIsLoading(false);
-        scrollTop();
-        return setErrorMessage(data.errMessage);
-      }
-      setAuthToken(data.token);
-      getMyUserData().then((response) => {
-        if (response.success === false) {
-          setAuthToken("");
+    for (const [inputName, value] of Object.entries(loginData)) {
+      if (value.trim().length === 0) {
+        if (inputName === "email") {
           setIsLoading(false);
           scrollTop();
-          return setErrorMessage(response.errMessage);
+          return setErrorMessage("請輸入Email");
         }
-        setUser(response.user);
-        setIsLoading(false);
-        navigate("/");
-      });
-    });
+        if (inputName === "password") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請輸入密碼");
+        }
+        if (inputName === "identity") {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("請選擇身分");
+        }
+      }
+    }
+
+    login(loginData.identity, loginData.email, loginData.password).then(
+      (data) => {
+        if (!data) {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage("網站更新中請稍後再登入");
+        }
+        if (data.success === false) {
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage(data.errMessage);
+        }
+        setAuthToken(data.token);
+        getMyUserData().then((response) => {
+          if (response.success === false) {
+            setAuthToken("");
+            setIsLoading(false);
+            scrollTop();
+            return setErrorMessage(response.errMessage);
+          }
+          setUser(response.user);
+          setIsLoading(false);
+          navigate("/");
+        });
+      }
+    );
   };
 
   const scrollTop = () => {
@@ -64,29 +74,19 @@ export default function useLogin() {
     });
   };
 
-  const handleEmailChange = (e) => {
+  const handleLoginDataChange = (e) => {
     setErrorMessage("");
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setErrorMessage("");
-    setPassword(e.target.value);
-  };
-
-  const handleIdentityToggle = (e) => {
-    setErrorMessage("");
-    setIdentity(e.target.value);
+    const { name: inputName, value } = e.target;
+    setLoginData({
+      ...loginData,
+      [inputName]: value,
+    });
   };
 
   return {
-    email,
-    password,
-    identity,
+    handleLoginSubmit,
+    loginData,
+    handleLoginDataChange,
     errorMessage,
-    handleLogin,
-    handleEmailChange,
-    handlePasswordChange,
-    handleIdentityToggle,
   };
 }

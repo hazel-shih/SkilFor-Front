@@ -16,77 +16,75 @@ import useRegister from "../../components/LoginRegisterForm/useRegister";
 
 function RegisterPage() {
   const {
-    username,
-    email,
-    contactEmail,
-    password,
-    checkPassword,
+    handleRegisterSubmit,
+    registerData,
+    handleRegisterDataChange,
     errorMessage,
-    handleRegister,
-    handleUsernameChange,
-    handleEmailChange,
-    handleContactEmailChange,
-    handleIdentityToggle,
-    handlePasswordChange,
-    handleCheckPasswordChange,
   } = useRegister();
   return (
     <Wrapper>
       <Container>
         <Title>註冊帳戶</Title>
-        <FormContainer onSubmit={handleRegister}>
+        <FormContainer onSubmit={handleRegisterSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <FormItem
             itemName="使用者名稱"
             id="username"
-            value={username}
+            value={registerData.username}
             type="text"
-            handleChange={handleUsernameChange}
+            name="username"
+            handleChange={handleRegisterDataChange}
           />
           <FormItemContainer>
             <ItemName>登入身分</ItemName>
             <RadioFormItem
               radioItemName="學生"
+              id="student"
               value="student"
               type="radio"
               name="identity"
-              handleClick={handleIdentityToggle}
+              handleChange={handleRegisterDataChange}
             />
             <RadioFormItem
               radioItemName="老師"
+              id="teacher"
               value="teacher"
               type="radio"
               name="identity"
-              handleClick={handleIdentityToggle}
+              handleChange={handleRegisterDataChange}
             />
           </FormItemContainer>
           <FormItem
             itemName="登入用 Email"
             id="email"
-            value={email}
+            value={registerData.email}
             type="email"
-            handleChange={handleEmailChange}
+            name="email"
+            handleChange={handleRegisterDataChange}
           />
           <FormItem
             itemName="聯絡用 Email"
             id="contactEmail"
-            value={contactEmail}
+            value={registerData.contactEmail}
             type="email"
-            handleChange={handleContactEmailChange}
+            name="contactEmail"
+            handleChange={handleRegisterDataChange}
           />
           <FormItem
             itemName="密碼"
             id="password"
-            value={password}
+            value={registerData.password}
             type="password"
-            handleChange={handlePasswordChange}
+            name="password"
+            handleChange={handleRegisterDataChange}
           />
           <FormItem
             itemName="再次確認密碼"
             id="checkPassword"
-            value={checkPassword}
+            value={registerData.checkPassword}
             type="password"
-            handleChange={handleCheckPasswordChange}
+            name="checkPassword"
+            handleChange={handleRegisterDataChange}
           />
           <Btn>註冊</Btn>
         </FormContainer>
