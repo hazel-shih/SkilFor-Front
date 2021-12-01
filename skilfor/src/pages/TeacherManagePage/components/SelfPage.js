@@ -16,13 +16,17 @@ import {
   ItemValue,
   EditInput,
 } from "./CourseInfosForm";
+import useEdit from "../hooks/useEdit";
 
 function SelfPage() {
   const [teacherInfos, setTeacherInfos] = useState(null);
-  //個人資訊是否為編輯狀態
-  const [isEditingSelf, setIsEditingSelf] = useState(false);
-  //編輯個人資料內容
-  const [editSelfContent, setEditSelfContent] = useState(null);
+  const {
+    isEditingSelf,
+    setIsEditingSelf,
+    editSelfContent,
+    setEditSelfContent,
+    handleSelfEditClick,
+  } = useEdit();
   //拿取 teacher infos
   useEffect(() => {
     async function fetchData() {
@@ -34,14 +38,13 @@ function SelfPage() {
   //設定預設課程個人編輯 value
   useEffect(() => {
     setEditSelfContent(teacherInfos);
-  }, [teacherInfos]);
-  //編輯個人資訊按鈕被按時
-  const handleSelfEditClick = () => setIsEditingSelf(!isEditingSelf);
+  }, [teacherInfos, setEditSelfContent]);
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
     setIsEditingSelf(false);
-    //將更改後的課程資訊 post 給後端
     setTeacherInfos(editSelfContent);
+    //將更改後的課程資訊 post 給後端
+    console.log("PUT", editSelfContent);
   };
 
   const handleSelfInputChange = (e) => {
