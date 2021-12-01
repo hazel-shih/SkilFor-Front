@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import CourseInfosForm from "./CourseInfosForm";
@@ -16,6 +16,7 @@ import {
   SubmitButton,
 } from "./PageStyle";
 import PublishedRadiosContainer from "./PublishedRadiosContainer";
+import useEdit from "../hooks/useEdit";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -85,51 +86,60 @@ function CoursePage() {
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
   const [selectedCourseInfos, setSelectedCourseInfos] = useState(null);
-  //課程資訊是否為編輯狀態
-  const [isEditingCourse, setIsEditingCourse] = useState(false);
-  //編輯課程內容
-  const [editCourseContent, setEditCourseContent] = useState(null);
+  //處理編輯狀態
+  const {
+    isEditing,
+    setIsEditing,
+    editContent,
+    setEditContent,
+    handleEditClick,
+  } = useEdit();
+  //初始化 state
+  const initState = useCallback(
+    (dataArr) => {
+      setCourseInfos(dataArr);
+      setSelectedCourseInfos(dataArr[0]);
+      setEditContent(dataArr[0]);
+    },
+    [setEditContent]
+  );
   //拿取 course infos 資料
   useEffect(() => {
     async function fetchData() {
       await sleep(100);
       if (COURSE_LIST.length > 0) {
-        setCourseInfos(COURSE_LIST);
-        setSelectedCourseInfos(COURSE_LIST[0]);
-        setEditCourseContent(COURSE_LIST[0]);
+        initState(COURSE_LIST);
       } else {
         setCourseInfos([]);
       }
     }
     fetchData();
-  }, []);
+  }, [setEditContent, initState]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
-    setIsEditingCourse(false);
+    setIsEditing(false);
     const { id: categoryName } = e.target;
     let targetCourseInfos = courseInfos.find(
       (course) => course.category === categoryName
     );
     setSelectedCourseInfos(targetCourseInfos);
-    setEditCourseContent(targetCourseInfos);
+    setEditContent(targetCourseInfos);
   };
-  //當編輯課程資訊按鈕被按時
-  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
-    setIsEditingCourse(false);
+    setIsEditing(false);
     let updatedCourseInfos;
-    if (editCourseContent.audit === "fail" || !editCourseContent.audit) {
+    if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
-        ...editCourseContent,
+        ...editContent,
         audit: "pending",
       };
     } else {
-      updatedCourseInfos = editCourseContent;
+      updatedCourseInfos = editContent;
     }
     setCourseInfos(
       courseInfos.map((course) => {
-        if (course.category !== editCourseContent.category) {
+        if (course.category !== editContent.category) {
           return course;
         } else {
           return updatedCourseInfos;
@@ -169,14 +179,10 @@ function CoursePage() {
       (course) => course.category !== selectedCourseInfos.category
     );
     if (newCourseInfos.length === 0) {
-      setCourseInfos([]);
-      setEditCourseContent(null);
-      setSelectedCourseInfos(null);
+      initState([]);
       return;
     }
-    setCourseInfos(newCourseInfos);
-    setSelectedCourseInfos(newCourseInfos[0]);
-    setEditCourseContent(newCourseInfos[0]);
+    initState(newCourseInfos);
   };
   return (
     <>
@@ -186,7 +192,7 @@ function CoursePage() {
         setCourseInfos={setCourseInfos}
         courseInfos={courseInfos}
         setSelectedCourseInfos={setSelectedCourseInfos}
-        setEditCourseContent={setEditCourseContent}
+        setEditContent={setEditContent}
       />
       <EditContainer>
         <SectionText>目前擁有的課程</SectionText>
@@ -245,38 +251,36 @@ function CoursePage() {
           )}
           <EditContainer>
             <SectionText>課程資訊</SectionText>
-            {selectedCourseInfos && (
-              <RowContainer>
-                {!isEditingCourse && (
-                  <DeleteButton onClick={handleCourseDeleteClick}>
-                    刪除課程
-                  </DeleteButton>
-                )}
-                {selectedCourseInfos.audit !== "pending" && (
-                  <EditButton onClick={handleCourseEditClick}>
-                    {isEditingCourse ? "取消編輯" : "編輯課程資訊"}
-                  </EditButton>
-                )}
-                {isEditingCourse &&
-                  (selectedCourseInfos.audit === "fail" ||
-                    !selectedCourseInfos.audit) && (
-                    <SubmitButton onClick={handleCourseSubmitClick}>
-                      送審
-                    </SubmitButton>
-                  )}
-                {isEditingCourse && selectedCourseInfos.audit === "success" && (
+            <RowContainer>
+              {!isEditing && (
+                <DeleteButton onClick={handleCourseDeleteClick}>
+                  刪除課程
+                </DeleteButton>
+              )}
+              {selectedCourseInfos.audit !== "pending" && (
+                <EditButton onClick={handleEditClick}>
+                  {isEditing ? "取消編輯" : "編輯課程資訊"}
+                </EditButton>
+              )}
+              {isEditing &&
+                (selectedCourseInfos.audit === "fail" ||
+                  !selectedCourseInfos.audit) && (
                   <SubmitButton onClick={handleCourseSubmitClick}>
-                    完成編輯
+                    送審
                   </SubmitButton>
                 )}
-              </RowContainer>
-            )}
+              {isEditing && selectedCourseInfos.audit === "success" && (
+                <SubmitButton onClick={handleCourseSubmitClick}>
+                  完成編輯
+                </SubmitButton>
+              )}
+            </RowContainer>
           </EditContainer>
           <CourseInfosForm
-            isEditing={isEditingCourse}
+            isEditing={isEditing}
             courseInfos={selectedCourseInfos}
-            editCourseContent={editCourseContent}
-            setEditCourseContent={setEditCourseContent}
+            editContent={editContent}
+            setEditContent={setEditContent}
           />
           {selectedCourseInfos.audit === "success" && (
             <>

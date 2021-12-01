@@ -2,17 +2,17 @@ import { useState } from "react";
 
 function useEdit() {
   //資訊是否為編輯狀態
-  const [isEditingSelf, setIsEditingSelf] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   //存取編輯內容
-  const [editSelfContent, setEditSelfContent] = useState(null);
+  const [editContent, setEditContent] = useState(null);
   //處理編輯按鈕被按
-  const handleSelfEditClick = () => setIsEditingSelf(!isEditingSelf);
+  const handleEditClick = () => setIsEditing(!isEditing);
   return {
-    isEditingSelf,
-    setIsEditingSelf,
-    editSelfContent,
-    setEditSelfContent,
-    handleSelfEditClick,
+    isEditing,
+    setIsEditing,
+    editContent,
+    setEditContent,
+    handleEditClick,
   };
 }
 

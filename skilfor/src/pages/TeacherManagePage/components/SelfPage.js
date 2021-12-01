@@ -21,11 +21,11 @@ import useEdit from "../hooks/useEdit";
 function SelfPage() {
   const [teacherInfos, setTeacherInfos] = useState(null);
   const {
-    isEditingSelf,
-    setIsEditingSelf,
-    editSelfContent,
-    setEditSelfContent,
-    handleSelfEditClick,
+    isEditing,
+    setIsEditing,
+    editContent,
+    setEditContent,
+    handleEditClick,
   } = useEdit();
   //拿取 teacher infos
   useEffect(() => {
@@ -37,39 +37,38 @@ function SelfPage() {
   }, []);
   //設定預設課程個人編輯 value
   useEffect(() => {
-    setEditSelfContent(teacherInfos);
-  }, [teacherInfos, setEditSelfContent]);
+    setEditContent(teacherInfos);
+  }, [teacherInfos, setEditContent]);
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
-    setIsEditingSelf(false);
-    setTeacherInfos(editSelfContent);
+    setIsEditing(false);
+    setTeacherInfos(editContent);
     //將更改後的課程資訊 post 給後端
-    console.log("PUT", editSelfContent);
+    console.log("PUT", editContent);
   };
-
   const handleSelfInputChange = (e) => {
     const { id: inputName, value } = e.target;
     switch (inputName) {
       case "name":
-        setEditSelfContent({
-          ...editSelfContent,
+        setEditContent({
+          ...editContent,
           name: value,
         });
         break;
       case "avatar":
-        setEditSelfContent({
-          ...editSelfContent,
+        setEditContent({
+          ...editContent,
           avatar: value,
         });
         break;
       case "contactEmail":
-        setEditSelfContent({
-          ...editSelfContent,
+        setEditContent({
+          ...editContent,
           contactEmail: value,
         });
         break;
       default:
-        return editSelfContent;
+        return editContent;
     }
   };
   return (
@@ -77,24 +76,24 @@ function SelfPage() {
       <EditContainer>
         <SectionText>個人資訊</SectionText>
         <RowContainer>
-          <EditButton onClick={handleSelfEditClick}>
-            {isEditingSelf ? "取消編輯" : "編輯個人資訊"}
+          <EditButton onClick={handleEditClick}>
+            {isEditing ? "取消編輯" : "編輯個人資訊"}
           </EditButton>
-          {isEditingSelf && (
+          {isEditing && (
             <SubmitButton onClick={handleSelfSubmitClick}>
               編輯完成
             </SubmitButton>
           )}
         </RowContainer>
       </EditContainer>
-      <FormItemContainer show={!isEditingSelf}>
+      <FormItemContainer show={!isEditing}>
         <ItemTop>
           <ItemName>Name</ItemName>
         </ItemTop>
         {teacherInfos && (
           <ItemBottom>
-            <ItemValue show={!isEditingSelf}>{teacherInfos.name}</ItemValue>
-            {isEditingSelf && (
+            <ItemValue show={!isEditing}>{teacherInfos.name}</ItemValue>
+            {isEditing && (
               <EditInput
                 defaultValue={teacherInfos.name}
                 onChange={handleSelfInputChange}
@@ -104,14 +103,14 @@ function SelfPage() {
           </ItemBottom>
         )}
       </FormItemContainer>
-      <FormItemContainer show={!isEditingSelf}>
+      <FormItemContainer show={!isEditing}>
         <ItemTop>
           <ItemName>Avatar</ItemName>
         </ItemTop>
         {teacherInfos && (
           <ItemBottom>
-            <ItemValue show={!isEditingSelf}>{teacherInfos.avatar}</ItemValue>
-            {isEditingSelf && teacherInfos && (
+            <ItemValue show={!isEditing}>{teacherInfos.avatar}</ItemValue>
+            {isEditing && teacherInfos && (
               <EditInput
                 defaultValue={teacherInfos.avatar}
                 onChange={handleSelfInputChange}
@@ -121,16 +120,14 @@ function SelfPage() {
           </ItemBottom>
         )}
       </FormItemContainer>
-      <FormItemContainer show={!isEditingSelf}>
+      <FormItemContainer show={!isEditing}>
         <ItemTop>
           <ItemName>Contact Email</ItemName>
         </ItemTop>
         {teacherInfos && (
           <ItemBottom>
-            <ItemValue show={!isEditingSelf}>
-              {teacherInfos.contactEmail}
-            </ItemValue>
-            {isEditingSelf && teacherInfos && (
+            <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
+            {isEditing && teacherInfos && (
               <EditInput
                 defaultValue={teacherInfos.contactEmail}
                 onChange={handleSelfInputChange}

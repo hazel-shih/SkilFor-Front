@@ -30,7 +30,7 @@ const CategoryDropDownMenu = ({
   courseInfos,
   setCourseInfos,
   setSelectedCourseInfos,
-  setEditCourseContent,
+  setEditContent,
 }) => {
   const [selectOptions, setSelectOptions] = useState(null);
   const makeSelectOptions = useCallback((categoryArr, courseArr) => {
@@ -62,7 +62,7 @@ const CategoryDropDownMenu = ({
     };
     setCourseInfos([newCourseInfos, ...courseInfos]);
     setSelectedCourseInfos(newCourseInfos);
-    setEditCourseContent(newCourseInfos);
+    setEditContent(newCourseInfos);
   };
   return (
     <SelectContainer>
