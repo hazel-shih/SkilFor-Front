@@ -21,6 +21,11 @@ export const ItemName = styled.h1`
     font-size: 1.3rem;
     margin: 2px 0;
   }
+
+  > span {
+    font-size: 1rem;
+    color: ${(props) => props.theme.colors.grey_light};
+  }
 `;
 
 const ForgetPassword = styled(Link)`
@@ -76,7 +81,10 @@ export function FormItem({ itemName, id, value, type, name, handleChange }) {
         <ItemName>
           {itemName}
           {id === "password" && (
-            <ForgetPassword to="./reset_password">忘記密碼</ForgetPassword>
+            <span>
+              (至少需有六碼)
+              <ForgetPassword to="./reset_password">忘記密碼</ForgetPassword>
+            </span>
           )}
         </ItemName>
         <ItemInput

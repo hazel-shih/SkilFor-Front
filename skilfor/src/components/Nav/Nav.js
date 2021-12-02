@@ -1,10 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 import Icons from "../Icon/Icons";
 import LogoSrc from "../../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
+import { AuthContext } from "../../contexts";
+import { setAuthToken } from "../../utils";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -69,6 +72,11 @@ const NavItem = styled(Link)`
 `;
 
 function Nav() {
+  const { user, setUser } = useContext(AuthContext);
+  const handleLogout = () => {
+    setAuthToken("");
+    setUser(null);
+  };
   return (
     <Container>
       <Navbar>
@@ -81,11 +89,14 @@ function Nav() {
               <NavItem to="./filter">找老師</NavItem>
             </li>
             <li>
-              <NavItem to="./login">登入</NavItem>
+              {!user && <NavItem to="./login">登入</NavItem>}
+              {user && (
+                <NavItem to="./" onClick={handleLogout}>
+                  登出
+                </NavItem>
+              )}
             </li>
-            <li>
-              <NavItem to="./register">註冊</NavItem>
-            </li>
+            <li>{!user && <NavItem to="./register">註冊</NavItem>}</li>
             <li>
               <NavItem to="./question_and_answer">
                 <IconDiv>
