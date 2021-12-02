@@ -21,26 +21,28 @@ const RadioLabel = styled.label`
   margin-left: 5px;
 `;
 
-const PublishedRadiosContainer = ({ handleRadioClick, published }) => {
+const PublishedRadiosContainer = ({ handleRadioChange, published }) => {
   return (
     <RadiosContainer>
       <RadioContainer>
         <RadioInput
-          onClick={handleRadioClick}
+          onChange={handleRadioChange}
           name="published"
           type="radio"
           id="true"
-          defaultChecked={published}
+          checked={published}
+          value={true}
         />
         <RadioLabel htmlFor="true">一切都 OK！發布至前台</RadioLabel>
       </RadioContainer>
       <RadioContainer>
         <RadioInput
-          defaultChecked={!published}
-          onClick={handleRadioClick}
+          onChange={handleRadioChange}
           name="published"
           type="radio"
           id="false"
+          checked={!published}
+          value={false}
         />
         <RadioLabel htmlFor="false">還有資訊需要編輯，暫時不發布</RadioLabel>
       </RadioContainer>

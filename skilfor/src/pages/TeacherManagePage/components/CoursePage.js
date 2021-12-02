@@ -174,8 +174,24 @@ function CoursePage() {
     console.log("PUT", updatedCourseInfos);
   };
   //當是否發布到前台被按時
-  const handleRadioClick = (e) => {
-    const { id: publishedValue } = e.target;
+  const handleRadioChange = (e) => {
+    const { value: publishedValue } = e.target;
+    if (selectedCourseInfos.published === (publishedValue === "true")) return;
+    let confirmAlert;
+    if (publishedValue === "true") {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊上架到前台嗎？(上架到前台後，任何人都可以瀏覽你的課程頁面，並可預約你的課程)"
+      );
+    } else {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊暫時隱藏嗎？(從前台隱藏後，其他人將無法瀏覽你的課程頁面，也無法預約你的課程)"
+      );
+    }
+    if (!confirmAlert) return;
+    setSelectedCourseInfos({
+      ...selectedCourseInfos,
+      published: publishedValue === "true",
+    });
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.id !== selectedCourseInfos.id) {
@@ -310,7 +326,7 @@ function CoursePage() {
             <>
               <SectionText>是否發布課程頁面</SectionText>
               <PublishedRadiosContainer
-                handleRadioClick={handleRadioClick}
+                handleRadioChange={handleRadioChange}
                 published={selectedCourseInfos.published}
               />
             </>
