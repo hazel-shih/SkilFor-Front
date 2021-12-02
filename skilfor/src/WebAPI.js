@@ -67,7 +67,7 @@ export const register = async (
   }
 };
 
-export const getTeacherInfos = async () => {
+export const getTeacherInfos = async (setApiEror) => {
   let url = `${BASE_URL}/teacher/info`;
   const token = getAuthToken();
   try {
@@ -81,6 +81,8 @@ export const getTeacherInfos = async () => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
+    setApiEror("發生了一點錯誤，請稍後再試");
+    console.log(error.message);
     return error.message;
   }
 };
