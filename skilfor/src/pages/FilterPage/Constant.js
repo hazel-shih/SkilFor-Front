@@ -19,6 +19,7 @@ export const COURSE_LIST = [
   {
     id: "1",
     category: "程式",
+    teacherId: "1",
     teacherName: "Kelly",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 Ruby 吧！",
@@ -29,6 +30,7 @@ export const COURSE_LIST = [
   {
     id: "2",
     category: "程式",
+    teacherId: "2",
     teacherName: "Jack",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 React 吧！",
@@ -39,6 +41,7 @@ export const COURSE_LIST = [
   {
     id: "3",
     category: "程式",
+    teacherId: "3",
     teacherName: "Nick",
     teacherAvatar: teacherPic,
     courseName: "一起來學習超潮的 JS 吧！",
@@ -49,6 +52,7 @@ export const COURSE_LIST = [
   {
     id: "4",
     category: "音樂",
+    teacherId: "4",
     teacherName: "Jessica",
     teacherAvatar: teacherPic,
     courseName: "一起來學都~瑞~咪~發~搜~",
@@ -59,6 +63,7 @@ export const COURSE_LIST = [
   {
     id: "5",
     category: "音樂",
+    teacherId: "5",
     teacherName: "May",
     teacherAvatar: teacherPic,
     courseName: "一起來飆高音！",

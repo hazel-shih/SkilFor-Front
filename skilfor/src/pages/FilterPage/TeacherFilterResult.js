@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Avatar from "../../components/Avatar";
+import { Link } from "react-router-dom";
 
 const TeacherBlock = styled.div`
   display: inline-flex;
@@ -91,7 +92,7 @@ const CoursePrice = styled.p`
   }
 `;
 
-const Btn = styled.button`
+const Btn = styled(Link)`
   border-radius: 40px;
   border: none;
   cursor: pointer;
@@ -102,6 +103,7 @@ const Btn = styled.button`
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   text-align: center;
   font-size: 1.2rem;
+  text-decoration: none;
   :hover {
     opacity: 0.9;
     font-weight: bold;
@@ -123,7 +125,7 @@ function TeacherFilterResult({ result }) {
           <CourseIntro>{result.courseIntro}</CourseIntro>
           <BtnDiv>
             <CoursePrice>{result.price}</CoursePrice>
-            <Btn>更多資訊</Btn>
+            <Btn to={`/teacher/profile/${result.teacherId}`}>更多資訊</Btn>
           </BtnDiv>
         </CourseBlock>
       </TeacherBlock>
