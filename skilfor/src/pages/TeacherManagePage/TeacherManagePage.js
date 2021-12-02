@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Avatar from "../../components/Avatar";
 import teacherPic from "../../img/teacher.jpeg";
@@ -7,6 +7,7 @@ import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
 import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 import useCheckToken from "./hooks/useCheckToken";
+import { getTeacherInfos } from "../../WebAPI.js";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -87,6 +88,19 @@ function TeacherManagePage() {
   useCheckToken();
   //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
+  //老師個人資訊
+  const [teacherInfos, setTeacherInfos] = useState(null);
+  const [apiError, setApiEror] = useState(false);
+  useEffect(() => {
+    const getData = async (setApiEror) => {
+      let json = await getTeacherInfos(setApiEror);
+      if (json.errMessage) {
+        setApiEror("請先登入才能使用後台功能");
+      }
+      setTeacherInfos(json.data);
+    };
+    getData(setApiEror);
+  }, []);
   //當個人資訊與課程資訊按鈕被按時
   const handlePageBtnClick = (e) => {
     const { id: currentPage } = e.target;
@@ -97,7 +111,9 @@ function TeacherManagePage() {
       <PageTitle>後台管理</PageTitle>
       <TeacherManageContainer>
         <UserInfoContainer>
-          <Avatar imgSrc={teacherPic} name="Kelly" />
+          {teacherInfos && (
+            <Avatar imgSrc={teacherPic} name={teacherInfos.username} />
+          )}
           <PageBtnsContainer>
             <PageBtn
               id="self"
@@ -116,7 +132,14 @@ function TeacherManagePage() {
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
-          {page === "self" && <SelfPage />}
+          {page === "self" && (
+            <SelfPage
+              teacherInfos={teacherInfos}
+              setTeacherInfos={setTeacherInfos}
+              apiError={apiError}
+              setApiEror={setApiEror}
+            />
+          )}
           {page === "course" && <CoursePage />}
         </FormContainer>
       </TeacherManageContainer>

@@ -16,7 +16,6 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
-import { getTeacherInfos } from "../../../WebAPI.js";
 import AlertCard from "../../../components/AlertCard/AlertCard";
 
 const formDataVerify = (formData) => {
@@ -33,11 +32,9 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
-function SelfPage() {
+function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
   const navigate = useNavigate();
-  const [teacherInfos, setTeacherInfos] = useState(null);
   const [error, setError] = useState([]);
-  const [apiError, setApiEror] = useState(false);
   const {
     isEditing,
     setIsEditing,
@@ -45,17 +42,6 @@ function SelfPage() {
     setEditContent,
     handleEditClick,
   } = useEdit(setError, teacherInfos);
-  //拿取 teacher infos
-  useEffect(() => {
-    const getData = async (setApiEror) => {
-      let json = await getTeacherInfos(setApiEror);
-      if (json.errMessage) {
-        setApiEror("請先登入才能使用後台功能");
-      }
-      setTeacherInfos(json.data);
-    };
-    getData(setApiEror);
-  }, []);
   //設定預設課程個人編輯 value
   useEffect(() => {
     setEditContent(teacherInfos);
@@ -99,7 +85,11 @@ function SelfPage() {
   };
   const handleAlertOkClick = () => {
     setApiEror(false);
-    if (apiError === "請先登入才能使用後台功能") navigate("/login");
+    if (apiError === "請先登入才能使用後台功能") {
+      navigate("/login");
+    } else {
+      navigate("/");
+    }
     return;
   };
   return (

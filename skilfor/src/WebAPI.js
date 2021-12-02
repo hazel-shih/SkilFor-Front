@@ -63,7 +63,7 @@ export const register = async (
     });
     return await res.json();
   } catch (error) {
-    return console.log(error.message);
+    return error.message;
   }
 };
 
