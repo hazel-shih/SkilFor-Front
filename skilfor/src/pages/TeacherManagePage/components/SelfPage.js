@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { TEACHER_INFOS } from "../Constant";
-import { sleep } from "../../../utils";
 import {
   EditContainer,
   SectionText,
@@ -17,6 +15,7 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
+import { getTeacherInfos } from "../../../WebAPI.js";
 
 const formDataVerify = (formData) => {
   let errorArr = [];
@@ -35,6 +34,7 @@ const formDataVerify = (formData) => {
 function SelfPage() {
   const [teacherInfos, setTeacherInfos] = useState(null);
   const [error, setError] = useState([]);
+  const [apiError, setApiEror] = useState(false);
   const {
     isEditing,
     setIsEditing,
@@ -44,11 +44,11 @@ function SelfPage() {
   } = useEdit(setError, teacherInfos);
   //拿取 teacher infos
   useEffect(() => {
-    async function fetchData() {
-      await sleep(500);
-      setTeacherInfos(TEACHER_INFOS);
-    }
-    fetchData();
+    const getData = async () => {
+      let json = await getTeacherInfos();
+      setTeacherInfos(json.data);
+    };
+    getData();
   }, []);
   //設定預設課程個人編輯 value
   useEffect(() => {
@@ -112,11 +112,11 @@ function SelfPage() {
         </ItemTop>
         {teacherInfos && (
           <ItemBottom>
-            <ItemValue show={!isEditing}>{teacherInfos.name}</ItemValue>
+            <ItemValue show={!isEditing}>{teacherInfos.username}</ItemValue>
             {isEditing && (
               <EditInput
                 error={error.includes("name")}
-                defaultValue={teacherInfos.name}
+                defaultValue={teacherInfos.username}
                 onChange={handleSelfInputChange}
                 id="name"
               />

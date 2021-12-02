@@ -67,8 +67,8 @@ export const register = async (
   }
 };
 
-export const getTeacherInfos = async (teacherId) => {
-  let url = `${BASE_URL}/teacher/${teacherId}/info`;
+export const getTeacherInfos = async () => {
+  let url = `${BASE_URL}/teacher/info`;
   const token = getAuthToken();
   try {
     const res = await fetch(url, {

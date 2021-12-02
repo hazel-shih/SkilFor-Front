@@ -6,6 +6,7 @@ import PageTitle from "../../components/PageTitle";
 import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
 import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
+import useCheckToken from "./hooks/useCheckToken";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -83,6 +84,7 @@ export const SubmitButton = styled(EditButton)`
 `;
 
 function TeacherManagePage() {
+  useCheckToken();
   //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
   //當個人資訊與課程資訊按鈕被按時
