@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TEACHER_INFOS } from "../Constant";
-import { sleep } from "../../../utils";
+import { useNavigate } from "react-router";
 import {
   EditContainer,
   SectionText,
@@ -17,32 +16,45 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
+import AlertCard from "../../../components/AlertCard/AlertCard";
 
-function SelfPage() {
-  const [teacherInfos, setTeacherInfos] = useState(null);
+const formDataVerify = (formData) => {
+  let errorArr = [];
+  for (let question in formData) {
+    if (
+      (question === "name" ||
+        question === "avatar" ||
+        question === "contactEmail") &&
+      formData[question] === ""
+    ) {
+      errorArr.push(question);
+    }
+  }
+  return errorArr;
+};
+function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
+  const navigate = useNavigate();
+  const [error, setError] = useState([]);
   const {
     isEditing,
     setIsEditing,
     editContent,
     setEditContent,
     handleEditClick,
-  } = useEdit();
-  //拿取 teacher infos
-  useEffect(() => {
-    async function fetchData() {
-      await sleep(500);
-      setTeacherInfos(TEACHER_INFOS);
-    }
-    fetchData();
-  }, []);
+  } = useEdit(setError, teacherInfos);
   //設定預設課程個人編輯 value
   useEffect(() => {
     setEditContent(teacherInfos);
   }, [teacherInfos, setEditContent]);
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
-    setIsEditing(false);
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length > 0) {
+      setError(errorArr);
+      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    }
     setTeacherInfos(editContent);
+    setIsEditing(false);
     //將更改後的課程資訊 post 給後端
     console.log("PUT", editContent);
   };
@@ -71,8 +83,25 @@ function SelfPage() {
         return editContent;
     }
   };
+  const handleAlertOkClick = () => {
+    setApiEror(false);
+    if (apiError === "請先登入才能使用後台功能") {
+      navigate("/login");
+    } else {
+      navigate("/");
+    }
+    return;
+  };
   return (
     <>
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <EditContainer>
         <SectionText>個人資訊</SectionText>
         <RowContainer>
@@ -92,10 +121,11 @@ function SelfPage() {
         </ItemTop>
         {teacherInfos && (
           <ItemBottom>
-            <ItemValue show={!isEditing}>{teacherInfos.name}</ItemValue>
+            <ItemValue show={!isEditing}>{teacherInfos.username}</ItemValue>
             {isEditing && (
               <EditInput
-                defaultValue={teacherInfos.name}
+                error={error.includes("name")}
+                defaultValue={teacherInfos.username}
                 onChange={handleSelfInputChange}
                 id="name"
               />
@@ -112,6 +142,7 @@ function SelfPage() {
             <ItemValue show={!isEditing}>{teacherInfos.avatar}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
+                error={error.includes("avatar")}
                 defaultValue={teacherInfos.avatar}
                 onChange={handleSelfInputChange}
                 id="avatar"
@@ -129,6 +160,7 @@ function SelfPage() {
             <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
+                error={error.includes("contactEmail")}
                 defaultValue={teacherInfos.contactEmail}
                 onChange={handleSelfInputChange}
                 id="contactEmail"

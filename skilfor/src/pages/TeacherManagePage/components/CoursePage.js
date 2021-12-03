@@ -52,8 +52,9 @@ const DeleteButton = styled(EditButton)`
   margin-right: 15px;
 `;
 const CourseBtnsContainer = styled(RowContainer)`
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   align-items: center;
+  flex-wrap: wrap;
 `;
 const CourseButton = styled.button`
   padding: 6px 15px;
@@ -63,6 +64,7 @@ const CourseButton = styled.button`
   border: 2px solid ${(props) => props.theme.colors.grey_dark};
   background: white;
   cursor: pointer;
+  margin-bottom: 15px;
   :not(:last-child) {
     margin-right: 20px;
   }
@@ -79,6 +81,20 @@ const GoToCalendar = styled(Link)`
     opacity: 0.8;
   }
 `;
+const formDataVerify = (formData) => {
+  let errorArr = [];
+  for (let question in formData) {
+    if (
+      (question === "courseName" ||
+        question === "courseIntro" ||
+        question === "price") &&
+      formData[question] === ""
+    ) {
+      errorArr.push(question);
+    }
+  }
+  return errorArr;
+};
 
 function CoursePage() {
   const { teacherId } = useParams();
@@ -86,6 +102,8 @@ function CoursePage() {
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
   const [selectedCourseInfos, setSelectedCourseInfos] = useState(null);
+  //錯誤狀態
+  const [error, setError] = useState([]);
   //處理編輯狀態
   const {
     isEditing,
@@ -93,7 +111,7 @@ function CoursePage() {
     editContent,
     setEditContent,
     handleEditClick,
-  } = useEdit();
+  } = useEdit(setError, selectedCourseInfos);
   //初始化 state
   const initState = useCallback(
     (dataArr) => {
@@ -127,7 +145,11 @@ function CoursePage() {
   };
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
-    setIsEditing(false);
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length > 0) {
+      setError(errorArr);
+      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    }
     let updatedCourseInfos;
     if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
@@ -146,13 +168,30 @@ function CoursePage() {
         }
       })
     );
+    setIsEditing(false);
     setSelectedCourseInfos(updatedCourseInfos);
     //將更改後的課程資訊 put 給後端
     console.log("PUT", updatedCourseInfos);
   };
   //當是否發布到前台被按時
-  const handleRadioClick = (e) => {
-    const { id: publishedValue } = e.target;
+  const handleRadioChange = (e) => {
+    const { value: publishedValue } = e.target;
+    if (selectedCourseInfos.published === (publishedValue === "true")) return;
+    let confirmAlert;
+    if (publishedValue === "true") {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊上架到前台嗎？(上架到前台後，任何人都可以瀏覽你的課程頁面，並可預約你的課程)"
+      );
+    } else {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊暫時隱藏嗎？(從前台隱藏後，其他人將無法瀏覽你的課程頁面，也無法預約你的課程)"
+      );
+    }
+    if (!confirmAlert) return;
+    setSelectedCourseInfos({
+      ...selectedCourseInfos,
+      published: publishedValue === "true",
+    });
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.id !== selectedCourseInfos.id) {
@@ -180,9 +219,10 @@ function CoursePage() {
     );
     if (newCourseInfos.length === 0) {
       initState([]);
-      return;
+      return setIsEditing(false);
     }
     initState(newCourseInfos);
+    setIsEditing(false);
   };
   return (
     <>
@@ -194,9 +234,7 @@ function CoursePage() {
         setSelectedCourseInfos={setSelectedCourseInfos}
         setEditContent={setEditContent}
       />
-      <EditContainer>
-        <SectionText>目前擁有的課程</SectionText>
-      </EditContainer>
+      <SectionText>目前擁有的課程</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (
         <CourseBtnsContainer>
           {courseInfos.map((course) => (
@@ -252,7 +290,7 @@ function CoursePage() {
           <EditContainer>
             <SectionText>課程資訊</SectionText>
             <RowContainer>
-              {!isEditing && (
+              {(isEditing || selectedCourseInfos.audit === "pending") && (
                 <DeleteButton onClick={handleCourseDeleteClick}>
                   刪除課程
                 </DeleteButton>
@@ -281,12 +319,14 @@ function CoursePage() {
             courseInfos={selectedCourseInfos}
             editContent={editContent}
             setEditContent={setEditContent}
+            error={error}
+            setError={setError}
           />
           {selectedCourseInfos.audit === "success" && (
             <>
               <SectionText>是否發布課程頁面</SectionText>
               <PublishedRadiosContainer
-                handleRadioClick={handleRadioClick}
+                handleRadioChange={handleRadioChange}
                 published={selectedCourseInfos.published}
               />
             </>
