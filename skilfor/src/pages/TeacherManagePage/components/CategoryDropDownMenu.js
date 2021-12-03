@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { CATEGORY_LIST } from "../Constant";
+import { getAllCategories } from "../../../WebAPI";
 
 const RowContainer = styled.div`
   display: flex;
@@ -26,29 +26,33 @@ const ChooseCategoryButton = styled.button`
     opacity: 0.85;
   }
 `;
+const makeSelectOptions = (categoryArr, courseArr) => {
+  let temp = [];
+  for (let i = 0; i < courseArr.length; i++) {
+    temp.push(courseArr[i].category);
+  }
+  let result = categoryArr.filter(
+    (category) => !temp.includes(category.displayName)
+  );
+  return result;
+};
 
 function CategoryDropDownMenu({
   courseInfos,
   setCourseInfos,
   setSelectedCourseInfos,
   setEditContent,
+  setApiError,
 }) {
   const [selectOptions, setSelectOptions] = useState(null);
-  const makeSelectOptions = useCallback((categoryArr, courseArr) => {
-    if (!categoryArr || !courseArr) return;
-    let temp = [];
-    for (let i = 0; i < courseArr.length; i++) {
-      temp.push(courseArr[i].category);
-    }
-    let result = categoryArr.filter((category) => !temp.includes(category));
-    return result;
-  }, []);
   useEffect(() => {
-    async function fetchData() {
-      setSelectOptions(CATEGORY_LIST);
+    async function getCategoryOptions(setApiError) {
+      let json = await getAllCategories(setApiError);
+      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      setSelectOptions(json.data);
     }
-    fetchData();
-  }, []);
+    getCategoryOptions(setApiError);
+  }, [setApiError]);
   const selectedCategory = useRef(null);
   const handleSelectCategorySubmit = (e) => {
     if (!selectedCategory.current.value) return;
@@ -74,12 +78,16 @@ function CategoryDropDownMenu({
               {courseInfos.length !== 0 &&
                 makeSelectOptions(selectOptions, courseInfos).map(
                   (category) => (
-                    <option key={category.id}>{category.displayName}</option>
+                    <option key={category.name} value={category.name}>
+                      {category.displayName}
+                    </option>
                   )
                 )}
               {courseInfos.length === 0 &&
                 selectOptions.map((category) => (
-                  <option key={category.id}>{category.displayName}</option>
+                  <option key={category.name} value={category.name}>
+                    {category.displayName}
+                  </option>
                 ))}
             </>
           )}

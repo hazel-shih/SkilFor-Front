@@ -98,7 +98,23 @@ export const updateTeacherInfos = async (setApiError, newTeacherInfos) => {
       },
       body: JSON.stringify(newTeacherInfos),
     });
-    console.log(await res.json());
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return error.message;
+  }
+};
+
+export const getAllCategories = async (setApiError) => {
+  let url = `${BASE_URL}/categories`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
@@ -132,6 +148,27 @@ export const registerNewCourse = async (setApiError, newCourseInfos) => {
   try {
     const res = await fetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newCourseInfos),
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return error.message;
+  }
+};
+
+export const updateCourseInfos = async (setApiError, newCourseInfos) => {
+  console.log(newCourseInfos);
+  let url = `${BASE_URL}/teacher/course/info`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

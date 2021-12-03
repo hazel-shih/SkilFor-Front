@@ -43,7 +43,7 @@ function App() {
     }
     getMyUserData().then((response) => {
       setIsLoading(false);
-      if (response.success === true) {
+      if (response && response.success === true) {
         setUser(response.user);
       }
     });
