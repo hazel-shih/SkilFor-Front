@@ -135,6 +135,7 @@ function CoursePage({ setApiError }) {
         setApiError("請先登入才能使用後台功能");
       }
       setCourseInfos(json.data);
+      if (json.data.length > 0) setSelectedCourseInfos(json.data[0]);
     };
     getData(setApiError);
   }, [setEditContent, initState, setApiError]);

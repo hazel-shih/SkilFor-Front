@@ -25,7 +25,6 @@ const formDataVerify = (formData) => {
   for (let question in formData) {
     if (formData[question] === "") errorArr.push(question);
     if (question === "contactEmail" && !validateEmail(formData[question])) {
-      console.log(validateEmail(formData[question]));
       errorArr.push("invalid email");
     }
   }
@@ -65,7 +64,6 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
       return setIsEditing(false);
     }
     let errorArr = formDataVerify(editContent);
-    console.log(errorArr);
     if (errorArr.length === 0) {
       setIsEditing(false);
       postTeacherInfos(setApiError, editContent);
