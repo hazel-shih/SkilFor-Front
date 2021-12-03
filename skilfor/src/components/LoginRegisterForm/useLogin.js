@@ -10,8 +10,8 @@ export default function useLogin() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loginData, setLoginData] = useState({
     email: "",
-    password: "",
     identity: "",
+    password: "",
   });
 
   const handleLoginSubmit = (e) => {
@@ -21,21 +21,19 @@ export default function useLogin() {
 
     for (const [inputName, value] of Object.entries(loginData)) {
       if (value.trim().length === 0) {
-        if (inputName === "email") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入Email");
+        //if (value === "") {
+        if (inputName === "登入用 email") {
+          setErrorMessage("請輸入登入用 Email");
         }
         if (inputName === "password") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入密碼");
+          setErrorMessage("請輸入密碼");
         }
         if (inputName === "identity") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請選擇身分");
+          setErrorMessage("請選擇身分");
         }
+        setIsLoading(false);
+        scrollTop();
+        return;
       }
     }
 

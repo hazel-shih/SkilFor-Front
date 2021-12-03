@@ -8,6 +8,7 @@ import { AuthContext } from "../../contexts";
 export default function useRegister() {
   const { setUser, setIsLoading } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
   const [registerData, setRegisterData] = useState({
     username: "",
     identity: "",
@@ -16,7 +17,6 @@ export default function useRegister() {
     password: "",
     checkPassword: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegisterSubmit = (e) => {
     setIsLoading(true);
@@ -26,36 +26,32 @@ export default function useRegister() {
     for (const [inputName, value] of Object.entries(registerData)) {
       if (value.trim().length === 0) {
         if (inputName === "username") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入使用者名稱");
-        } else if (inputName === "identity") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請選擇註冊身分");
-        } else if (inputName === "email") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入登入用Email");
-        } else if (inputName === "contactEmail") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入聯絡用Email");
-        } else if (inputName === "password") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請輸入密碼");
-        } else if (inputName === "checkPassword") {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("請再次輸入密碼");
+          setErrorMessage("請輸入使用者名稱");
         }
+        if (inputName === "identity") {
+          setErrorMessage("請選擇註冊身分");
+        }
+        if (inputName === "email") {
+          setErrorMessage("請輸入登入用Email");
+        }
+        if (inputName === "contactEmail") {
+          setErrorMessage("請輸入聯絡用Email");
+        }
+        if (inputName === "password") {
+          setErrorMessage("請輸入密碼");
+        }
+        if (inputName === "checkPassword") {
+          setErrorMessage("請再次輸入密碼");
+        }
+        setIsLoading(false);
+        scrollTop();
+        return;
       }
     }
     if (registerData.password !== registerData.checkPassword) {
       setIsLoading(false);
       scrollTop();
-      return setErrorMessage("密碼不相同");
+      return setErrorMessage("密碼不相符");
     }
 
     register(

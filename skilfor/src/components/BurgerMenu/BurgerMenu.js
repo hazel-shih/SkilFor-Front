@@ -52,20 +52,8 @@ function BurgerMenu() {
     setBurgerContent(!burgerContent);
   };
 
-  // 還沒研究出來handleBurgerBlur這邊怎麼做，我想要使用者點選burger上的東西時burger會顯示，但只要點選頁面上其他地方，burger會自動不見。e.currentTarget可以找到監聽的元素，但點擊頁面的其他地方e.target都是BurgerBtn這個元素，就算點Navbar也還是BurgerBtn這個元素，所以setBurgerContent一直是true。
-  const handleBurgerBlur = (e) => {
-    console.log(e.target);
-    if (e.currentTarget.contains(e.target)) {
-      console.log("should show burger");
-      setBurgerContent(true);
-    } else {
-      console.log("should not show burger");
-      setBurgerContent(false);
-    }
-  };
-
   return (
-    <Burger onBlur={handleBurgerBlur}>
+    <Burger>
       <BurgerBtn onClick={handleBurgerToggle}>
         <IconDiv>
           <Icons.NavIcons.Burger />
