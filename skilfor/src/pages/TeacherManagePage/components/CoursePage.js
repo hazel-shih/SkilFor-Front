@@ -5,8 +5,7 @@ import CourseInfosForm from "./CourseInfosForm";
 import happy from "../../../img/happy.png";
 import sad from "../../../img/sad.png";
 import { nanoid } from "nanoid";
-import { COURSE_LIST } from "../Constant";
-import { sleep } from "../../../utils";
+import { getTeacherCourseInfos } from "../../../WebAPI";
 import CategoryDropDownMenu from "./CategoryDropDownMenu";
 import {
   EditContainer,
@@ -17,6 +16,7 @@ import {
 } from "./PageStyle";
 import PublishedRadiosContainer from "./PublishedRadiosContainer";
 import useEdit from "../hooks/useEdit";
+import { registerNewCourse } from "../../../WebAPI";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -86,7 +86,7 @@ const formDataVerify = (formData) => {
   for (let question in formData) {
     if (
       (question === "courseName" ||
-        question === "courseIntro" ||
+        question === "courseDescription" ||
         question === "price") &&
       formData[question] === ""
     ) {
@@ -95,8 +95,14 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
+const postCourseInfos = async (setApiError, updatedCourseInfos) => {
+  let json = await registerNewCourse(setApiError, updatedCourseInfos);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
 
-function CoursePage() {
+function CoursePage({ setApiError }) {
   const { teacherId } = useParams();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
@@ -123,16 +129,15 @@ function CoursePage() {
   );
   //拿取 course infos 資料
   useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      if (COURSE_LIST.length > 0) {
-        initState(COURSE_LIST);
-      } else {
-        setCourseInfos([]);
+    const getData = async (setApiError) => {
+      let json = await getTeacherCourseInfos(setApiError);
+      if (json.errMessage) {
+        setApiError("請先登入才能使用後台功能");
       }
-    }
-    fetchData();
-  }, [setEditContent, initState]);
+      setCourseInfos(json.data);
+    };
+    getData(setApiError);
+  }, [setEditContent, initState, setApiError]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
     setIsEditing(false);
@@ -156,6 +161,7 @@ function CoursePage() {
         ...editContent,
         audit: "pending",
       };
+      postCourseInfos(setApiError, updatedCourseInfos);
     } else {
       updatedCourseInfos = editContent;
     }

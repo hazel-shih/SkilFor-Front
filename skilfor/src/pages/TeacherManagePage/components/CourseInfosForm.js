@@ -41,10 +41,10 @@ const EditTextArea = styled.textarea`
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
   border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
   ${MEDIA_QUERY_SM} {
     height: 200px;
   }
+  ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
 `;
 function CourseInfosForm({
   isEditing,
@@ -63,10 +63,10 @@ function CourseInfosForm({
       });
       setError(error.filter((errorItem) => errorItem !== inputName));
     }
-    if (inputName === "courseIntro") {
+    if (inputName === "courseDescription") {
       setEditContent({
         ...editContent,
-        courseIntro: value,
+        courseDescription: value,
       });
       setError(error.filter((errorItem) => errorItem !== inputName));
     }
@@ -109,13 +109,15 @@ function CourseInfosForm({
           <ItemName>Course Intro</ItemName>
         </ItemTop>
         <ItemBottom>
-          <ItemValue show={!isEditing}>{courseInfos.courseIntro}</ItemValue>
+          <ItemValue show={!isEditing}>
+            {courseInfos.courseDescription}
+          </ItemValue>
           {isEditing && courseInfos && (
             <EditTextArea
-              error={error.includes("courseIntro")}
-              defaultValue={courseInfos.courseIntro}
+              error={error.includes("courseDescription")}
+              defaultValue={courseInfos.courseDescription}
               onChange={handleInputChange}
-              id="courseIntro"
+              id="courseDescription"
             />
           )}
         </ItemBottom>

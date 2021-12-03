@@ -122,7 +122,7 @@ function TeacherFilterResult({ result }) {
         <Avatar imgSrc={result.teacherAvatar} name={result.teacherName} />
         <CourseBlock>
           <CourseName>{result.courseName}</CourseName>
-          <CourseIntro>{result.courseIntro}</CourseIntro>
+          <CourseIntro>{result.courseDescription}</CourseIntro>
           <BtnDiv>
             <CoursePrice>{result.price}</CoursePrice>
             <Btn to={`/teacher/profile/${result.teacherId}`}>更多資訊</Btn>

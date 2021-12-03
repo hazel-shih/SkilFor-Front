@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { CATEGORY_LIST } from "../Constant";
-import { sleep } from "../../../utils";
 
 const RowContainer = styled.div`
   display: flex;
@@ -28,12 +27,12 @@ const ChooseCategoryButton = styled.button`
   }
 `;
 
-const CategoryDropDownMenu = ({
+function CategoryDropDownMenu({
   courseInfos,
   setCourseInfos,
   setSelectedCourseInfos,
   setEditContent,
-}) => {
+}) {
   const [selectOptions, setSelectOptions] = useState(null);
   const makeSelectOptions = useCallback((categoryArr, courseArr) => {
     if (!categoryArr || !courseArr) return;
@@ -46,7 +45,6 @@ const CategoryDropDownMenu = ({
   }, []);
   useEffect(() => {
     async function fetchData() {
-      await sleep(100);
       setSelectOptions(CATEGORY_LIST);
     }
     fetchData();
@@ -57,7 +55,7 @@ const CategoryDropDownMenu = ({
     let newCourseInfos = {
       category: selectedCategory.current.value,
       courseName: "",
-      courseIntro: "",
+      courseDescription: "",
       price: "",
       audit: false,
       published: false,
@@ -71,16 +69,20 @@ const CategoryDropDownMenu = ({
       <RowContainer>
         <SelectBar id="addCategory" ref={selectedCategory}>
           <option value="">請選擇一個課程領域</option>
-          {selectOptions &&
-            courseInfos &&
-            makeSelectOptions(selectOptions, courseInfos).map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-          {courseInfos &&
-            courseInfos.length === 0 &&
-            selectOptions.map((category) => (
-              <option key={category}>{category}</option>
-            ))}
+          {selectOptions && courseInfos && (
+            <>
+              {courseInfos.length !== 0 &&
+                makeSelectOptions(selectOptions, courseInfos).map(
+                  (category) => (
+                    <option key={category.id}>{category.displayName}</option>
+                  )
+                )}
+              {courseInfos.length === 0 &&
+                selectOptions.map((category) => (
+                  <option key={category.id}>{category.displayName}</option>
+                ))}
+            </>
+          )}
         </SelectBar>
         <ChooseCategoryButton onClick={handleSelectCategorySubmit}>
           新增
@@ -88,6 +90,6 @@ const CategoryDropDownMenu = ({
       </RowContainer>
     </SelectContainer>
   );
-};
+}
 
 export default CategoryDropDownMenu;

@@ -90,16 +90,16 @@ function TeacherManagePage() {
   const [page, setPage] = useState("self");
   //老師個人資訊
   const [teacherInfos, setTeacherInfos] = useState(null);
-  const [apiError, setApiEror] = useState(false);
+  const [apiError, setApiError] = useState(false);
   useEffect(() => {
-    const getData = async (setApiEror) => {
-      let json = await getTeacherInfos(setApiEror);
+    const getData = async (setApiError) => {
+      let json = await getTeacherInfos(setApiError);
       if (json.errMessage) {
-        setApiEror("請先登入才能使用後台功能");
+        return setApiError("請先登入才能使用後台功能");
       }
       setTeacherInfos(json.data);
     };
-    getData(setApiEror);
+    getData(setApiError);
   }, []);
   //當個人資訊與課程資訊按鈕被按時
   const handlePageBtnClick = (e) => {
@@ -136,11 +136,12 @@ function TeacherManagePage() {
             <SelfPage
               teacherInfos={teacherInfos}
               setTeacherInfos={setTeacherInfos}
-              apiError={apiError}
-              setApiEror={setApiEror}
+              setApiError={setApiError}
             />
           )}
-          {page === "course" && <CoursePage />}
+          {page === "course" && (
+            <CoursePage apiError={apiError} setApiError={setApiError} />
+          )}
         </FormContainer>
       </TeacherManageContainer>
     </TeacherManageWrapper>

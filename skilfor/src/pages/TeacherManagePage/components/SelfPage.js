@@ -17,12 +17,13 @@ import {
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
 import AlertCard from "../../../components/AlertCard/AlertCard";
+import { updateTeacherInfos } from "../../../WebAPI";
 
 const formDataVerify = (formData) => {
   let errorArr = [];
   for (let question in formData) {
     if (
-      (question === "name" ||
+      (question === "username" ||
         question === "avatar" ||
         question === "contactEmail") &&
       formData[question] === ""
@@ -32,7 +33,13 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
-function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
+const postTeacherInfos = async (setApiError, editContent) => {
+  let json = await updateTeacherInfos(setApiError, editContent);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
+function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
   const navigate = useNavigate();
   const [error, setError] = useState([]);
   const {
@@ -46,45 +53,31 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
   useEffect(() => {
     setEditContent(teacherInfos);
   }, [teacherInfos, setEditContent]);
+  //編輯欄位時
+  const handleSelfInputChange = (e) => {
+    const { id: inputName, value } = e.target;
+    setEditContent({
+      ...editContent,
+      [inputName]: value,
+    });
+  };
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
+    if (editContent === teacherInfos) {
+      return setIsEditing(false);
+    }
     let errorArr = formDataVerify(editContent);
     if (errorArr.length > 0) {
       setError(errorArr);
       return alert("尚有欄位未填答，請填寫完後再送出資料");
     }
-    setTeacherInfos(editContent);
     setIsEditing(false);
-    //將更改後的課程資訊 post 給後端
-    console.log("PUT", editContent);
+    postTeacherInfos(setApiError, editContent);
+    setTeacherInfos(editContent);
   };
-  const handleSelfInputChange = (e) => {
-    const { id: inputName, value } = e.target;
-    switch (inputName) {
-      case "name":
-        setEditContent({
-          ...editContent,
-          name: value,
-        });
-        break;
-      case "avatar":
-        setEditContent({
-          ...editContent,
-          avatar: value,
-        });
-        break;
-      case "contactEmail":
-        setEditContent({
-          ...editContent,
-          contactEmail: value,
-        });
-        break;
-      default:
-        return editContent;
-    }
-  };
+
   const handleAlertOkClick = () => {
-    setApiEror(false);
+    setApiError(false);
     if (apiError === "請先登入才能使用後台功能") {
       navigate("/login");
     } else {
@@ -124,10 +117,10 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
             <ItemValue show={!isEditing}>{teacherInfos.username}</ItemValue>
             {isEditing && (
               <EditInput
-                error={error.includes("name")}
+                error={error.includes("username")}
                 defaultValue={teacherInfos.username}
                 onChange={handleSelfInputChange}
-                id="name"
+                id="username"
               />
             )}
           </ItemBottom>
