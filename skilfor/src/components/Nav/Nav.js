@@ -42,32 +42,25 @@ const Navbar = styled.div`
 const NavbarList = styled.ul`
   display: flex;
   align-items: center;
+  justify-content: space-evenly;
   list-style: none;
   height: 50px;
-
-  & > li {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    margin: 8px;
-    padding: 6px;
-    cursor: pointer;
-    ${MEDIA_QUERY_SM} {
-      padding: 2px;
-      margin: 4px;
-    }
-  }
 `;
 
 const NavItem = styled(Link)`
   text-decoration: none;
   color: ${(props) => props.theme.colors.grey_dark};
-  border-bottom: 3px solid transparent;
   opacity: 1;
   font-weight: bold;
-
+  cursor: pointer;
+  margin: 8px;
+  padding: 6px;
   &:hover {
     opacity: 0.7;
+  }
+  ${MEDIA_QUERY_SM} {
+    padding: 2px;
+    margin: 4px;
   }
 `;
 
@@ -85,28 +78,24 @@ function Nav() {
         </div>
         <div>
           <NavbarList>
-            <li>
-              <NavItem to="./filter">找老師</NavItem>
-            </li>
-            <li>
-              {!user && <NavItem to="./login">登入</NavItem>}
-              {user && (
-                <NavItem to="./" onClick={handleLogout}>
-                  登出
-                </NavItem>
-              )}
-            </li>
-            <li>{!user && <NavItem to="./register">註冊</NavItem>}</li>
-            <li>
-              <NavItem to="./question_and_answer">
-                <IconDiv>
-                  <Icons.NavIcons.Question />
-                </IconDiv>
+            <NavItem to="./filter">找老師</NavItem>
+            {!user && (
+              <>
+                <NavItem to="./login">登入</NavItem>
+                <NavItem to="./register">註冊</NavItem>
+              </>
+            )}
+            {user && (
+              <NavItem to="./" onClick={handleLogout}>
+                登出
               </NavItem>
-            </li>
-            <li>
-              <BurgerMenu />
-            </li>
+            )}
+            <NavItem to="./question_and_answer">
+              <IconDiv>
+                <Icons.NavIcons.Question />
+              </IconDiv>
+            </NavItem>
+            {user && <BurgerMenu />}
           </NavbarList>
         </div>
       </Navbar>
