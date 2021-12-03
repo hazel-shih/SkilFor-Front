@@ -27,6 +27,7 @@ const Loading = styled.div`
   justify-content: center;
   font-size: 24px;
   text-align: center;
+  z-index: 10;
 `;
 
 function App() {
