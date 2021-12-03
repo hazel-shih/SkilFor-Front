@@ -24,6 +24,7 @@ export const ItemName = styled.p`
   margin-bottom: 10px;
 `;
 export const ItemValue = styled(ItemName)`
+  overflow-wrap: break-word;
   margin-bottom: 0px;
   display: ${(props) => (props.show ? "block" : "none")};
 `;

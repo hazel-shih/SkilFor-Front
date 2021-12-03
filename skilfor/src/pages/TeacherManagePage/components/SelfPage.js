@@ -18,17 +18,15 @@ import {
 import useEdit from "../hooks/useEdit";
 import AlertCard from "../../../components/AlertCard/AlertCard";
 import { updateTeacherInfos } from "../../../WebAPI";
+import { validateEmail } from "../../../utils";
 
 const formDataVerify = (formData) => {
   let errorArr = [];
   for (let question in formData) {
-    if (
-      (question === "username" ||
-        question === "avatar" ||
-        question === "contactEmail") &&
-      formData[question] === ""
-    ) {
-      errorArr.push(question);
+    if (formData[question] === "") errorArr.push(question);
+    if (question === "contactEmail" && !validateEmail(formData[question])) {
+      console.log(validateEmail(formData[question]));
+      errorArr.push("invalid email");
     }
   }
   return errorArr;
@@ -67,13 +65,22 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
       return setIsEditing(false);
     }
     let errorArr = formDataVerify(editContent);
-    if (errorArr.length > 0) {
-      setError(errorArr);
-      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    console.log(errorArr);
+    if (errorArr.length === 0) {
+      setIsEditing(false);
+      postTeacherInfos(setApiError, editContent);
+      setTeacherInfos(editContent);
+      return;
     }
-    setIsEditing(false);
-    postTeacherInfos(setApiError, editContent);
-    setTeacherInfos(editContent);
+    setError(errorArr);
+    if (errorArr.includes("invalid email")) {
+      if (errorArr.length > 1) {
+        return alert("尚有欄位未填寫，且 Contact Email 格式錯誤！");
+      } else {
+        return alert("Contact Email 格式錯誤！");
+      }
+    }
+    return alert("尚有欄位未填寫！");
   };
 
   const handleAlertOkClick = () => {
@@ -153,7 +160,10 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
             <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
-                error={error.includes("contactEmail")}
+                error={
+                  error.includes("contactEmail") ||
+                  error.includes("invalid email")
+                }
                 defaultValue={teacherInfos.contactEmail}
                 onChange={handleSelfInputChange}
                 id="contactEmail"
