@@ -143,7 +143,6 @@ export const getTeacherCourseInfos = async (setApiError) => {
 };
 
 export const registerNewCourse = async (setApiError, newCourseInfos) => {
-  console.log("register");
   let url = `${BASE_URL}/teacher/course/info`;
   const token = getAuthToken();
   try {

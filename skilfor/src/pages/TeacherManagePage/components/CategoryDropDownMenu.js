@@ -44,6 +44,7 @@ function CategoryDropDownMenu({
   setSelectedCourseInfos,
   setEditContent,
   setApiError,
+  setIsEditing,
 }) {
   const [selectOptions, setSelectOptions] = useState(null);
   useEffect(() => {
@@ -56,6 +57,7 @@ function CategoryDropDownMenu({
   }, [setApiError]);
   const selectedCategory = useRef(null);
   const handleSelectCategorySubmit = (e) => {
+    setIsEditing(false);
     if (!selectedCategory.current.value) return;
     let newCourseInfos = {
       category: CATEGORY_LIST[selectedCategory.current.value],

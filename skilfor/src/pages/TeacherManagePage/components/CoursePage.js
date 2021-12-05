@@ -189,6 +189,7 @@ function CoursePage({ apiError, setApiError }) {
       updatedCourseInfos = editContent;
       makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     }
+    updatedCourseInfos.category = CATEGORY_LIST[updatedCourseInfos.category];
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.category !== editContent.category) {
@@ -263,6 +264,7 @@ function CoursePage({ apiError, setApiError }) {
         setSelectedCourseInfos={setSelectedCourseInfos}
         setEditContent={setEditContent}
         setApiError={setApiError}
+        setIsEditing={setIsEditing}
       />
       <SectionText>目前擁有的課程</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (

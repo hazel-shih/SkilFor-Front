@@ -21,6 +21,5 @@ export const validateEmail = (email) => {
 };
 
 export const getKeyByValue = (object, value) => {
-  console.log(Object.keys(object).find((key) => object[key] === value));
   return Object.keys(object).find((key) => object[key] === value);
 };
