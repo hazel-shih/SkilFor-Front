@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Avatar from "../../components/Avatar";
 import teacherPic from "../../img/teacher.jpeg";
@@ -8,6 +9,7 @@ import SelfPage from "./components/SelfPage";
 import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 import useCheckToken from "./hooks/useCheckToken";
 import { getTeacherInfos } from "../../WebAPI.js";
+import AlertCard from "../../components/AlertCard/AlertCard";
 
 //styled component
 const TeacherManageWrapper = styled.section`
@@ -86,6 +88,7 @@ export const SubmitButton = styled(EditButton)`
 
 function TeacherManagePage() {
   useCheckToken();
+  const navigate = useNavigate();
   //個人資料或課程資料頁面
   const [page, setPage] = useState("self");
   //老師個人資訊
@@ -94,7 +97,7 @@ function TeacherManagePage() {
   useEffect(() => {
     const getData = async (setApiError) => {
       let json = await getTeacherInfos(setApiError);
-      if (json.errMessage) {
+      if (!json.success) {
         return setApiError("請先登入才能使用後台功能");
       }
       setTeacherInfos(json.data);
@@ -106,10 +109,27 @@ function TeacherManagePage() {
     const { id: currentPage } = e.target;
     setPage(currentPage);
   };
+  const handleAlertOkClick = () => {
+    setApiError(false);
+    if (apiError === "請先登入才能使用後台功能") {
+      navigate("/login");
+    } else {
+      navigate("/");
+    }
+    return;
+  };
   return (
     <TeacherManageWrapper>
       <PageTitle>後台管理</PageTitle>
       <TeacherManageContainer>
+        {apiError && (
+          <AlertCard
+            color="#A45D5D"
+            title="錯誤"
+            content={apiError}
+            handleAlertOkClick={handleAlertOkClick}
+          />
+        )}
         <UserInfoContainer>
           {teacherInfos && (
             <Avatar imgSrc={teacherPic} name={teacherInfos.username} />

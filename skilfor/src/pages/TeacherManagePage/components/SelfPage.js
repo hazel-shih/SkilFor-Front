@@ -16,7 +16,6 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
-import AlertCard from "../../../components/AlertCard/AlertCard";
 import { updateTeacherInfos } from "../../../WebAPI";
 import { validateEmail } from "../../../utils";
 
@@ -36,8 +35,7 @@ const postTeacherInfos = async (setApiError, editContent) => {
     return setApiError("請先登入才能使用後台功能");
   }
 };
-function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
-  const navigate = useNavigate();
+function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
   const [error, setError] = useState([]);
   const {
     isEditing,
@@ -80,26 +78,8 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiError }) {
     }
     return alert("尚有欄位未填寫！");
   };
-
-  const handleAlertOkClick = () => {
-    setApiError(false);
-    if (apiError === "請先登入才能使用後台功能") {
-      navigate("/login");
-    } else {
-      navigate("/");
-    }
-    return;
-  };
   return (
     <>
-      {apiError && (
-        <AlertCard
-          color="#A45D5D"
-          title="錯誤"
-          content={apiError}
-          handleAlertOkClick={handleAlertOkClick}
-        />
-      )}
       <EditContainer>
         <SectionText>個人資訊</SectionText>
         <RowContainer>

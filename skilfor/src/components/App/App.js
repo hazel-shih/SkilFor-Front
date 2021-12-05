@@ -14,7 +14,7 @@ import RegisterPage from "../../pages/RegisterPage";
 import TeacherCalendarPage from "../../pages/TeacherCalendarPage";
 import FilterPage from "../../pages/FilterPage";
 
-const Loading = styled.div`
+export const Loading = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -27,7 +27,7 @@ const Loading = styled.div`
   justify-content: center;
   font-size: 24px;
   text-align: center;
-  z-index: 10;
+  z-index: 5;
 `;
 
 function App() {

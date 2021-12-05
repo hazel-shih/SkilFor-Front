@@ -16,7 +16,13 @@ import {
 } from "./PageStyle";
 import PublishedRadiosContainer from "./PublishedRadiosContainer";
 import useEdit from "../hooks/useEdit";
-import { registerNewCourse, updateCourseInfos } from "../../../WebAPI";
+import {
+  registerNewCourse,
+  updateCourseInfos,
+  deleteCourse,
+} from "../../../WebAPI";
+import { CATEGORY_LIST } from "../Constant";
+import { getKeyByValue } from "../../../utils";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -95,14 +101,24 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
-const postCourseInfos = async (apiType, setApiError, updatedCourseInfos) => {
+const makeUpdateCourseApi = async (
+  apiType,
+  setApiError,
+  updatedCourseInfos
+) => {
   let json = await apiType(setApiError, updatedCourseInfos);
   if (json.errMessage) {
     return setApiError("請先登入才能使用後台功能");
   }
 };
+const makeDeleteCourseApi = async (setApiError, courseId) => {
+  let json = await deleteCourse(setApiError, courseId);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
 
-function CoursePage({ setApiError }) {
+function CoursePage({ apiError, setApiError }) {
   const { teacherId } = useParams();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
@@ -144,6 +160,7 @@ function CoursePage({ setApiError }) {
   }, [setEditContent, initState, setApiError]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
+    if (apiError) return;
     setIsEditing(false);
     const { id: categoryName } = e.target;
     let targetCourseInfos = courseInfos.find(
@@ -154,6 +171,7 @@ function CoursePage({ setApiError }) {
   };
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
+    if (apiError) return;
     let errorArr = formDataVerify(editContent);
     if (errorArr.length > 0) {
       setError(errorArr);
@@ -163,13 +181,14 @@ function CoursePage({ setApiError }) {
     if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
         ...editContent,
+        category: getKeyByValue(CATEGORY_LIST, editContent.category),
         audit: "pending",
       };
-      postCourseInfos(registerNewCourse, setApiError, updatedCourseInfos);
+      makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
     } else {
       updatedCourseInfos = editContent;
+      makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     }
-    postCourseInfos(updateCourseInfos, setApiError, updatedCourseInfos);
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.category !== editContent.category) {
@@ -201,7 +220,7 @@ function CoursePage({ setApiError }) {
       ...selectedCourseInfos,
       published: publishedValue === "true",
     };
-    postCourseInfos(updateCourseInfos, setApiError, newCourseInfos);
+    makeUpdateCourseApi(updateCourseInfos, setApiError, newCourseInfos);
     setSelectedCourseInfos(newCourseInfos);
     setCourseInfos(
       courseInfos.map((course) => {
@@ -219,13 +238,18 @@ function CoursePage({ setApiError }) {
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
     if (!confirmDelete) return;
+    if (
+      !(
+        selectedCourseInfos.courseName === "" ||
+        selectedCourseInfos.courseDescription === "" ||
+        selectedCourseInfos.price === ""
+      )
+    ) {
+      makeDeleteCourseApi(setApiError, selectedCourseInfos.id);
+    }
     let newCourseInfos = courseInfos.filter(
       (course) => course.category !== selectedCourseInfos.category
     );
-    if (newCourseInfos.length === 0) {
-      initState([]);
-      return setIsEditing(false);
-    }
     initState(newCourseInfos);
     setIsEditing(false);
   };

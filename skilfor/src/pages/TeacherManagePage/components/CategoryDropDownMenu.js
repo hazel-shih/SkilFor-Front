@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAllCategories } from "../../../WebAPI";
+import { CATEGORY_LIST } from "../Constant";
 
 const RowContainer = styled.div`
   display: flex;
@@ -57,7 +58,7 @@ function CategoryDropDownMenu({
   const handleSelectCategorySubmit = (e) => {
     if (!selectedCategory.current.value) return;
     let newCourseInfos = {
-      category: selectedCategory.current.value,
+      category: CATEGORY_LIST[selectedCategory.current.value],
       courseName: "",
       courseDescription: "",
       price: "",

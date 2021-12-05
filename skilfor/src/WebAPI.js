@@ -143,6 +143,7 @@ export const getTeacherCourseInfos = async (setApiError) => {
 };
 
 export const registerNewCourse = async (setApiError, newCourseInfos) => {
+  console.log("register");
   let url = `${BASE_URL}/teacher/course/info`;
   const token = getAuthToken();
   try {
@@ -163,7 +164,6 @@ export const registerNewCourse = async (setApiError, newCourseInfos) => {
 };
 
 export const updateCourseInfos = async (setApiError, newCourseInfos) => {
-  console.log(newCourseInfos);
   let url = `${BASE_URL}/teacher/course/info`;
   const token = getAuthToken();
   try {
@@ -175,7 +175,28 @@ export const updateCourseInfos = async (setApiError, newCourseInfos) => {
       },
       body: JSON.stringify(newCourseInfos),
     });
-    console.log(await res.json());
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+
+export const deleteCourse = async (setApiError, courseId) => {
+  let url = `${BASE_URL}/teacher/course/info`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id: courseId,
+      }),
+    });
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {

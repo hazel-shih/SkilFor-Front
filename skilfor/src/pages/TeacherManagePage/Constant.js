@@ -39,65 +39,17 @@ export const COURSE_LIST = [
   },
 ];
 
-export const CATEGORY_LIST = [
-  {
-    id: 1,
-    name: "coding",
-    displayName: "程式",
-  },
-  {
-    id: 2,
-    name: "music",
-    displayName: "音樂",
-  },
-  {
-    id: 3,
-    name: "language",
-    displayName: "語言",
-  },
-  {
-    id: 4,
-    name: "photography",
-    displayName: "攝影",
-  },
-  {
-    id: 5,
-    name: "art",
-    displayName: "藝術",
-  },
-  {
-    id: 6,
-    name: "design",
-    displayName: "設計",
-  },
-  {
-    id: 7,
-    name: "humanities",
-    displayName: "人文",
-  },
-  {
-    id: 8,
-    name: "promotion",
-    displayName: "行銷",
-  },
-  {
-    id: 9,
-    name: "invest",
-    displayName: "投資理財",
-  },
-  {
-    id: 10,
-    name: "careerSkill",
-    displayName: "職場技能",
-  },
-  {
-    id: 11,
-    name: "lifeStyle",
-    displayName: "生活品味",
-  },
-  {
-    id: 12,
-    name: "others",
-    displayName: "其他",
-  },
-];
+export const CATEGORY_LIST = {
+  programming: "程式",
+  music: "音樂",
+  language: "語言",
+  photography: "攝影",
+  art: "藝術",
+  design: "設計",
+  humanities: "人文",
+  promotion: "行銷",
+  invest: "投資理財",
+  careerSkill: "職場技能",
+  lifeStyle: "生活品味",
+  others: "其他",
+};

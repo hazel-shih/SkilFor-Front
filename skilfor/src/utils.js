@@ -19,3 +19,8 @@ export const validateEmail = (email) => {
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
+
+export const getKeyByValue = (object, value) => {
+  console.log(Object.keys(object).find((key) => object[key] === value));
+  return Object.keys(object).find((key) => object[key] === value);
+};
