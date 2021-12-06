@@ -34,12 +34,13 @@ function TeacherManageCalendar({ teacherId }) {
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     setAlertShow("add");
-    setSelectedDate({
+    let newEventTime = {
       year: dateDataObj.getFullYear(),
       month: dateDataObj.getMonth(),
       date: dateDataObj.getDate(),
       day: dateDataObj.getDay(),
-    });
+    };
+    setSelectedDate(newEventTime);
   };
 
   const handleEventClick = (e) => {
@@ -69,7 +70,7 @@ function TeacherManageCalendar({ teacherId }) {
     };
   };
 
-  // //點擊month week day
+  // // //點擊month week day
   // const handleViewChange = (e) => {
   //   console.log("handleViewChange: ", e);
   // };
