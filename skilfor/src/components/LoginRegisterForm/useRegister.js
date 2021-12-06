@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
 import { getMyUserData } from "../../WebAPI";
-import { AuthContext } from "../../contexts";
+import { AuthContext, AuthLoadingContext } from "../../contexts";
 
 export default function useRegister() {
-  const { setUser, setIsLoading } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
+  const { setIsLoading } = useContext(AuthLoadingContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [registerData, setRegisterData] = useState({

@@ -64,7 +64,7 @@ const NavItem = styled(Link)`
   }
 `;
 
-function Nav({ burgerRef, burgerContent, setBurgerContent }) {
+function Nav() {
   const { user, setUser } = useContext(AuthContext);
   const handleLogout = () => {
     setAuthToken("");
@@ -95,13 +95,7 @@ function Nav({ burgerRef, burgerContent, setBurgerContent }) {
                 <Icons.NavIcons.Question />
               </IconDiv>
             </NavItem>
-            {user && (
-              <BurgerMenu
-                burgerRef={burgerRef}
-                burgerContent={burgerContent}
-                setBurgerContent={setBurgerContent}
-              />
-            )}
+            {user && <BurgerMenu />}
           </NavbarList>
         </div>
       </Navbar>

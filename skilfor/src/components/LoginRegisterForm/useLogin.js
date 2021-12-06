@@ -2,10 +2,11 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, getMyUserData } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
-import { AuthContext } from "../../contexts";
+import { AuthContext, AuthLoadingContext } from "../../contexts";
 
 export default function useLogin() {
-  const { setUser, setIsLoading } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
+  const { setIsLoading } = useContext(AuthLoadingContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [loginData, setLoginData] = useState({

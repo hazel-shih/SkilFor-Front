@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
+import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import Avatar from "../../components/Avatar";
 import studentPic from "../../img/student.jpg";
+import { AuthBurgerContext } from "../../contexts";
 
 const Burger = styled.div`
   position: relative;
@@ -14,6 +17,17 @@ const BurgerBtn = styled.button`
   border: none;
   cursor: pointer;
   background-color: transparent;
+  color: ${(props) => props.theme.colors.grey_dark};
+  opacity: 1;
+  &:hover {
+    opacity: 0.7;
+  }
+  margin: 8px;
+  padding: 6px;
+  ${MEDIA_QUERY_SM} {
+    padding: 2px;
+    margin: 4px;
+  }
 `;
 
 const BurgerContent = styled.div`
@@ -44,7 +58,9 @@ const BurgerItem = styled(Link)`
   }
 `;
 
-function BurgerMenu({ burgerRef, burgerContent, setBurgerContent }) {
+function BurgerMenu() {
+  const { burgerRef, burgerContent, setBurgerContent } =
+    useContext(AuthBurgerContext);
   const handleBurgerToggle = () => {
     setBurgerContent(!burgerContent);
   };
