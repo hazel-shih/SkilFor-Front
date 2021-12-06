@@ -22,6 +22,7 @@ export const ColumnContainer = styled(RowContainer)`
   align-items: center;
 `;
 export const AlertContainer = styled.div`
+  width: 350px;
   position: absolute;
   left: 50%;
   top: 50%;

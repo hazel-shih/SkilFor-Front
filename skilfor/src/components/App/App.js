@@ -31,7 +31,7 @@ export const Loading = styled.div`
   justify-content: center;
   font-size: 24px;
   text-align: center;
-  z-index: 5;
+  z-index: 20;
 `;
 
 function App() {

@@ -191,8 +191,9 @@ export const MONTH_EVENTS = [
     start: "2021-12-09T18:00:00.000Z",
     end: "2021-12-09T18:30:00.000Z",
     resource: {
-      reserved: false,
-      studentNotes: null,
+      reserved: "HAZEL",
+      studentNotes:
+        "期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢",
       eventColor: "#A9333A",
       timePeriod: "2:00 ~ 2:30",
     },
