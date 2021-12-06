@@ -1,16 +1,29 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import CourseInfosForm from "./CourseInfosForm";
 import happy from "../../../img/happy.png";
 import sad from "../../../img/sad.png";
 import { nanoid } from "nanoid";
-import { CATEGORY_LIST, COURSE_LIST } from "../Constant";
-import { sleep } from "../../../utils";
+import { getTeacherCourseInfos } from "../../../WebAPI";
+import CategoryDropDownMenu from "./CategoryDropDownMenu";
+import {
+  EditContainer,
+  SectionText,
+  RowContainer,
+  EditButton,
+  SubmitButton,
+} from "./PageStyle";
+import PublishedRadiosContainer from "./PublishedRadiosContainer";
+import useEdit from "../hooks/useEdit";
+import {
+  registerNewCourse,
+  updateCourseInfos,
+  deleteCourse,
+} from "../../../WebAPI";
+import { CATEGORY_LIST } from "../Constant";
+import { getKeyByValue } from "../../../utils";
 
-export const RowContainer = styled.div`
-  display: flex;
-`;
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,87 +54,13 @@ const PassText = styled.p`
       : props.theme.colors.warn};
   font-size: 1.1rem;
 `;
-const RadiosContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-`;
-const RadioContainer = styled(RowContainer)`
-  align-items: center;
-  margin-bottom: 5px;
-`;
-const RadioInput = styled.input`
-  width: 20px;
-  height: 15px;
-`;
-
-const RadioLabel = styled.label`
-  color: ${(props) => props.theme.colors.grey_dark};
-  margin-left: 5px;
-`;
-const PublishedContainer = ({ handleRadioClick, published }) => {
-  return (
-    <RadiosContainer>
-      <RadioContainer>
-        <RadioInput
-          onClick={handleRadioClick}
-          name="published"
-          type="radio"
-          id="true"
-          defaultChecked={published}
-        />
-        <RadioLabel htmlFor="true">一切都 OK！發布至前台</RadioLabel>
-      </RadioContainer>
-      <RadioContainer>
-        <RadioInput
-          defaultChecked={!published}
-          onClick={handleRadioClick}
-          name="published"
-          type="radio"
-          id="false"
-        />
-        <RadioLabel htmlFor="false">還有資訊需要編輯，暫時不發布</RadioLabel>
-      </RadioContainer>
-    </RadiosContainer>
-  );
-};
-
-export const EditContainer = styled(RowContainer)`
-  justify-content: space-between;
-  align-items: baseline;
-  margin-top: 10px;
-`;
-
-export const EditButton = styled.button`
-  background: ${(props) => props.theme.colors.green_dark};
-  border: none;
-  color: white;
-  font-size: 1rem;
-  height: fit-content;
-  padding: 7px 14px;
-  cursor: pointer;
-  :hover {
-    opacity: 0.8;
-  }
-`;
-
-export const SubmitButton = styled(EditButton)`
-  margin-left: 15px;
-`;
-
 const DeleteButton = styled(EditButton)`
   margin-right: 15px;
 `;
-
-export const SectionText = styled.h3`
-  font-size: 1.3rem;
-  color: ${(props) => props.theme.colors.green_dark};
-  margin: 10px 0 20px 0;
-`;
-
 const CourseBtnsContainer = styled(RowContainer)`
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   align-items: center;
+  flex-wrap: wrap;
 `;
 const CourseButton = styled.button`
   padding: 6px 15px;
@@ -131,6 +70,7 @@ const CourseButton = styled.button`
   border: 2px solid ${(props) => props.theme.colors.grey_dark};
   background: white;
   cursor: pointer;
+  margin-bottom: 15px;
   :not(:last-child) {
     margin-right: 20px;
   }
@@ -138,7 +78,6 @@ const CourseButton = styled.button`
     props.isClick &&
     `background: ${props.theme.colors.green_dark}; color:white; border:2px solid ${props.theme.colors.green_dark}`}
 `;
-
 const GoToCalendar = styled(Link)`
   color: ${(props) => props.theme.colors.grey_dark};
   cursor: pointer;
@@ -148,200 +87,191 @@ const GoToCalendar = styled(Link)`
     opacity: 0.8;
   }
 `;
-const SelectContainer = styled(RowContainer)``;
-const SelectBar = styled.select`
-  padding: 5px;
-  font-size: 1rem;
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  color: ${(props) => props.theme.colors.grey_dark};
-`;
-const ChooseCategoryButton = styled.button`
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  padding: 8px;
-  font-size: 0.8rem;
-  border-left: none;
-  cursor: pointer;
-  background: ${(props) => props.theme.colors.grey_dark};
-  color: white;
-  :hover {
-    opacity: 0.85;
+const formDataVerify = (formData) => {
+  let errorArr = [];
+  for (let question in formData) {
+    if (
+      (question === "courseName" ||
+        question === "courseDescription" ||
+        question === "price") &&
+      formData[question] === ""
+    ) {
+      errorArr.push(question);
+    }
   }
-`;
-const SelectCategory = ({ courseInfos, setCourseInfos }) => {
-  const [selectOptions, setSelectOptions] = useState(null);
-  const makeSelectOptions = useCallback((categoryArr, courseArr) => {
-    if (!categoryArr || !courseArr) return;
-    let temp = [];
-    for (let i = 0; i < courseArr.length; i++) {
-      temp.push(courseArr[i].category);
-    }
-    let result = categoryArr.filter((category) => !temp.includes(category));
-    return result;
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      setSelectOptions(CATEGORY_LIST);
-    }
-    fetchData();
-  }, []);
-  const selectedCategory = useRef(null);
-  const handleSelectCategorySubmit = (e) => {
-    if (!selectedCategory.current.value) return;
-    let newCourseInfos = {
-      id: nanoid(),
-      category: selectedCategory.current.value,
-      courseName: "",
-      courseIntro: "",
-      price: "",
-      audit: false,
-      published: false,
-    };
-    setCourseInfos([newCourseInfos, ...courseInfos]);
-  };
-  return (
-    <SelectContainer>
-      <RowContainer>
-        <SelectBar id="addCategory" ref={selectedCategory}>
-          <option value="">請選擇一個課程領域</option>
-          {selectOptions &&
-            courseInfos &&
-            makeSelectOptions(selectOptions, courseInfos).map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-          {courseInfos &&
-            courseInfos.length === 0 &&
-            selectOptions.map((category) => (
-              <option key={category}>{category}</option>
-            ))}
-        </SelectBar>
-        <ChooseCategoryButton onClick={handleSelectCategorySubmit}>
-          新增
-        </ChooseCategoryButton>
-      </RowContainer>
-    </SelectContainer>
-  );
+  return errorArr;
+};
+const makeUpdateCourseApi = async (
+  apiType,
+  setApiError,
+  updatedCourseInfos
+) => {
+  let json = await apiType(setApiError, updatedCourseInfos);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
+const makeDeleteCourseApi = async (setApiError, courseId) => {
+  let json = await deleteCourse(setApiError, courseId);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
 };
 
-function CoursePage() {
+function CoursePage({ apiError, setApiError }) {
   const { teacherId } = useParams();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
   const [selectedCourseInfos, setSelectedCourseInfos] = useState(null);
-  //課程資訊是否為編輯狀態
-  const [isEditingCourse, setIsEditingCourse] = useState(false);
-  //編輯課程內容
-  const [editCourseContent, setEditCourseContent] = useState(null);
+  //錯誤狀態
+  const [error, setError] = useState([]);
+  //處理編輯狀態
+  const {
+    isEditing,
+    setIsEditing,
+    editContent,
+    setEditContent,
+    handleEditClick,
+  } = useEdit(setError, selectedCourseInfos);
+  //初始化 state
+  const initState = useCallback(
+    (dataArr) => {
+      setCourseInfos(dataArr);
+      setSelectedCourseInfos(dataArr[0]);
+      setEditContent(dataArr[0]);
+    },
+    [setEditContent]
+  );
   //拿取 course infos 資料
   useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      if (COURSE_LIST) {
-        setCourseInfos(COURSE_LIST);
-      } else {
-        setCourseInfos([]);
+    const getData = async (setApiError) => {
+      let json = await getTeacherCourseInfos(setApiError);
+      if (!json.success) {
+        return setApiError("請先登入才能使用後台功能");
       }
-    }
-    fetchData();
-  }, []);
-  //設定最初被選定的課程按鈕
-  useEffect(() => {
-    if (courseInfos && courseInfos.length !== 0) {
-      setSelectedCourseInfos(courseInfos[0]);
-      setEditCourseContent(courseInfos[0]);
-    }
-    if (courseInfos && courseInfos.length === 0) {
-      setEditCourseContent(null);
-      setSelectedCourseInfos(null);
-    }
-  }, [courseInfos]);
+      setCourseInfos(json.data);
+      if (json.data.length > 0) {
+        setSelectedCourseInfos(json.data[0]);
+        setEditContent(json.data[0]);
+      }
+    };
+    getData(setApiError);
+  }, [setEditContent, initState, setApiError]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
-    setIsEditingCourse(false);
+    if (apiError) return;
+    setIsEditing(false);
     const { id: categoryName } = e.target;
     let targetCourseInfos = courseInfos.find(
       (course) => course.category === categoryName
     );
     setSelectedCourseInfos(targetCourseInfos);
-    setEditCourseContent(targetCourseInfos);
+    setEditContent(targetCourseInfos);
   };
-  //當編輯課程資訊按鈕被按時
-  const handleCourseEditClick = () => setIsEditingCourse(!isEditingCourse);
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
-    setIsEditingCourse(false);
+    if (apiError) return;
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length > 0) {
+      setError(errorArr);
+      return alert("尚有欄位未填答，請填寫完後再送出資料");
+    }
     let updatedCourseInfos;
-    if (editCourseContent.audit === "fail" || !editCourseContent.audit) {
+    if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
-        ...editCourseContent,
+        ...editContent,
+        category: getKeyByValue(CATEGORY_LIST, editContent.category),
         audit: "pending",
       };
+      makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
     } else {
-      updatedCourseInfos = editCourseContent;
+      updatedCourseInfos = editContent;
+      makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     }
+    updatedCourseInfos.category = CATEGORY_LIST[updatedCourseInfos.category];
     setCourseInfos(
       courseInfos.map((course) => {
-        if (course.id !== editCourseContent.id) {
+        if (course.category !== editContent.category) {
           return course;
         } else {
           return updatedCourseInfos;
         }
       })
     );
-    //將更改後的課程資訊 put 給後端
-    console.log("PUT", updatedCourseInfos.id, updatedCourseInfos);
+    setSelectedCourseInfos(updatedCourseInfos);
+    setIsEditing(false);
   };
   //當是否發布到前台被按時
-  const handleRadioClick = (e) => {
-    const { id: publishedValue } = e.target;
+  const handleRadioChange = (e) => {
+    const { value: publishedValue } = e.target;
+    if (selectedCourseInfos.published === (publishedValue === "true")) return;
+    let confirmAlert;
+    if (publishedValue === "true") {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊上架到前台嗎？(上架到前台後，任何人都可以瀏覽你的課程頁面，並可預約你的課程)"
+      );
+    } else {
+      confirmAlert = window.confirm(
+        "確定要將課程資訊暫時隱藏嗎？(從前台隱藏後，其他人將無法瀏覽你的課程頁面，也無法預約你的課程)"
+      );
+    }
+    if (!confirmAlert) return;
+    let newCourseInfos = {
+      ...selectedCourseInfos,
+      published: publishedValue === "true",
+    };
+    makeUpdateCourseApi(updateCourseInfos, setApiError, newCourseInfos);
+    setSelectedCourseInfos(newCourseInfos);
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.id !== selectedCourseInfos.id) {
           return course;
         } else {
-          let updatedCourseInfos = {
-            ...course,
-            published: publishedValue === "true",
-          };
-          return updatedCourseInfos;
+          return newCourseInfos;
         }
       })
     );
-    //將是否發布到前台的資料 patch 給後端
-    console.log("PATCH", selectedCourseInfos.id, publishedValue === "true");
   };
   //當刪除課程被按時
   const handleCourseDeleteClick = (e) => {
     let confirmDelete = window.confirm(
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
-    if (confirmDelete) {
-      setCourseInfos(
-        courseInfos.filter((course) => course.id !== selectedCourseInfos.id)
-      );
-    } else {
-      return;
+    if (!confirmDelete) return;
+    if (
+      !(
+        selectedCourseInfos.courseName === "" ||
+        selectedCourseInfos.courseDescription === "" ||
+        selectedCourseInfos.price === ""
+      )
+    ) {
+      makeDeleteCourseApi(setApiError, selectedCourseInfos.id);
     }
+    let newCourseInfos = courseInfos.filter(
+      (course) => course.category !== selectedCourseInfos.category
+    );
+    initState(newCourseInfos);
+    setIsEditing(false);
   };
   return (
     <>
       <SectionText>新增課程</SectionText>
-      <SelectCategory
+      <CategoryDropDownMenu
         show={true}
         setCourseInfos={setCourseInfos}
         courseInfos={courseInfos}
         setSelectedCourseInfos={setSelectedCourseInfos}
+        setEditContent={setEditContent}
+        setApiError={setApiError}
+        setIsEditing={setIsEditing}
       />
-      <EditContainer>
-        <SectionText>目前擁有的課程</SectionText>
-      </EditContainer>
+      <SectionText>目前擁有的課程</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (
         <CourseBtnsContainer>
           {courseInfos.map((course) => (
             <CourseButton
-              key={course.id}
+              key={nanoid()}
               id={course.category}
               isClick={selectedCourseInfos.category === course.category}
               onClick={handleCourseBtnClick}
@@ -391,44 +321,44 @@ function CoursePage() {
           )}
           <EditContainer>
             <SectionText>課程資訊</SectionText>
-            {selectedCourseInfos && (
-              <RowContainer>
-                {!isEditingCourse && (
-                  <DeleteButton onClick={handleCourseDeleteClick}>
-                    刪除課程
-                  </DeleteButton>
-                )}
-                {selectedCourseInfos.audit !== "pending" && (
-                  <EditButton onClick={handleCourseEditClick}>
-                    {isEditingCourse ? "取消編輯" : "編輯課程資訊"}
-                  </EditButton>
-                )}
-                {isEditingCourse &&
-                  (selectedCourseInfos.audit === "fail" ||
-                    !selectedCourseInfos.audit) && (
-                    <SubmitButton onClick={handleCourseSubmitClick}>
-                      送審
-                    </SubmitButton>
-                  )}
-                {isEditingCourse && selectedCourseInfos.audit === "success" && (
+            <RowContainer>
+              {(isEditing || selectedCourseInfos.audit === "pending") && (
+                <DeleteButton onClick={handleCourseDeleteClick}>
+                  刪除課程
+                </DeleteButton>
+              )}
+              {selectedCourseInfos.audit !== "pending" && (
+                <EditButton onClick={handleEditClick}>
+                  {isEditing ? "取消編輯" : "編輯課程資訊"}
+                </EditButton>
+              )}
+              {isEditing &&
+                (selectedCourseInfos.audit === "fail" ||
+                  !selectedCourseInfos.audit) && (
                   <SubmitButton onClick={handleCourseSubmitClick}>
-                    完成編輯
+                    送審
                   </SubmitButton>
                 )}
-              </RowContainer>
-            )}
+              {isEditing && selectedCourseInfos.audit === "success" && (
+                <SubmitButton onClick={handleCourseSubmitClick}>
+                  完成編輯
+                </SubmitButton>
+              )}
+            </RowContainer>
           </EditContainer>
           <CourseInfosForm
-            isEditing={isEditingCourse}
+            isEditing={isEditing}
             courseInfos={selectedCourseInfos}
-            editCourseContent={editCourseContent}
-            setEditCourseContent={setEditCourseContent}
+            editContent={editContent}
+            setEditContent={setEditContent}
+            error={error}
+            setError={setError}
           />
           {selectedCourseInfos.audit === "success" && (
             <>
               <SectionText>是否發布課程頁面</SectionText>
-              <PublishedContainer
-                handleRadioClick={handleRadioClick}
+              <PublishedRadiosContainer
+                handleRadioChange={handleRadioChange}
                 published={selectedCourseInfos.published}
               />
             </>
