@@ -2,8 +2,12 @@ import styled from "styled-components";
 import Nav from "../Nav";
 import Footer from "../Footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { AuthContext } from "../../contexts";
+import { useState, useEffect, useRef } from "react";
+import {
+  AuthContext,
+  AuthLoadingContext,
+  AuthBurgerContext,
+} from "../../contexts";
 import { getMyUserData } from "../../WebAPI";
 import { getAuthToken } from "../../utils";
 import TeacherManagePage from "../../pages/TeacherManagePage";
@@ -49,33 +53,62 @@ function App() {
     });
   }, []);
 
+  const [burgerContent, setBurgerContent] = useState(false);
+  const burgerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (burgerRef.current && !burgerRef.current.contains(e.target)) {
+        setBurgerContent(false);
+      }
+    };
+    document
+      .querySelector("#Outside")
+      .addEventListener("click", handleClickOutside);
+    return () => {
+      document
+        .querySelector("#Outside")
+        .removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, setUser, isLoading, setIsLoading }}>
-      <Router>
-        <>
-          {!isLoading && <Nav />}
-          {isLoading && <Loading>載入中...</Loading>}
-          <Routes>
-            <Route exact path="/login" element={<LoginPage />}></Route>
-            <Route exact path="/register" element={<RegisterPage />}></Route>
-            <Route exact path="/" element={<HomePage />}></Route>
-            <Route exact path="/filter" element={<FilterPage />}></Route>
-            <Route
-              path="/teacher/manage/:teacherId"
-              element={<TeacherManagePage />}
-            />
-            <Route
-              path="/teacher/profile/:teacherId"
-              element={<TeacherProfilePage />}
-            />
-            <Route
-              path="/teacher/calendar/:teacherId"
-              element={<TeacherCalendarPage />}
-            />
-          </Routes>
-          <Footer />
-        </>
-      </Router>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <AuthLoadingContext.Provider value={{ isLoading, setIsLoading }}>
+        <AuthBurgerContext.Provider
+          value={{ burgerRef, burgerContent, setBurgerContent }}
+        >
+          <Router>
+            <div id="Outside">
+              {isLoading && <Loading>載入中...</Loading>}
+              <Nav />
+              <Routes>
+                <Route exact path="/login" element={<LoginPage />}></Route>
+                <Route
+                  exact
+                  path="/register"
+                  element={<RegisterPage />}
+                ></Route>
+                <Route exact path="/" element={<HomePage />}></Route>
+                <Route exact path="/filter" element={<FilterPage />}></Route>
+                <Route
+                  path="/teacher/manage/:teacherId"
+                  element={<TeacherManagePage />}
+                />
+                <Route
+                  path="/teacher/profile/:teacherId"
+                  element={<TeacherProfilePage />}
+                />
+                <Route
+                  path="/teacher/calendar/:teacherId"
+                  element={<TeacherCalendarPage />}
+                />
+              </Routes>
+              <Footer />
+            </div>
+          </Router>
+        </AuthBurgerContext.Provider>
+      </AuthLoadingContext.Provider>
     </AuthContext.Provider>
   );
 }
