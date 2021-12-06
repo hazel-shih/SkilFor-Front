@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
 import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
+import { MONTH_EVENTS } from "../Calendar/constants";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
 
 function TeacherManageCalendar({ teacherId }) {
-  console.log(moment("2021-12-06"));
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
@@ -22,6 +22,9 @@ function TeacherManageCalendar({ teacherId }) {
     date: "",
     day: "",
   });
+  useEffect(() => {
+    setAllEvents(MONTH_EVENTS);
+  }, []);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     setAlertShow("add");
