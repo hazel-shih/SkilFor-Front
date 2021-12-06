@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import {
   EditContainer,
   SectionText,
@@ -16,24 +15,26 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
-import AlertCard from "../../../components/AlertCard/AlertCard";
+import { updateTeacherInfos } from "../../../WebAPI";
+import { validateEmail } from "../../../utils";
 
 const formDataVerify = (formData) => {
   let errorArr = [];
   for (let question in formData) {
-    if (
-      (question === "name" ||
-        question === "avatar" ||
-        question === "contactEmail") &&
-      formData[question] === ""
-    ) {
-      errorArr.push(question);
+    if (formData[question] === "") errorArr.push(question);
+    if (question === "contactEmail" && !validateEmail(formData[question])) {
+      errorArr.push("invalid email");
     }
   }
   return errorArr;
 };
-function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
-  const navigate = useNavigate();
+const postTeacherInfos = async (setApiError, editContent) => {
+  let json = await updateTeacherInfos(setApiError, editContent);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
+function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
   const [error, setError] = useState([]);
   const {
     isEditing,
@@ -46,62 +47,38 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
   useEffect(() => {
     setEditContent(teacherInfos);
   }, [teacherInfos, setEditContent]);
-  //完成編輯個人資訊按鈕被按時
-  const handleSelfSubmitClick = () => {
-    let errorArr = formDataVerify(editContent);
-    if (errorArr.length > 0) {
-      setError(errorArr);
-      return alert("尚有欄位未填答，請填寫完後再送出資料");
-    }
-    setTeacherInfos(editContent);
-    setIsEditing(false);
-    //將更改後的課程資訊 post 給後端
-    console.log("PUT", editContent);
-  };
+  //編輯欄位時
   const handleSelfInputChange = (e) => {
     const { id: inputName, value } = e.target;
-    switch (inputName) {
-      case "name":
-        setEditContent({
-          ...editContent,
-          name: value,
-        });
-        break;
-      case "avatar":
-        setEditContent({
-          ...editContent,
-          avatar: value,
-        });
-        break;
-      case "contactEmail":
-        setEditContent({
-          ...editContent,
-          contactEmail: value,
-        });
-        break;
-      default:
-        return editContent;
-    }
+    setEditContent({
+      ...editContent,
+      [inputName]: value,
+    });
   };
-  const handleAlertOkClick = () => {
-    setApiEror(false);
-    if (apiError === "請先登入才能使用後台功能") {
-      navigate("/login");
-    } else {
-      navigate("/");
+  //完成編輯個人資訊按鈕被按時
+  const handleSelfSubmitClick = () => {
+    if (editContent === teacherInfos) {
+      return setIsEditing(false);
     }
-    return;
+    let errorArr = formDataVerify(editContent);
+    if (errorArr.length === 0) {
+      setIsEditing(false);
+      postTeacherInfos(setApiError, editContent);
+      setTeacherInfos(editContent);
+      return;
+    }
+    setError(errorArr);
+    if (errorArr.includes("invalid email")) {
+      if (errorArr.length > 1) {
+        return alert("尚有欄位未填寫，且 Contact Email 格式錯誤！");
+      } else {
+        return alert("Contact Email 格式錯誤！");
+      }
+    }
+    return alert("尚有欄位未填寫！");
   };
   return (
     <>
-      {apiError && (
-        <AlertCard
-          color="#A45D5D"
-          title="錯誤"
-          content={apiError}
-          handleAlertOkClick={handleAlertOkClick}
-        />
-      )}
       <EditContainer>
         <SectionText>個人資訊</SectionText>
         <RowContainer>
@@ -124,10 +101,10 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
             <ItemValue show={!isEditing}>{teacherInfos.username}</ItemValue>
             {isEditing && (
               <EditInput
-                error={error.includes("name")}
+                error={error.includes("username")}
                 defaultValue={teacherInfos.username}
                 onChange={handleSelfInputChange}
-                id="name"
+                id="username"
               />
             )}
           </ItemBottom>
@@ -160,7 +137,10 @@ function SelfPage({ teacherInfos, setTeacherInfos, apiError, setApiEror }) {
             <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
             {isEditing && teacherInfos && (
               <EditInput
-                error={error.includes("contactEmail")}
+                error={
+                  error.includes("contactEmail") ||
+                  error.includes("invalid email")
+                }
                 defaultValue={teacherInfos.contactEmail}
                 onChange={handleSelfInputChange}
                 id="contactEmail"

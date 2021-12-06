@@ -5,8 +5,7 @@ import CourseInfosForm from "./CourseInfosForm";
 import happy from "../../../img/happy.png";
 import sad from "../../../img/sad.png";
 import { nanoid } from "nanoid";
-import { COURSE_LIST } from "../Constant";
-import { sleep } from "../../../utils";
+import { getTeacherCourseInfos } from "../../../WebAPI";
 import CategoryDropDownMenu from "./CategoryDropDownMenu";
 import {
   EditContainer,
@@ -17,6 +16,13 @@ import {
 } from "./PageStyle";
 import PublishedRadiosContainer from "./PublishedRadiosContainer";
 import useEdit from "../hooks/useEdit";
+import {
+  registerNewCourse,
+  updateCourseInfos,
+  deleteCourse,
+} from "../../../WebAPI";
+import { CATEGORY_LIST } from "../Constant";
+import { getKeyByValue } from "../../../utils";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -86,7 +92,7 @@ const formDataVerify = (formData) => {
   for (let question in formData) {
     if (
       (question === "courseName" ||
-        question === "courseIntro" ||
+        question === "courseDescription" ||
         question === "price") &&
       formData[question] === ""
     ) {
@@ -95,8 +101,24 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
+const makeUpdateCourseApi = async (
+  apiType,
+  setApiError,
+  updatedCourseInfos
+) => {
+  let json = await apiType(setApiError, updatedCourseInfos);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
+const makeDeleteCourseApi = async (setApiError, courseId) => {
+  let json = await deleteCourse(setApiError, courseId);
+  if (json.errMessage) {
+    return setApiError("請先登入才能使用後台功能");
+  }
+};
 
-function CoursePage() {
+function CoursePage({ apiError, setApiError }) {
   const { teacherId } = useParams();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
@@ -123,18 +145,22 @@ function CoursePage() {
   );
   //拿取 course infos 資料
   useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      if (COURSE_LIST.length > 0) {
-        initState(COURSE_LIST);
-      } else {
-        setCourseInfos([]);
+    const getData = async (setApiError) => {
+      let json = await getTeacherCourseInfos(setApiError);
+      if (!json.success) {
+        return setApiError("請先登入才能使用後台功能");
       }
-    }
-    fetchData();
-  }, [setEditContent, initState]);
+      setCourseInfos(json.data);
+      if (json.data.length > 0) {
+        setSelectedCourseInfos(json.data[0]);
+        setEditContent(json.data[0]);
+      }
+    };
+    getData(setApiError);
+  }, [setEditContent, initState, setApiError]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
+    if (apiError) return;
     setIsEditing(false);
     const { id: categoryName } = e.target;
     let targetCourseInfos = courseInfos.find(
@@ -145,6 +171,7 @@ function CoursePage() {
   };
   //當編輯課程完成按鈕被按時
   const handleCourseSubmitClick = () => {
+    if (apiError) return;
     let errorArr = formDataVerify(editContent);
     if (errorArr.length > 0) {
       setError(errorArr);
@@ -154,11 +181,15 @@ function CoursePage() {
     if (editContent.audit === "fail" || !editContent.audit) {
       updatedCourseInfos = {
         ...editContent,
+        category: getKeyByValue(CATEGORY_LIST, editContent.category),
         audit: "pending",
       };
+      makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
     } else {
       updatedCourseInfos = editContent;
+      makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     }
+    updatedCourseInfos.category = CATEGORY_LIST[updatedCourseInfos.category];
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.category !== editContent.category) {
@@ -168,10 +199,8 @@ function CoursePage() {
         }
       })
     );
-    setIsEditing(false);
     setSelectedCourseInfos(updatedCourseInfos);
-    //將更改後的課程資訊 put 給後端
-    console.log("PUT", updatedCourseInfos);
+    setIsEditing(false);
   };
   //當是否發布到前台被按時
   const handleRadioChange = (e) => {
@@ -188,25 +217,21 @@ function CoursePage() {
       );
     }
     if (!confirmAlert) return;
-    setSelectedCourseInfos({
+    let newCourseInfos = {
       ...selectedCourseInfos,
       published: publishedValue === "true",
-    });
+    };
+    makeUpdateCourseApi(updateCourseInfos, setApiError, newCourseInfos);
+    setSelectedCourseInfos(newCourseInfos);
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.id !== selectedCourseInfos.id) {
           return course;
         } else {
-          let updatedCourseInfos = {
-            ...course,
-            published: publishedValue === "true",
-          };
-          return updatedCourseInfos;
+          return newCourseInfos;
         }
       })
     );
-    //將是否發布到前台的資料 patch 給後端
-    console.log("PATCH", publishedValue === "true");
   };
   //當刪除課程被按時
   const handleCourseDeleteClick = (e) => {
@@ -214,13 +239,18 @@ function CoursePage() {
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
     if (!confirmDelete) return;
+    if (
+      !(
+        selectedCourseInfos.courseName === "" ||
+        selectedCourseInfos.courseDescription === "" ||
+        selectedCourseInfos.price === ""
+      )
+    ) {
+      makeDeleteCourseApi(setApiError, selectedCourseInfos.id);
+    }
     let newCourseInfos = courseInfos.filter(
       (course) => course.category !== selectedCourseInfos.category
     );
-    if (newCourseInfos.length === 0) {
-      initState([]);
-      return setIsEditing(false);
-    }
     initState(newCourseInfos);
     setIsEditing(false);
   };
@@ -233,6 +263,8 @@ function CoursePage() {
         courseInfos={courseInfos}
         setSelectedCourseInfos={setSelectedCourseInfos}
         setEditContent={setEditContent}
+        setApiError={setApiError}
+        setIsEditing={setIsEditing}
       />
       <SectionText>目前擁有的課程</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (
