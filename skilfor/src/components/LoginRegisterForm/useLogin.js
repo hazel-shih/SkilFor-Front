@@ -21,8 +21,7 @@ export default function useLogin() {
 
     for (const [inputName, value] of Object.entries(loginData)) {
       if (value.trim().length === 0) {
-        //if (value === "") {
-        if (inputName === "登入用 email") {
+        if (inputName === "email") {
           setErrorMessage("請輸入登入用 Email");
         }
         if (inputName === "password") {
