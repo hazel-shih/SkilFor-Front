@@ -76,3 +76,78 @@ export const NEW_EVENT_INIT = {
     eventColor: "",
   },
 };
+
+export const MONTH_EVENTS = [
+  {
+    title: "一起來學 Ruby 囉！",
+    start: "2021-12-07T16:00:00.000Z",
+    end: "2021-12-07T16:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#22577A",
+      timePeriod: "0:00 ~ 0:30",
+    },
+    id: "0A3Nh5BAcP1wPq0Ty5maS",
+  },
+  {
+    title: "一起來學 Ruby 囉！",
+    start: "2021-12-08T16:00:00.000Z",
+    end: "2021-12-08T16:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#22577A",
+      timePeriod: "0:00 ~ 0:30",
+    },
+    id: "9PAMp2Hw91F4z35v2khgc",
+  },
+  {
+    title: "一起來學 Ruby 囉！",
+    start: "2021-12-09T16:00:00.000Z",
+    end: "2021-12-09T16:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#22577A",
+      timePeriod: "0:00 ~ 0:30",
+    },
+    id: "F8xCJqyHS4Pa6KpsAVsvJ",
+  },
+  {
+    title: "一起來學 Ruby 囉！",
+    start: "2021-12-10T16:00:00.000Z",
+    end: "2021-12-10T16:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#22577A",
+      timePeriod: "0:00 ~ 0:30",
+    },
+    id: "K_39oVlveRBdCQNDO6L_J",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: "2021-12-07T18:00:00.000Z",
+    end: "2021-12-07T18:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#A9333A",
+      timePeriod: "2:00 ~ 2:30",
+    },
+    id: "aUOdLoGG2rQ8ehqTKPZ9_",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: "2021-12-08T18:00:00.000Z",
+    end: "2021-12-08T18:30:00.000Z",
+    resource: {
+      teacherId: "8",
+      reserved: false,
+      eventColor: "#A9333A",
+      timePeriod: "2:00 ~ 2:30",
+    },
+    id: "kpzO6jCIMCc4sT2VgOlme",
+  },
+];

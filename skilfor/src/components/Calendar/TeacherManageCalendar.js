@@ -11,6 +11,7 @@ const CalendarContainer = styled.div`
 `;
 
 function TeacherManageCalendar({ teacherId }) {
+  console.log(moment("2021-12-06"));
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);

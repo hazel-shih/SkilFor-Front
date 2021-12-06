@@ -187,6 +187,7 @@ function AddTaskAlertCard({
     ]);
     setAlertShow(null);
   };
+  console.log(allEvents);
 
   return (
     <AlertContainer color="#75A29E">
