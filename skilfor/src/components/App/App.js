@@ -31,7 +31,7 @@ const Loading = styled.div`
   justify-content: center;
   font-size: 24px;
   text-align: center;
-  z-index: 10;
+  z-index: 11;
 `;
 
 function App() {
@@ -80,8 +80,8 @@ function App() {
         >
           <Router>
             <div id="Outside">
-              {!isLoading && <Nav />}
               {isLoading && <Loading>載入中...</Loading>}
+              <Nav />
               <Routes>
                 <Route exact path="/login" element={<LoginPage />}></Route>
                 <Route
