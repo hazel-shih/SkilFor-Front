@@ -80,6 +80,10 @@ const BtnDiv = styled.div`
   justify-content: space-between;
   align-items: flex-end;
   padding: 2px 8px 2px 0px;
+  height: 100px;
+  ${MEDIA_QUERY_SM} {
+    height: 65px;
+  }
 `;
 
 const CoursePrice = styled.p`

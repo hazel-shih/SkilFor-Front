@@ -1,10 +1,14 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import TeacherFilterResult from "../FilterPage/TeacherFilterResult";
-import { CATEGORY_LIST, COURSE_LIST } from "./Constant";
-import { useEffect, useRef } from "react";
-import { sleep } from "../../utils";
+import { useNavigate } from "react-router-dom";
+import {
+  getAllCategories,
+  getSpecificCourse,
+  getAllCourses,
+} from "../../WebAPI";
+import AlertCard from "../../components/AlertCard/AlertCard";
 
 const Container = styled.div`
   padding: 120px 100px 160px 100px;
@@ -85,6 +89,11 @@ const DropdownMenu = styled.ul`
   list-style-type: none;
   width: 100%;
   z-index: 2;
+  overflow: scroll;
+  height: 180px;
+  ${MEDIA_QUERY_SM} {
+    height: 220px;
+  }
 `;
 
 const DropdownContent = styled.option`
@@ -118,6 +127,7 @@ const ResultList = styled.div`
 `;
 
 function FilterPage() {
+  const navigate = useNavigate();
   // 控制 dropdownMenu 出現與否
   const [dropdownMenu, setDropdownMenu] = useState(false);
   const handleDropdownMenuToggle = () => {
@@ -132,34 +142,99 @@ function FilterPage() {
     }
   };
 
-  // 點選 dropdown 後從資料庫拿目前有哪些 category
+  const [apiError, setApiError] = useState(false);
+  const [courseError, setCourseError] = useState(false);
+
   const [dropdownContent, setDropdownContent] = useState([]);
-  // 拿取某 category 的所有 result
-  const [results, setResults] = useState([]);
+
+  const [courseResults, setCourseResults] = useState([]);
+
+  const [currentCategoryName, setCurrentCategoryName] = useState("");
+  const [currentCategoryDisplayName, setCurrentCategoryDisplayName] =
+    useState("請選擇領域");
+
   useEffect(() => {
-    async function fetchData() {
-      await sleep(500);
-      setResults(COURSE_LIST);
-      setDropdownContent(CATEGORY_LIST);
+    async function getCategoryOptions(setApiError) {
+      let json = await getAllCategories(setApiError);
+      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      setDropdownContent(json.data);
+      console.log(json.data);
     }
-    fetchData();
-  }, [results, dropdownContent]);
+    getCategoryOptions(setApiError);
+  }, [setApiError, setDropdownContent]);
 
+  useEffect(() => {
+    const getAllCourseResults = async (currentCategoryName, setApiError) => {
+      let json = await getAllCourses(setApiError);
+      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      console.log(json.data);
+      setCourseResults(json.data);
+    };
+    getAllCourseResults(setApiError);
+  }, [setApiError, setCourseResults]);
+
+  useEffect(() => {
+    const getSpecificCourseResults = async (
+      currentCategoryName,
+      setApiError
+    ) => {
+      let json = await getSpecificCourse(currentCategoryName, setApiError);
+      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      if (json.data.indexOf("目前尚未有課程") === 0) {
+        return setCourseError("目前尚未有課程");
+      }
+      // if (currentCategoryName === "") return;
+      console.log(json.data);
+      setCourseResults(json.data);
+    };
+    getSpecificCourseResults(currentCategoryName, setApiError);
+  }, [setApiError, currentCategoryName, setCourseError, setCourseResults]);
   // 點選某 category 後顯示資料
-  const [currentCategory, setCurrentCategory] = useState("請選擇領域");
-
   const handleCategoryClick = (e) => {
-    const { id: selectedCategory } = e.target;
-    setCurrentCategory(selectedCategory);
+    const { id: selectedCategoryName, value: selectedCategoryDisplayName } =
+      e.target;
+    setCurrentCategoryName(selectedCategoryName);
+    setCurrentCategoryDisplayName(selectedCategoryDisplayName);
     setDropdownMenu(false);
+  };
+
+  const handleAlertOkClick = () => {
+    setCourseError(false);
+    setApiError(false);
+    if (courseError) {
+      setCurrentCategoryDisplayName("請選擇領域");
+      setCurrentCategoryName("");
+      setCourseResults([]);
+      navigate("/filter");
+    }
+    if (apiError) {
+      navigate("/login");
+    }
+    return;
   };
 
   return (
     <Container onClick={handleClickDropdownMenuOutside}>
       <Title>搜尋老師</Title>
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
+      {courseError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={courseError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <DropdownLabel ref={dropdownLabel}>
         <DropdownBtn onClick={handleDropdownMenuToggle}>
-          {currentCategory}
+          {currentCategoryDisplayName}
         </DropdownBtn>
         <DropdownInput type="checkbox" id="select" />
         {dropdownMenu && (
@@ -167,23 +242,19 @@ function FilterPage() {
             {dropdownContent.map((categories) => (
               <DropdownContent
                 onClick={handleCategoryClick}
-                key={categories.id}
-                id={categories.category}
+                key={categories.teacherId}
+                id={categories.name}
               >
-                {categories.category}
+                {categories.displayName}
               </DropdownContent>
             ))}
           </DropdownMenu>
         )}
       </DropdownLabel>
       <ResultList>
-        {results
-          .filter((result) => {
-            return result.category === currentCategory;
-          })
-          .map((result) => (
-            <TeacherFilterResult key={result.id} result={result} />
-          ))}
+        {courseResults.map((courseResult) => (
+          <TeacherFilterResult key={courseResult.id} result={courseResult} />
+        ))}
       </ResultList>
     </Container>
   );
