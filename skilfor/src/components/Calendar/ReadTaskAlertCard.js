@@ -34,7 +34,10 @@ function ReadTaskAlertCard({
       <CloseButton src={close} onClick={handleCloseClick} />
       <AlertTitle>
         {selectedEvent.title} <br />
-        {`(${selectedEvent.resource.timePeriod})`}
+        {`${new Date(selectedEvent.start).getMonth() + 1}/${new Date(
+          selectedEvent.start
+        ).getDate()}`}
+        {` ${selectedEvent.resource.timePeriod}`}
       </AlertTitle>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (
