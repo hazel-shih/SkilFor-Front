@@ -40,7 +40,6 @@ const CartTable = styled.table`
   border-spacing: 0;
   font-size: 1.2rem;
   table-layout: fixed;
-
   th,
   td {
     padding: 6px 4px;
@@ -56,7 +55,6 @@ const CartTable = styled.table`
       :nth-of-type(7) {
         border-bottom: 3px solid ${(props) => props.theme.colors.grey_dark};
       }
-
       :before {
         content: attr(data-title);
         align-items: center;
