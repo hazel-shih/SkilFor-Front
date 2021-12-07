@@ -52,9 +52,9 @@ export const TIME_OPTIONS = [
 
 //需要打 API
 export const COURSE_LIST = [
-  { courseId: 1, courseName: "一起來學 Ruby 囉！" },
-  { courseId: 2, courseName: "教你煮超美味紅豆湯" },
-  { courseId: 3, courseName: "彈生日快樂歌不求人" },
+  { courseId: 1, courseName: "一起來學 Ruby 囉！", price: 1000 },
+  { courseId: 2, courseName: "教你煮超美味紅豆湯", price: 2000 },
+  { courseId: 3, courseName: "彈生日快樂歌不求人", price: 3000 },
 ];
 
 export const COLOR_HEX_LIST = [
@@ -76,3 +76,104 @@ export const NEW_EVENT_INIT = {
     eventColor: "",
   },
 };
+
+export const MONTH_EVENTS = [
+  {
+    title: "一起來學 Ruby 囉！",
+    start: new Date(2021, 11, 12, 1, 30),
+    end: new Date(2021, 11, 12, 2, 0),
+    resource: {
+      reserved: "彭恰恰",
+      studentNotes: "彭彭彭",
+      eventColor: "#22577A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "Plisyjyva2EPNFXJbTUUs",
+  },
+  {
+    title: "一起來學 Ruby 囉！",
+    start: new Date(2021, 11, 13, 1, 30),
+    end: new Date(2021, 11, 13, 2, 0),
+    resource: {
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#22577A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "Hql9epDk2ladMYomuXv5C",
+  },
+  {
+    title: "一起來學 Ruby 囉！",
+    start: new Date(2021, 11, 14, 1, 30),
+    end: new Date(2021, 11, 14, 2, 0),
+    resource: {
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#22577A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "T-dzEKLxfThGJWsjsV0fw",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: new Date(2021, 11, 15, 1, 30),
+    end: new Date(2021, 11, 15, 2, 0),
+    resource: {
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#A9333A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "gsjHa_6rdVOJSrsWS3zes",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: new Date(2021, 11, 16, 1, 30),
+    end: new Date(2021, 11, 16, 2, 0),
+    resource: {
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#A9333A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "AvJkSyY_CuHlLeQ7ud5ks",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: new Date(2021, 11, 17, 1, 30),
+    end: new Date(2021, 11, 17, 2, 0),
+    resource: {
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#A9333A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "e_-BVMbJMQjLcvLu7eWRt",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: new Date(2021, 11, 18, 1, 30),
+    end: new Date(2021, 11, 18, 2, 0),
+    resource: {
+      reserved: "HAZEL",
+      studentNotes:
+        "期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢期待再相逢",
+      eventColor: "#A9333A",
+      timePeriod: "1:30 ~ 2:00",
+    },
+    id: "QC30zcK0AT5FDiQXxtn6t",
+  },
+  {
+    title: "教你煮超美味紅豆湯",
+    start: new Date(2021, 11, 19, 1, 30),
+    end: new Date(2021, 11, 19, 2, 0),
+    resource: {
+      teacherId: "1",
+      reserved: false,
+      studentNotes: null,
+      eventColor: "#A9333A",
+      timePeriod: "2:30 ~ 3:00",
+    },
+    id: "21kOzC_GNZoDSzM548kH7",
+  },
+];

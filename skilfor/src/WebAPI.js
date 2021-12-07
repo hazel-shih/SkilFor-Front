@@ -81,8 +81,7 @@ export const getTeacherInfos = async (setApiError) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -101,8 +100,7 @@ export const updateTeacherInfos = async (setApiError, newTeacherInfos) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -118,8 +116,7 @@ export const getAllCategories = async (setApiError) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -137,8 +134,7 @@ export const getTeacherCourseInfos = async (setApiError) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -157,8 +153,7 @@ export const registerNewCourse = async (setApiError, newCourseInfos) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -199,7 +194,6 @@ export const deleteCourse = async (setApiError, courseId) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };

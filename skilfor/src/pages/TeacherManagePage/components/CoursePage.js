@@ -107,13 +107,13 @@ const makeUpdateCourseApi = async (
   updatedCourseInfos
 ) => {
   let json = await apiType(setApiError, updatedCourseInfos);
-  if (json.errMessage) {
+  if (json && json.errMessage) {
     return setApiError("請先登入才能使用後台功能");
   }
 };
 const makeDeleteCourseApi = async (setApiError, courseId) => {
   let json = await deleteCourse(setApiError, courseId);
-  if (json.errMessage) {
+  if (json && json.errMessage) {
     return setApiError("請先登入才能使用後台功能");
   }
 };
@@ -239,13 +239,7 @@ function CoursePage({ apiError, setApiError }) {
       "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
     );
     if (!confirmDelete) return;
-    if (
-      !(
-        selectedCourseInfos.courseName === "" ||
-        selectedCourseInfos.courseDescription === "" ||
-        selectedCourseInfos.price === ""
-      )
-    ) {
+    if (selectedCourseInfos.id) {
       makeDeleteCourseApi(setApiError, selectedCourseInfos.id);
     }
     let newCourseInfos = courseInfos.filter(
