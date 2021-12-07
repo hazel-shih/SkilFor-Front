@@ -1,77 +1,82 @@
 import styled from "styled-components";
+import { MEDIA_QUERY_SM } from "../../../components/constants/breakpoints";
 
 const RowContainer = styled.div`
   display: flex;
 `;
-
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
 export const FormItemContainer = styled(ColumnContainer)`
   border-bottom: 1px solid
     ${(props) => (props.show ? props.theme.colors.grey_light : "transparent")};
   margin-bottom: 20px;
 `;
-
 export const ItemTop = styled(RowContainer)``;
-
 export const ItemBottom = styled(ColumnContainer)`
   padding: 0 15px;
   margin-bottom: 10px;
 `;
-
 export const ItemName = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
   margin-bottom: 10px;
 `;
-
 export const ItemValue = styled(ItemName)`
+  overflow-wrap: break-word;
   margin-bottom: 0px;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
-
 export const EditInput = styled.input`
   height: 30px;
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.grey_dark};
+  ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
 `;
-
 const EditTextArea = styled.textarea`
-  height: 100px;
+  height: 150px;
   padding: 5px;
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
+  border: 1px solid ${(props) => props.theme.colors.grey_dark};
+  ${MEDIA_QUERY_SM} {
+    height: 200px;
+  }
+  ${(props) => props.error && `border: 2px solid ${props.theme.colors.error}`}
 `;
-
 function CourseInfosForm({
   isEditing,
   courseInfos,
-  editCourseContent,
-  setEditCourseContent,
+  editContent,
+  setEditContent,
+  error,
+  setError,
 }) {
   const handleInputChange = (e) => {
     const { id: inputName, value } = e.target;
     if (inputName === "courseName") {
-      setEditCourseContent({
-        ...editCourseContent,
+      setEditContent({
+        ...editContent,
         courseName: value,
       });
+      setError(error.filter((errorItem) => errorItem !== inputName));
     }
-    if (inputName === "courseIntro") {
-      setEditCourseContent({
-        ...editCourseContent,
-        courseIntro: value,
+    if (inputName === "courseDescription") {
+      setEditContent({
+        ...editContent,
+        courseDescription: value,
       });
+      setError(error.filter((errorItem) => errorItem !== inputName));
     }
     if (inputName === "price") {
-      setEditCourseContent({
-        ...editCourseContent,
+      setEditContent({
+        ...editContent,
         price: value,
       });
+      setError(error.filter((errorItem) => errorItem !== inputName));
     }
   };
   return (
@@ -92,6 +97,7 @@ function CourseInfosForm({
           <ItemValue show={!isEditing}>{courseInfos.courseName}</ItemValue>
           {isEditing && courseInfos && (
             <EditInput
+              error={error.includes("courseName")}
               defaultValue={courseInfos.courseName}
               onChange={handleInputChange}
               id="courseName"
@@ -104,12 +110,15 @@ function CourseInfosForm({
           <ItemName>Course Intro</ItemName>
         </ItemTop>
         <ItemBottom>
-          <ItemValue show={!isEditing}>{courseInfos.courseIntro}</ItemValue>
+          <ItemValue show={!isEditing}>
+            {courseInfos.courseDescription}
+          </ItemValue>
           {isEditing && courseInfos && (
             <EditTextArea
-              defaultValue={courseInfos.courseIntro}
+              error={error.includes("courseDescription")}
+              defaultValue={courseInfos.courseDescription}
               onChange={handleInputChange}
-              id="courseIntro"
+              id="courseDescription"
             />
           )}
         </ItemBottom>
@@ -122,9 +131,11 @@ function CourseInfosForm({
           <ItemValue show={!isEditing}>{courseInfos.price}</ItemValue>
           {isEditing && courseInfos && (
             <EditInput
+              error={error.includes("price")}
               defaultValue={courseInfos.price}
               onChange={handleInputChange}
               id="price"
+              type="number"
             />
           )}
         </ItemBottom>
