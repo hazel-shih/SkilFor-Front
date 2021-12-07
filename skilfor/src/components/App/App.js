@@ -7,7 +7,7 @@ import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { getMyUserData } from "../../WebAPI";
 import { getAuthToken } from "../../utils";
 import TeacherManagePage from "../../pages/TeacherManagePage";
-import TeacherProfilePage from "../../pages/TeacherProfilePage";
+import FrontCoursePage from "../../pages/FrontCoursePage";
 import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
 import RegisterPage from "../../pages/RegisterPage";
@@ -67,10 +67,7 @@ function App() {
                 path="/teacher/manage/:teacherId"
                 element={<TeacherManagePage />}
               />
-              <Route
-                path="/course/:courseId"
-                element={<TeacherProfilePage />}
-              />
+              <Route path="/course/:courseId" element={<FrontCoursePage />} />
               <Route
                 path="/teacher/calendar/:teacherId"
                 element={<TeacherCalendarPage />}

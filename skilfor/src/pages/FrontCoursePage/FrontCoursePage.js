@@ -6,7 +6,7 @@ import teacher from "../../img/teacher.jpeg";
 import student1 from "../../img/student1.png";
 import student2 from "../../img/student2.jpeg";
 import student3 from "../../img/student3.jpeg";
-import CommentCard from "./CommentCard";
+import CommentCard from "./components/CommentCard";
 
 const TeacherProfileWrapper = styled.section`
   padding: 196px 100px 232px 120px;
@@ -66,7 +66,7 @@ const SectionIntro = styled(ItemContent)`
 
 const CommentsContainer = styled(ColumnContainer)``;
 
-function TeacherProfilePage() {
+function FrontCoursePage() {
   const { teacherId } = useParams();
   return (
     <TeacherProfileWrapper>
@@ -121,4 +121,4 @@ function TeacherProfilePage() {
   );
 }
 
-export default TeacherProfilePage;
+export default FrontCoursePage;

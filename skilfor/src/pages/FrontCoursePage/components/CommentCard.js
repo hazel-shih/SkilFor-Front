@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { AvatarContainer } from "../../components/Avatar/Avatar";
+import { AvatarContainer } from "../../../components/Avatar/Avatar";
 
 const RowContainer = styled.div`
   display: flex;
