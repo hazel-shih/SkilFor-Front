@@ -128,7 +128,7 @@ function TeacherFilterResult({ result }) {
           <CourseName>{result.courseName}</CourseName>
           <CourseIntro>{result.courseDescription}</CourseIntro>
           <BtnDiv>
-            <CoursePrice>{result.price}</CoursePrice>
+            <CoursePrice>NT${result.price}</CoursePrice>
             <Btn to={`/teacher/profile/${result.teacherId}`}>更多資訊</Btn>
           </BtnDiv>
         </CourseBlock>

@@ -73,10 +73,6 @@ const DropdownBtn = styled.button`
   }
 `;
 
-const DropdownInput = styled.input`
-  display: none;
-`;
-
 const DropdownMenu = styled.ul`
   position: absolute;
   top: 100%;
@@ -89,7 +85,8 @@ const DropdownMenu = styled.ul`
   list-style-type: none;
   width: 100%;
   z-index: 2;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 180px;
   ${MEDIA_QUERY_SM} {
     height: 220px;
@@ -183,7 +180,6 @@ function FilterPage() {
       if (json.data.indexOf("目前尚未有課程") === 0) {
         return setCourseError("目前尚未有課程");
       }
-      // if (currentCategoryName === "") return;
       console.log(json.data);
       setCourseResults(json.data);
     };
@@ -236,13 +232,12 @@ function FilterPage() {
         <DropdownBtn onClick={handleDropdownMenuToggle}>
           {currentCategoryDisplayName}
         </DropdownBtn>
-        <DropdownInput type="checkbox" id="select" />
         {dropdownMenu && (
           <DropdownMenu>
             {dropdownContent.map((categories) => (
               <DropdownContent
                 onClick={handleCategoryClick}
-                key={categories.teacherId}
+                key={categories.id}
                 id={categories.name}
               >
                 {categories.displayName}
@@ -253,7 +248,10 @@ function FilterPage() {
       </DropdownLabel>
       <ResultList>
         {courseResults.map((courseResult) => (
-          <TeacherFilterResult key={courseResult.id} result={courseResult} />
+          <TeacherFilterResult
+            key={courseResult.courseId}
+            result={courseResult}
+          />
         ))}
       </ResultList>
     </Container>
