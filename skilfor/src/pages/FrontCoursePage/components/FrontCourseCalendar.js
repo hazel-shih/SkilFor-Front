@@ -9,6 +9,9 @@ import { sleep } from "../../../utils";
 
 const CalendarContainer = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 `;
 function FrontCourseCalendar({ courseId }) {
   const localizer = momentLocalizer(moment);
@@ -31,18 +34,16 @@ function FrontCourseCalendar({ courseId }) {
 
   const handleEventClick = (e) => {
     setAlertShow("read");
-    console.log(e);
     setSelectedEvent(e);
   };
 
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
-
     var style = {
       border: `2px solid ${eventColor}`,
       backgroundColor: "white",
       color: "black",
-      fontSize: "14px",
+      fontSize: "12px",
     };
     return {
       style: style,
@@ -61,7 +62,7 @@ function FrontCourseCalendar({ courseId }) {
         localizer={localizer}
         startAccessor="start"
         endAccessor="end"
-        style={{ width: "1000px", height: "500px" }}
+        style={{ width: "100vw", height: "600px" }}
         events={allEvents}
         views={["month"]}
         onNavigate={handlePageChange}

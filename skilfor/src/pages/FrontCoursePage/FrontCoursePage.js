@@ -1,101 +1,113 @@
 import styled from "styled-components";
 import { useParams } from "react-router";
-import Avatar from "../../components/Avatar";
+import { AvatarContainer } from "../../components/Avatar/Avatar";
 import FrontCourseCalendar from "./components/FrontCourseCalendar";
 import teacher from "../../img/teacher.jpeg";
 import student1 from "../../img/student1.png";
 import student2 from "../../img/student2.jpeg";
 import student3 from "../../img/student3.jpeg";
 import CommentCard from "./components/CommentCard";
+import {
+  MEDIA_QUERY_MD,
+  MEDIA_QUERY_SM,
+} from "../../components/constants/breakpoints";
 
 const TeacherProfileWrapper = styled.section`
-  padding: 196px 350px 232px 350px;
+  padding: 180px 200px 232px 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media screen and (max-width: 1000px) {
+    padding: 180px 150px 232px 150px;
+  }
+  ${MEDIA_QUERY_MD} {
+    padding: 180px 30px 232px 30px;
+  }
 `;
-
 const RowContainer = styled.div`
   display: flex;
 `;
-
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-
-const TeacherInfosContainer = styled(ColumnContainer)`
-  margin-right: 50px;
-  width: 200px;
-`;
-
-const TeacherProfileContainer = styled(RowContainer)`
+const TeacherAvatarContainer = styled(ColumnContainer)`
+  align-items: center;
   justify-content: center;
+  margin-right: 50px;
 `;
-
-const CourseInfosContainer = styled(ColumnContainer)`
-  border: 2px solid ${(props) => props.theme.colors.orange};
-  border-radius: 10px;
+const TeacherAvatar = styled(AvatarContainer)`
+  width: 150px;
+  height: 150px;
+`;
+const AvatarName = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
-  margin-top: 20px;
-  padding: 15px;
-  min-width: 200px;
+  font-size: 1.2rem;
+  margin-top: 12px;
 `;
-
+const TeacherInfosContainer = styled(RowContainer)`
+  justify-content: center;
+  align-items: center;
+  ${MEDIA_QUERY_SM} {
+    flex-direction: column;
+  }
+`;
+const CourseInfosContainer = styled(ColumnContainer)`
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin-left: 15px;
+  width: 100%;
+`;
 const ItemContainer = styled(ColumnContainer)`
-  border-bottom: 2px solid ${(props) => props.theme.colors.orange};
+  border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
   margin-bottom: 20px;
 `;
-
 const ItemTitle = styled.h3`
   color: ${(props) => props.theme.colors.orange};
   font-size: 1.1rem;
   margin-bottom: 2px;
 `;
-
 const ItemContent = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1rem;
   padding-left: 5px;
   margin-bottom: 5px;
 `;
-
 const SectionTitle = styled.h1`
   color: ${(props) => props.theme.colors.green_dark};
   font-size: 1.5rem;
   margin: 40px 0 10px 0;
 `;
-
 const SectionIntro = styled(ItemContent)`
   font-size: 1.1rem;
 `;
-
 const CommentsContainer = styled(ColumnContainer)``;
 
 function FrontCoursePage() {
-  const { teacherId } = useParams();
+  const { courseId } = useParams();
   return (
     <TeacherProfileWrapper>
-      <TeacherProfileContainer>
-        <TeacherInfosContainer>
-          <Avatar imgSrc={teacher} name="Kelly" />
-          <CourseInfosContainer>
-            <ItemContainer>
-              <ItemTitle>領域</ItemTitle>
-              <ItemContent>程式</ItemContent>
-            </ItemContainer>
-            <ItemContainer>
-              <ItemTitle>課程名稱</ItemTitle>
-              <ItemContent>一起來學習超潮的 Ruby 吧！</ItemContent>
-            </ItemContainer>
-            <ItemContainer>
-              <ItemTitle>單堂價格</ItemTitle>
-              <ItemContent>1000</ItemContent>
-            </ItemContainer>
-          </CourseInfosContainer>
-        </TeacherInfosContainer>
-        <FrontCourseCalendar teacherId={teacherId} />
-      </TeacherProfileContainer>
+      <TeacherInfosContainer>
+        <TeacherAvatarContainer>
+          <TeacherAvatar imgSrc={teacher} name="Kelly" />
+          <AvatarName>Kelly</AvatarName>
+        </TeacherAvatarContainer>
+        <CourseInfosContainer>
+          <ItemContainer>
+            <ItemTitle>領域</ItemTitle>
+            <ItemContent>程式</ItemContent>
+          </ItemContainer>
+          <ItemContainer>
+            <ItemTitle>課程名稱</ItemTitle>
+            <ItemContent>一起來學習超潮的 Ruby 吧！</ItemContent>
+          </ItemContainer>
+          <ItemContainer>
+            <ItemTitle>單堂價格</ItemTitle>
+            <ItemContent>1000</ItemContent>
+          </ItemContainer>
+        </CourseInfosContainer>
+      </TeacherInfosContainer>
+      <SectionTitle>課程時間</SectionTitle>
+      <FrontCourseCalendar courseId={courseId} />
       <SectionTitle>課程介紹</SectionTitle>
       <SectionIntro>
         經過幾年的發展，Spring Boot

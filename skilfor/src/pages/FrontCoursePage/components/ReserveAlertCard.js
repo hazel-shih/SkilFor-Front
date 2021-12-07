@@ -8,8 +8,6 @@ import {
 } from "../../../components/Calendar/AddTaskAlertCard";
 import close from "../../../img/close.png";
 
-const ContentContainer = styled.div``;
-
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
 `;
