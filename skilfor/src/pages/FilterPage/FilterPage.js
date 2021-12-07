@@ -22,9 +22,8 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  padding: 5px 0px;
-  margin-bottom: 10px;
-  font-size: 1.7rem;
+  padding: 10px 0px 0px;
+  font-size: 1.5rem;
   color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
     font-size: 1.4rem;
@@ -35,7 +34,7 @@ const DropdownLabel = styled.div`
   position: relative;
   display: inline-block;
   width: 560px;
-  margin: 0 auto;
+  margin: 30px auto 0px;
   ${MEDIA_QUERY_SM} {
     max-width: 300px;
   }
@@ -139,53 +138,51 @@ function FilterPage() {
     }
   };
 
-  const [apiError, setApiError] = useState(false);
-  const [courseError, setCourseError] = useState(false);
-
+  const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
-
   const [courseResults, setCourseResults] = useState([]);
-
   const [currentCategoryName, setCurrentCategoryName] = useState("");
   const [currentCategoryDisplayName, setCurrentCategoryDisplayName] =
     useState("請選擇領域");
 
   useEffect(() => {
-    async function getCategoryOptions(setApiError) {
-      let json = await getAllCategories(setApiError);
-      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+    const getCategoryOptions = async (setFilterError) => {
+      let json = await getAllCategories(setFilterError);
+      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
+      if (json.data.length === 0)
+        return setFilterError("目前尚未有領域開放查詢，請稍後再試");
       setDropdownContent(json.data);
-      console.log(json.data);
-    }
-    getCategoryOptions(setApiError);
-  }, [setApiError, setDropdownContent]);
+    };
+    getCategoryOptions(setFilterError);
+  }, [setFilterError, setDropdownContent]);
 
   useEffect(() => {
-    const getAllCourseResults = async (currentCategoryName, setApiError) => {
-      let json = await getAllCourses(setApiError);
-      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
-      console.log(json.data);
+    const getAllCourseResults = async (setFilterError) => {
+      let json = await getAllCourses(setFilterError);
+      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
+      if (json.data.indexOf("目前尚未有課程") === 0) {
+        return setFilterError("目前尚未有課程，請稍後再試");
+      }
       setCourseResults(json.data);
     };
-    getAllCourseResults(setApiError);
-  }, [setApiError, setCourseResults]);
+    getAllCourseResults(setFilterError);
+  }, [setFilterError, setCourseResults]);
 
   useEffect(() => {
     const getSpecificCourseResults = async (
       currentCategoryName,
-      setApiError
+      setFilterError
     ) => {
-      let json = await getSpecificCourse(currentCategoryName, setApiError);
-      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      let json = await getSpecificCourse(currentCategoryName, setFilterError);
+      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
       if (json.data.indexOf("目前尚未有課程") === 0) {
-        return setCourseError("目前尚未有課程");
+        return setFilterError("目前尚未有此領域課程，先逛逛其他領域吧 !");
       }
-      console.log(json.data);
       setCourseResults(json.data);
     };
-    getSpecificCourseResults(currentCategoryName, setApiError);
-  }, [setApiError, currentCategoryName, setCourseError, setCourseResults]);
-  // 點選某 category 後顯示資料
+    getSpecificCourseResults(currentCategoryName, setFilterError);
+  }, [setFilterError, currentCategoryName, setCourseResults]);
+
   const handleCategoryClick = (e) => {
     const { id: selectedCategoryName, value: selectedCategoryDisplayName } =
       e.target;
@@ -195,16 +192,11 @@ function FilterPage() {
   };
 
   const handleAlertOkClick = () => {
-    setCourseError(false);
-    setApiError(false);
-    if (courseError) {
+    setFilterError(false);
+    if (filterError) {
       setCurrentCategoryDisplayName("請選擇領域");
       setCurrentCategoryName("");
-      setCourseResults([]);
       navigate("/filter");
-    }
-    if (apiError) {
-      navigate("/login");
     }
     return;
   };
@@ -212,26 +204,18 @@ function FilterPage() {
   return (
     <Container onClick={handleClickDropdownMenuOutside}>
       <Title>搜尋老師</Title>
-      {apiError && (
-        <AlertCard
-          color="#A45D5D"
-          title="錯誤"
-          content={apiError}
-          handleAlertOkClick={handleAlertOkClick}
-        />
-      )}
-      {courseError && (
-        <AlertCard
-          color="#A45D5D"
-          title="錯誤"
-          content={courseError}
-          handleAlertOkClick={handleAlertOkClick}
-        />
-      )}
       <DropdownLabel ref={dropdownLabel}>
         <DropdownBtn onClick={handleDropdownMenuToggle}>
           {currentCategoryDisplayName}
         </DropdownBtn>
+        {filterError && (
+          <AlertCard
+            color="#A45D5D"
+            title="錯誤"
+            content={filterError}
+            handleAlertOkClick={handleAlertOkClick}
+          />
+        )}
         {dropdownMenu && (
           <DropdownMenu>
             {dropdownContent.map((categories) => (
