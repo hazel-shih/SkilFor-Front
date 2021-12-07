@@ -68,7 +68,7 @@ function App() {
                 element={<TeacherManagePage />}
               />
               <Route
-                path="/teacher/profile/:teacherId"
+                path="/course/:courseId"
                 element={<TeacherProfilePage />}
               />
               <Route
