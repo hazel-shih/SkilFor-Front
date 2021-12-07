@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useParams } from "react-router";
 import Avatar from "../../components/Avatar";
-import TeacherManageCalendar from "../../components/Calendar/TeacherManageCalendar";
+import FrontCourseCalendar from "./components/FrontCourseCalendar";
 import teacher from "../../img/teacher.jpeg";
 import student1 from "../../img/student1.png";
 import student2 from "../../img/student2.jpeg";
@@ -9,7 +9,10 @@ import student3 from "../../img/student3.jpeg";
 import CommentCard from "./components/CommentCard";
 
 const TeacherProfileWrapper = styled.section`
-  padding: 196px 100px 232px 120px;
+  padding: 196px 350px 232px 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const RowContainer = styled.div`
@@ -26,7 +29,9 @@ const TeacherInfosContainer = styled(ColumnContainer)`
   width: 200px;
 `;
 
-const TeacherProfileContainer = styled(RowContainer)``;
+const TeacherProfileContainer = styled(RowContainer)`
+  justify-content: center;
+`;
 
 const CourseInfosContainer = styled(ColumnContainer)`
   border: 2px solid ${(props) => props.theme.colors.orange};
@@ -34,6 +39,7 @@ const CourseInfosContainer = styled(ColumnContainer)`
   color: ${(props) => props.theme.colors.grey_dark};
   margin-top: 20px;
   padding: 15px;
+  min-width: 200px;
 `;
 
 const ItemContainer = styled(ColumnContainer)`
@@ -88,7 +94,7 @@ function FrontCoursePage() {
             </ItemContainer>
           </CourseInfosContainer>
         </TeacherInfosContainer>
-        <TeacherManageCalendar teacherId={teacherId} />
+        <FrontCourseCalendar teacherId={teacherId} />
       </TeacherProfileContainer>
       <SectionTitle>課程介紹</SectionTitle>
       <SectionIntro>

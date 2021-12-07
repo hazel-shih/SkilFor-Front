@@ -13,7 +13,7 @@ const ColumnContainer = styled.div`
 const CommentCardContainer = styled(RowContainer)`
   align-items: center;
   justify-content: center;
-  border: 2px solid ${(props) => props.theme.colors.orange};
+  border: 1px solid ${(props) => props.theme.colors.green_dark};
   border-radius: 10px;
   padding: 20px;
   :first-child {
