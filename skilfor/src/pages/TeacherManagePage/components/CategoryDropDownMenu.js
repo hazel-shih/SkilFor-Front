@@ -10,6 +10,7 @@ const SelectContainer = styled(RowContainer)`
   margin-bottom: 20px;
 `;
 const SelectBar = styled.select`
+  background: white;
   padding: 5px;
   font-size: 1rem;
   border: 1px solid ${(props) => props.theme.colors.grey_dark};

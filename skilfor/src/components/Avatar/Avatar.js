@@ -24,7 +24,7 @@ export const AvatarContainer = styled.div`
   background-repeat: no-repeat;
 `;
 
-const AvatarName = styled.p`
+export const AvatarName = styled.p`
   color: white;
   font-size: 1.2rem;
   margin-top: 12px;

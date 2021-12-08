@@ -13,6 +13,10 @@ const ContentContainer = styled.div``;
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
 `;
+const getDisplayDate = (dateObj) => {
+  let dateStr = dateObj.toLocaleString();
+  return dateStr.slice(0, dateStr.length - 3);
+};
 
 function ReadTaskAlertCard({
   allEvents,
@@ -34,10 +38,7 @@ function ReadTaskAlertCard({
       <CloseButton src={close} onClick={handleCloseClick} />
       <AlertTitle>
         {selectedEvent.title} <br />
-        {`${
-          selectedEvent.start.getMonth() + 1
-        }/${selectedEvent.start.getDate()}`}
-        {` ${selectedEvent.resource.timePeriod}`}
+        {getDisplayDate(selectedEvent.start)}
       </AlertTitle>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (

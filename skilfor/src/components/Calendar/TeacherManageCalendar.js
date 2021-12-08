@@ -57,12 +57,14 @@ function TeacherManageCalendar({ teacherId }) {
         border: `2px solid ${eventColor}`,
         backgroundColor: "white",
         color: "black",
+        fontSize: "14px",
       };
     } else {
       style = {
         border: `2px solid ${eventColor}`,
         backgroundColor: eventColor,
         color: "white",
+        fontSize: "14px",
       };
     }
     return {
@@ -92,7 +94,7 @@ function TeacherManageCalendar({ teacherId }) {
         localizer={localizer}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500 }}
+        style={{ height: "100vh" }}
         events={allEvents}
         // onView={handleViewChange}
         // onRangeChange={handleRangeChange}

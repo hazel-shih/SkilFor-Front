@@ -78,7 +78,7 @@ const CourseButton = styled.button`
     props.isClick &&
     `background: ${props.theme.colors.green_dark}; color:white; border:2px solid ${props.theme.colors.green_dark}`}
 `;
-const GoToCalendar = styled(Link)`
+const GoToLink = styled(Link)`
   color: ${(props) => props.theme.colors.grey_dark};
   cursor: pointer;
   text-decoration: none;
@@ -288,9 +288,9 @@ function CoursePage({ apiError, setApiError }) {
                 </PassContainer>
               </SuccessContainer>
               <SectionText>設定課程時段</SectionText>
-              <GoToCalendar to={`/teacher/calendar/${teacherId}`}>
+              <GoToLink to={`/teacher/calendar/${teacherId}`}>
                 前往行事曆設定課程時段 ➜
-              </GoToCalendar>
+              </GoToLink>
             </>
           )}
           {selectedCourseInfos.audit === "pending" && (
@@ -355,6 +355,14 @@ function CoursePage({ apiError, setApiError }) {
                 handleRadioChange={handleRadioChange}
                 published={selectedCourseInfos.published}
               />
+            </>
+          )}
+          {selectedCourseInfos.published && (
+            <>
+              <SectionText>瀏覽我的前台頁面</SectionText>
+              <GoToLink to={`/course/${selectedCourseInfos.id}`}>
+                前往此門課程的前台頁面 ➜
+              </GoToLink>
             </>
           )}
         </>
