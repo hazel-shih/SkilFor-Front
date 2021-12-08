@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AvatarContainer } from "../../../components/Avatar/Avatar";
+import { MEDIA_QUERY_SM } from "../../../components/constants/breakpoints";
 
 const RowContainer = styled.div`
   display: flex;
@@ -15,12 +16,15 @@ const CommentCardContainer = styled(RowContainer)`
   justify-content: center;
   border: 1px solid ${(props) => props.theme.colors.green_dark};
   border-radius: 10px;
-  padding: 20px;
+  padding: 25px;
   :first-child {
     margin-top: 20px;
   }
   :not(:last-child) {
     margin-bottom: 25px;
+  }
+  ${MEDIA_QUERY_SM} {
+    flex-direction: column;
   }
 `;
 
@@ -29,6 +33,9 @@ const CommentContent = styled.p`
   margin-left: 20px;
   line-height: 1.8rem;
   font-size: 1.1rem;
+  ${MEDIA_QUERY_SM} {
+    margin-top: 20px;
+  }
 `;
 
 const StudentInfosContainer = styled(ColumnContainer)`
