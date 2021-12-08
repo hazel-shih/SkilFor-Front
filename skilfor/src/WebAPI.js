@@ -27,6 +27,7 @@ export const getMyUserData = async () => {
   try {
     const token = getAuthToken();
     const res = await fetch(`${BASE_URL}/members/me`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -195,5 +196,39 @@ export const deleteCourse = async (setApiError, courseId) => {
     return await res.json();
   } catch (error) {
     return setApiError("發生了一點錯誤，請稍後再試");
+  }
+};
+
+export const getSpecificCourse = async (categoryName, setApiError) => {
+  let url = `${BASE_URL}/filter/course/${categoryName}`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return error.message;
+  }
+};
+
+export const getAllCourses = async (setApiError) => {
+  let url = `${BASE_URL}/filter/course`;
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return error.message;
   }
 };
