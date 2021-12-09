@@ -121,8 +121,13 @@ export const getAllCategories = async (setApiError) => {
   }
 };
 
-export const getTeacherCourseInfos = async (setApiError) => {
-  let url = `${BASE_URL}/teacher/course/info`;
+export const getTeacherCourseInfos = async (setApiError, params) => {
+  let url;
+  if (params) {
+    url = encodeURI(`${BASE_URL}/teacher/course/info?${params}`);
+  } else {
+    url = `${BASE_URL}/teacher/course/info`;
+  }
   const token = getAuthToken();
   try {
     const res = await fetch(url, {
@@ -234,6 +239,25 @@ export const getAllCourses = async (setApiError) => {
 };
 
 //行事曆管理頁面
+export const getCalendarMonthEvents = async (setApiError, month) => {
+  let url = encodeURI(`${BASE_URL}/teacher/calendar?month=${month}`);
+  console.log(url);
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
 export const addNewCalendarEvent = async (setApiError, newEvent) => {
   let url = `${BASE_URL}/teacher/calendar`;
   const token = getAuthToken();
@@ -246,6 +270,28 @@ export const addNewCalendarEvent = async (setApiError, newEvent) => {
       },
       body: JSON.stringify(newEvent),
     });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+export const deleteCalendarEvent = async (setApiError, eventId) => {
+  let url = `${BASE_URL}/teacher/calendar`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id: eventId,
+      }),
+    });
+    console.log(await res.json());
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {

@@ -6,13 +6,22 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
 import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
 import ReadTaskAlertCard from "./ReadTaskAlertCard";
-import { MONTH_EVENTS } from "../Calendar/constants";
-import { sleep } from "../../utils";
 import AlertCard from "../AlertCard";
+import {
+  getTeacherCourseInfos,
+  getCalendarMonthEvents,
+  deleteCalendarEvent,
+} from "../../WebAPI";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
+
+const deleteEvent = async (setApiError, eventId) => {
+  let json = await deleteCalendarEvent(setApiError, eventId);
+  if (!json.success) return setApiError("課程時間刪除失敗");
+};
+
 function TeacherManageCalendar({ teacherId }) {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
@@ -25,13 +34,20 @@ function TeacherManageCalendar({ teacherId }) {
     day: "",
   });
   const [apiError, setApiError] = useState(false);
+  const [courseList, setCourseList] = useState([]);
   useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      setAllEvents(MONTH_EVENTS);
-    }
-    fetchData();
-  }, []);
+    getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
+      (json) => {
+        if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+        let data = json.data.map((event) => {
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
+          return event;
+        });
+        setAllEvents(data);
+      }
+    );
+  }, [currentPage]);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     setAlertShow("add");
@@ -72,6 +88,14 @@ function TeacherManageCalendar({ teacherId }) {
       style: style,
     };
   };
+  useEffect(() => {
+    const getCourseList = async (setApiError) => {
+      let json = await getTeacherCourseInfos(setApiError, "audit=success");
+      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      setCourseList(json.data);
+    };
+    getCourseList(setApiError);
+  }, [setApiError]);
 
   // // //點擊month week day
   // const handleViewChange = (e) => {
@@ -121,8 +145,8 @@ function TeacherManageCalendar({ teacherId }) {
           selectedDate={selectedDate}
           setAllEvents={setAllEvents}
           allEvents={allEvents}
-          teacherId={teacherId}
           setApiError={setApiError}
+          courseList={courseList}
         />
       )}
       {alertShow === "delete" && (

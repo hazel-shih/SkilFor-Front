@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
-import { TIME_OPTIONS, COURSE_LIST, COLOR_HEX_LIST } from "./constants";
+import { TIME_OPTIONS, COLOR_HEX_LIST } from "./constants";
 import {
   createTimeOptions,
   getDay,
@@ -53,7 +53,7 @@ export const AlertContent = styled.p`
 const SelectContainer = styled.select`
   height: 25px;
   font-size: 1rem;
-  width: fit-content;
+  max-width: 150px;
 `;
 const SelectOption = styled.option``;
 export const AlertButton = styled.button`
@@ -86,21 +86,17 @@ const ErrorMessage = styled.p`
   margin-top: 10px;
 `;
 
-const addNewEvent = async (setApiError, newEvent) => {
-  let json = await addNewCalendarEvent(setApiError, newEvent);
-  if (!json.success) return setApiError("課程時間新增失敗");
-};
-
 function AddTaskAlertCard({
   setAlertShow,
   selectedDate,
   setAllEvents,
   allEvents,
   setApiError,
+  courseList,
 }) {
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
-    title: COURSE_LIST[0].courseName,
+    title: courseList[0].courseName,
     start: "0:00",
     end: "0:30",
     resource: {
@@ -109,14 +105,20 @@ function AddTaskAlertCard({
       eventColor: "#22577A",
       timePeriod: "",
     },
+    courseId: courseList[0].id,
+    id: nanoid(),
   });
   const handleNewEventAnswerChange = (e) => {
     setError(false);
     const { id, value } = e.target;
     if (id === "title") {
+      let targetCourse = courseList.filter(
+        (course) => course.courseName === value
+      );
       setNewEvent({
         ...newEvent,
         title: value,
+        courseId: targetCourse[0].id,
       });
     }
     if (id === "start") {
@@ -180,10 +182,15 @@ function AddTaskAlertCard({
         timePeriod: `${start} ~ ${end}`,
       },
     };
-    addNewEvent(setApiError, postData);
-    setAllEvents([...allEvents, postData]);
-    setAlertShow(null);
+    addNewCalendarEvent(setApiError, postData).then((json) => {
+      if (!json.success) {
+        setApiError("課程時間新增失敗");
+      }
+      setAllEvents([...allEvents, postData]);
+      setAlertShow(null);
+    });
   };
+
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
@@ -198,7 +205,7 @@ function AddTaskAlertCard({
           id="title"
           value={newEvent.title}
         >
-          {COURSE_LIST.map((item) => {
+          {courseList.map((item) => {
             return (
               <SelectOption key={nanoid()}>{item.courseName}</SelectOption>
             );
@@ -213,7 +220,11 @@ function AddTaskAlertCard({
           value={newEvent.start}
         >
           {createTimeOptions("start").map((item) => {
-            return <SelectOption key={nanoid()}>{item}</SelectOption>;
+            return (
+              <SelectOption key={nanoid()} value={item.id}>
+                {item}
+              </SelectOption>
+            );
           })}
         </SelectContainer>
       </RowContainer>
