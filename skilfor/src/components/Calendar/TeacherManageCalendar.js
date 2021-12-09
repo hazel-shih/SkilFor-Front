@@ -8,11 +8,11 @@ import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
 import ReadTaskAlertCard from "./ReadTaskAlertCard";
 import { MONTH_EVENTS } from "../Calendar/constants";
 import { sleep } from "../../utils";
+import AlertCard from "../AlertCard";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
-
 function TeacherManageCalendar({ teacherId }) {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
@@ -24,6 +24,7 @@ function TeacherManageCalendar({ teacherId }) {
     date: "",
     day: "",
   });
+  const [apiError, setApiError] = useState(false);
   useEffect(() => {
     async function fetchData() {
       await sleep(100);
@@ -84,9 +85,19 @@ function TeacherManageCalendar({ teacherId }) {
   const handlePageChange = (currentMonthPage) => {
     setCurrentPage(currentMonthPage);
   };
-
+  const handleAlertOkClick = () => {
+    return setApiError(false);
+  };
   return (
     <CalendarContainer>
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <Calendar
         onSelectEvent={handleEventClick}
         onSelectSlot={handleDateClick}
@@ -111,6 +122,7 @@ function TeacherManageCalendar({ teacherId }) {
           setAllEvents={setAllEvents}
           allEvents={allEvents}
           teacherId={teacherId}
+          setApiError={setApiError}
         />
       )}
       {alertShow === "delete" && (

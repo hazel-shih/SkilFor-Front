@@ -35,6 +35,7 @@ const CommentContent = styled.p`
   font-size: 1.1rem;
   ${MEDIA_QUERY_SM} {
     margin-top: 20px;
+    margin-left: 0px;
   }
 `;
 

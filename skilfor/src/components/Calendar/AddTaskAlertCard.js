@@ -9,6 +9,7 @@ import {
   getTimeNumber,
   checkEventsConflict,
 } from "./utils";
+import { addNewCalendarEvent } from "../../WebAPI";
 
 //styled component
 export const RowContainer = styled.div`
@@ -85,12 +86,17 @@ const ErrorMessage = styled.p`
   margin-top: 10px;
 `;
 
+const addNewEvent = async (setApiError, newEvent) => {
+  let json = await addNewCalendarEvent(setApiError, newEvent);
+  if (!json.success) return setApiError("課程時間新增失敗");
+};
+
 function AddTaskAlertCard({
   setAlertShow,
   selectedDate,
   setAllEvents,
   allEvents,
-  teacherId,
+  setApiError,
 }) {
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
@@ -98,7 +104,6 @@ function AddTaskAlertCard({
     start: "0:00",
     end: "0:30",
     resource: {
-      teacherId,
       reserved: false,
       studentNotes: null,
       eventColor: "#22577A",
@@ -165,19 +170,18 @@ function AddTaskAlertCard({
       setError("此時段與當天其他時段重疊！");
       return;
     }
-    setAllEvents([
-      ...allEvents,
-      {
-        ...newEvent,
-        id: nanoid(),
-        start: formatedStartTime,
-        end: formatedEndTime,
-        resource: {
-          ...newEvent.resource,
-          timePeriod: `${start} ~ ${end}`,
-        },
+    let postData = {
+      ...newEvent,
+      id: nanoid(),
+      start: formatedStartTime,
+      end: formatedEndTime,
+      resource: {
+        ...newEvent.resource,
+        timePeriod: `${start} ~ ${end}`,
       },
-    ]);
+    };
+    addNewEvent(setApiError, postData);
+    setAllEvents([...allEvents, postData]);
     setAlertShow(null);
   };
   return (

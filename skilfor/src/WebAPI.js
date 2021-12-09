@@ -232,3 +232,24 @@ export const getAllCourses = async (setApiError) => {
     return error.message;
   }
 };
+
+//行事曆管理頁面
+export const addNewCalendarEvent = async (setApiError, newEvent) => {
+  let url = `${BASE_URL}/teacher/calendar`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(newEvent),
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
