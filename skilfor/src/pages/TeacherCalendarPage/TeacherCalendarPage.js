@@ -13,6 +13,7 @@ const TeacherCalendarWrapper = styled.section`
 `;
 
 function TeacherCalendarPage() {
+  window.scroll(0, 0);
   const { teacherId } = useParams();
   return (
     <TeacherCalendarWrapper>

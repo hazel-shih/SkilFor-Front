@@ -10,6 +10,7 @@ import {
 } from "../../components/constants/breakpoints";
 import { TEACHER_INFOS, COURSE_INFOS, COMMENTS } from "./constants";
 import { sleep } from "../../utils";
+import { nanoid } from "nanoid";
 
 const TeacherProfileWrapper = styled.section`
   padding: 180px 200px 232px 200px;
@@ -144,6 +145,7 @@ function FrontCoursePage() {
         {comments && comments.length !== 0 ? (
           comments.map((comment) => (
             <CommentCard
+              key={nanoid()}
               imgSrc={comment.imgSrc}
               name={comment.username}
               content={comment.content}
