@@ -7,11 +7,21 @@ import AddTaskAlertCard from "./AddTaskAlertCard";
 import ReadTaskAlertCard from "./ReadTaskAlertCard";
 import AlertCard from "../AlertCard";
 import { getTeacherCourseInfos, getCalendarMonthEvents } from "../../WebAPI";
+import LoaderSpining from "../../components/LoaderSpining";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
-
+const LoadingSquare = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  opacity: 0.8;
+  z-index: 8;
+`;
 function TeacherManageCalendar() {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
@@ -25,18 +35,23 @@ function TeacherManageCalendar() {
   });
   const [apiError, setApiError] = useState(false);
   const [courseList, setCourseList] = useState([]);
+  const [loading, setLoading] = useState(false);
   //拿當月的行程資料
   useEffect(() => {
+    setLoading(true);
     getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
       (json) => {
-        if (!json || !json.success)
+        if (!json || !json.success) {
+          setLoading(false);
           return setApiError("發生了一點錯誤，請稍後再試");
+        }
         let data = json.data.map((event) => {
           event.start = new Date(event.start);
           event.end = new Date(event.end);
           return event;
         });
         setAllEvents(data);
+        setLoading(false);
       }
     );
   }, [currentPage]);
@@ -100,6 +115,13 @@ function TeacherManageCalendar() {
   };
   return (
     <CalendarContainer>
+      {loading && (
+        <>
+          <LoadingSquare />
+          <LoaderSpining />
+        </>
+      )}
+
       {apiError && (
         <AlertCard
           color="#A45D5D"
