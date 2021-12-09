@@ -3,13 +3,15 @@ import {
   MEDIA_QUERY_MD,
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import TeacherFilterResult from "../FilterPage/TeacherFilterResult";
 import {
   getAllCategories,
   getSpecificCourse,
   getAllCourses,
 } from "../../WebAPI";
+import { AuthMenuContext } from "../../contexts";
+import useMenu from "../../components/Menu/useMenu";
 
 const Container = styled.div`
   padding: 120px 100px 160px 100px;
@@ -158,20 +160,7 @@ const ErrorBtn = styled.button`
 `;
 
 function FilterPage() {
-  // 控制 dropdownMenu 出現與否
-  const [dropdownMenu, setDropdownMenu] = useState(false);
-  const handleDropdownMenuToggle = () => {
-    setDropdownMenu(!dropdownMenu);
-  };
-
-  // 點選 dropdown 以外的地方 dropdown auto close
-  const dropdownLabel = useRef(null);
-  const handleClickDropdownMenuOutside = (e) => {
-    if (dropdownLabel.current && !dropdownLabel.current.contains(e.target)) {
-      setDropdownMenu(false);
-    }
-  };
-
+  const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
   const [courseResults, setCourseResults] = useState([]);
@@ -189,7 +178,7 @@ function FilterPage() {
       setDropdownContent(json.data);
     };
     getCategoryOptions(setFilterError);
-  }, [setFilterError, setDropdownContent]);
+  }, [setFilterError, setMenu]);
 
   useEffect(() => {
     const getAllCourseResults = async (setFilterError) => {
@@ -227,7 +216,7 @@ function FilterPage() {
       name,
       displayName,
     });
-    setDropdownMenu(false);
+    setMenu(false);
   };
 
   const handleOkClick = () => {
@@ -237,42 +226,46 @@ function FilterPage() {
   };
 
   return (
-    <Container onClick={handleClickDropdownMenuOutside}>
-      <Title>搜尋老師</Title>
-      <DropdownLabel ref={dropdownLabel}>
-        <DropdownBtn onClick={handleDropdownMenuToggle}>
-          {currentCategory.displayName}
-        </DropdownBtn>
-        {dropdownMenu && (
-          <DropdownMenu>
-            {dropdownContent.map((categories) => (
-              <DropdownContent
-                onClick={handleCategoryClick}
-                key={categories.id}
-                id={categories.name}
-              >
-                {categories.displayName}
-              </DropdownContent>
+    <AuthMenuContext.Provider
+      value={{ menuRef, menu, setMenu, handleMenuToggle }}
+    >
+      <Container>
+        <Title>搜尋老師</Title>
+        <DropdownLabel ref={menuRef}>
+          <DropdownBtn onClick={handleMenuToggle}>
+            {currentCategory.displayName}
+          </DropdownBtn>
+          {menu && (
+            <DropdownMenu>
+              {dropdownContent.map((categories) => (
+                <DropdownContent
+                  onClick={handleCategoryClick}
+                  key={categories.id}
+                  id={categories.name}
+                >
+                  {categories.displayName}
+                </DropdownContent>
+              ))}
+            </DropdownMenu>
+          )}
+        </DropdownLabel>
+        <ResultList>
+          {filterError && (
+            <ErrorMessage>
+              {filterError}
+              <ErrorBtn onClick={handleOkClick}>OK</ErrorBtn>
+            </ErrorMessage>
+          )}
+          {!filterError &&
+            courseResults.map((courseResult) => (
+              <TeacherFilterResult
+                key={courseResult.courseId}
+                result={courseResult}
+              />
             ))}
-          </DropdownMenu>
-        )}
-      </DropdownLabel>
-      <ResultList>
-        {filterError && (
-          <ErrorMessage>
-            {filterError}
-            <ErrorBtn onClick={handleOkClick}>OK</ErrorBtn>
-          </ErrorMessage>
-        )}
-        {!filterError &&
-          courseResults.map((courseResult) => (
-            <TeacherFilterResult
-              key={courseResult.courseId}
-              result={courseResult}
-            />
-          ))}
-      </ResultList>
-    </Container>
+        </ResultList>
+      </Container>
+    </AuthMenuContext.Provider>
   );
 }
 
