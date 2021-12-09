@@ -147,7 +147,7 @@ function CoursePage({ apiError, setApiError }) {
   useEffect(() => {
     const getData = async (setApiError) => {
       let json = await getTeacherCourseInfos(setApiError);
-      if (!json.success) {
+      if (!json || !json.success) {
         return setApiError("請先登入才能使用後台功能");
       }
       setCourseInfos(json.data);

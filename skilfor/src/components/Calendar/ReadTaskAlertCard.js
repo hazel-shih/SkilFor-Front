@@ -37,12 +37,11 @@ function ReadTaskAlertCard({
     let confirmAlert = window.confirm("確定刪除此時段的課程嗎？");
     if (!confirmAlert) return;
     deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
-      if (!json.success) return setApiError("課程時間刪除失敗");
+      if (!json || !json.success) return setApiError("課程時間刪除失敗");
       setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
     });
     setAlertShow(false);
   };
-  console.log(selectedEvent);
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />

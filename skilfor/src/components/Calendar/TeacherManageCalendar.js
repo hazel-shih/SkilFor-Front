@@ -42,6 +42,10 @@ function TeacherManageCalendar() {
   }, [currentPage]);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
+    if (dateDataObj.getTime() < new Date().setHours(0, 0, 0, 0)) {
+      alert("無法新增今日以前的課程！");
+      return;
+    }
     setAlertShow("add");
     let newEventTime = {
       year: dateDataObj.getFullYear(),
@@ -51,12 +55,10 @@ function TeacherManageCalendar() {
     };
     setSelectedDate(newEventTime);
   };
-
   const handleEventClick = (e) => {
     setAlertShow("read");
     setSelectedEvent(e);
   };
-
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
     var reserved = event.resource.reserved;
@@ -83,20 +85,12 @@ function TeacherManageCalendar() {
   useEffect(() => {
     const getCourseList = async (setApiError) => {
       let json = await getTeacherCourseInfos(setApiError, "audit=success");
-      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      if (!json || !json.success)
+        return setApiError("發生了一點錯誤，請稍後再試");
       setCourseList(json.data);
     };
     getCourseList(setApiError);
   }, [setApiError]);
-
-  // // //點擊month week day
-  // const handleViewChange = (e) => {
-  //   console.log("handleViewChange: ", e);
-  // };
-  // //點擊上下個月 or month、week 時觸發
-  // const handleRangeChange = (e) => {
-  //   console.log(e);
-  // };
 
   const handlePageChange = (currentMonthPage) => {
     setCurrentPage(currentMonthPage);
@@ -123,8 +117,6 @@ function TeacherManageCalendar() {
         endAccessor="end"
         style={{ height: "100vh" }}
         events={allEvents}
-        // onView={handleViewChange}
-        // onRangeChange={handleRangeChange}
         views={["month", "day", "week"]}
         onNavigate={handlePageChange}
         date={currentPage}

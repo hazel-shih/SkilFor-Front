@@ -97,7 +97,7 @@ function TeacherManagePage() {
   useEffect(() => {
     const getData = async (setApiError) => {
       let json = await getTeacherInfos(setApiError);
-      if (!json.success) {
+      if (!json || !json.success) {
         return setApiError("請先登入才能使用後台功能");
       }
       setTeacherInfos(json.data);

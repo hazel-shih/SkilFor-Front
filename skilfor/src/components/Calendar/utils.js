@@ -2,7 +2,6 @@ import { TIME_OPTIONS } from "./constants";
 
 //使用者選定開始的選項後，產出結束的選項
 export const createTimeOptions = (timeType, time) => {
-  console.log(timeType, time);
   //沒給定開始時間的結束時間選單
   if (!time && timeType === "end") {
     let endOptions = TIME_OPTIONS.slice(1, TIME_OPTIONS.length);

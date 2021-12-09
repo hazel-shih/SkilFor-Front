@@ -183,7 +183,7 @@ function AddTaskAlertCard({
       },
     };
     addNewCalendarEvent(setApiError, postData).then((json) => {
-      if (!json.success) {
+      if (!json || !json.success) {
         setAlertShow(null);
         setApiError("課程時間新增失敗");
         return;

@@ -51,7 +51,8 @@ function CategoryDropDownMenu({
   useEffect(() => {
     async function getCategoryOptions(setApiError) {
       let json = await getAllCategories(setApiError);
-      if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+      if (!json || !json.success)
+        return setApiError("發生了一點錯誤，請稍後再試");
       setSelectOptions(json.data);
     }
     getCategoryOptions(setApiError);
