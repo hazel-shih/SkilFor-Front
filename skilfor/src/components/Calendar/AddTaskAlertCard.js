@@ -97,8 +97,8 @@ function AddTaskAlertCard({
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
     title: courseList[0].courseName,
-    start: "0:00",
-    end: "0:30",
+    start: "上午0:00",
+    end: "上午0:30",
     resource: {
       reserved: false,
       studentNotes: null,

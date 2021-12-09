@@ -42,6 +42,7 @@ function ReadTaskAlertCard({
     });
     setAlertShow(false);
   };
+  console.log(selectedEvent);
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />

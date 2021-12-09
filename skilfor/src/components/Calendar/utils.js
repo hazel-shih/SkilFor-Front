@@ -2,6 +2,7 @@ import { TIME_OPTIONS } from "./constants";
 
 //使用者選定開始的選項後，產出結束的選項
 export const createTimeOptions = (timeType, time) => {
+  console.log(timeType, time);
   //沒給定開始時間的結束時間選單
   if (!time && timeType === "end") {
     let endOptions = TIME_OPTIONS.slice(1, TIME_OPTIONS.length);
@@ -28,7 +29,12 @@ export const getDay = (dayNum) => {
 };
 //處理文字時間轉數字時間格式
 export const getTimeNumber = (timeStr) => {
+  let timeNoon = timeStr.slice(0, 2);
+  timeStr = timeStr.slice(2, timeStr.length);
   let timeArr = timeStr.split(":").map((item) => Number(item));
+  if (timeNoon === "下午") {
+    timeArr[0] += 12;
+  }
   return timeArr;
 };
 
