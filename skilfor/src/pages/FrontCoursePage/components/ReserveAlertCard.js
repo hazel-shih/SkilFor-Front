@@ -14,11 +14,11 @@ const AddToCartButton = styled(AlertButton)`
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
 `;
-const TimeContainer = styled.div`
+export const TimeContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const TimeTitle = styled(AlertTitle)`
+export const TimeTitle = styled(AlertTitle)`
   font-size: 1rem;
   color: ${(props) => props.theme.colors.green_dark};
   :last-of-type {

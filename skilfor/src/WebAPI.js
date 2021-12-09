@@ -241,7 +241,6 @@ export const getAllCourses = async (setApiError) => {
 //行事曆管理頁面
 export const getCalendarMonthEvents = async (setApiError, month) => {
   let url = encodeURI(`${BASE_URL}/teacher/calendar?month=${month}`);
-  console.log(url);
   const token = getAuthToken();
   try {
     const res = await fetch(url, {
@@ -291,7 +290,6 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
         id: eventId,
       }),
     });
-    console.log(await res.json());
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {

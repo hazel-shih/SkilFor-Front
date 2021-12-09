@@ -4,25 +4,15 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
-import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
 import ReadTaskAlertCard from "./ReadTaskAlertCard";
 import AlertCard from "../AlertCard";
-import {
-  getTeacherCourseInfos,
-  getCalendarMonthEvents,
-  deleteCalendarEvent,
-} from "../../WebAPI";
+import { getTeacherCourseInfos, getCalendarMonthEvents } from "../../WebAPI";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
 
-const deleteEvent = async (setApiError, eventId) => {
-  let json = await deleteCalendarEvent(setApiError, eventId);
-  if (!json.success) return setApiError("課程時間刪除失敗");
-};
-
-function TeacherManageCalendar({ teacherId }) {
+function TeacherManageCalendar() {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
@@ -35,10 +25,12 @@ function TeacherManageCalendar({ teacherId }) {
   });
   const [apiError, setApiError] = useState(false);
   const [courseList, setCourseList] = useState([]);
+  //拿當月的行程資料
   useEffect(() => {
     getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
       (json) => {
-        if (!json.success) return setApiError("發生了一點錯誤，請稍後再試");
+        if (!json || !json.success)
+          return setApiError("發生了一點錯誤，請稍後再試");
         let data = json.data.map((event) => {
           event.start = new Date(event.start);
           event.end = new Date(event.end);
@@ -149,16 +141,6 @@ function TeacherManageCalendar({ teacherId }) {
           courseList={courseList}
         />
       )}
-      {alertShow === "delete" && (
-        <DeleteTaskAlertCard
-          alertShow={alertShow}
-          setAlertShow={setAlertShow}
-          setAllEvents={setAllEvents}
-          allEvents={allEvents}
-          teacherId={teacherId}
-          selectedEvent={selectedEvent}
-        />
-      )}
       {alertShow === "read" && (
         <ReadTaskAlertCard
           setAllEvents={setAllEvents}
@@ -166,6 +148,7 @@ function TeacherManageCalendar({ teacherId }) {
           alertShow={alertShow}
           setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
+          setApiError={setApiError}
         />
       )}
     </CalendarContainer>

@@ -7,6 +7,11 @@ import {
   CloseButton,
 } from "./AddTaskAlertCard";
 import close from "../../img/close.png";
+import { deleteCalendarEvent } from "../../WebAPI";
+import {
+  TimeTitle,
+  TimeContainer,
+} from "../../pages/FrontCoursePage/components/ReserveAlertCard";
 
 const ContentContainer = styled.div``;
 
@@ -23,6 +28,7 @@ function ReadTaskAlertCard({
   setAllEvents,
   setAlertShow,
   selectedEvent,
+  setApiError,
 }) {
   const handleCloseClick = () => {
     setAlertShow(null);
@@ -30,16 +36,20 @@ function ReadTaskAlertCard({
   const handleDeleteEvent = () => {
     let confirmAlert = window.confirm("確定刪除此時段的課程嗎？");
     if (!confirmAlert) return;
-    setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
+    deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
+      if (!json.success) return setApiError("課程時間刪除失敗");
+      setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
+    });
     setAlertShow(false);
   };
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AlertTitle>
-        {selectedEvent.title} <br />
-        {getDisplayDate(selectedEvent.start)}
-      </AlertTitle>
+      <AlertTitle>{selectedEvent.title}</AlertTitle>
+      <TimeContainer>
+        <TimeTitle>開始：{getDisplayDate(selectedEvent.start)}</TimeTitle>
+        <TimeTitle>結束：{getDisplayDate(selectedEvent.end)}</TimeTitle>
+      </TimeContainer>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (
           <AlertContent>
