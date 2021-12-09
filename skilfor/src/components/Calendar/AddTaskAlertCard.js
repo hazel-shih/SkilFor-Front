@@ -168,6 +168,10 @@ function AddTaskAlertCard({
       endTimeNumArr[0],
       endTimeNumArr[1]
     );
+    if (formatedStartTime.getTime() < new Date().getTime()) {
+      setError("無法新增過去時間的課程");
+      return;
+    }
     if (checkEventsConflict(allEvents, formatedStartTime, formatedEndTime)) {
       setError("此時段與當天其他時段重疊！");
       return;
