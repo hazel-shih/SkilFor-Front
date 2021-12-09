@@ -4,7 +4,7 @@ import { useContext } from "react";
 import Icons from "../Icon/Icons";
 import LogoSrc from "../../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
-import { MEDIA_QUERY_SM } from "../constants/breakpoints";
+import { MEDIA_QUERY_SM, MEDIA_QUERY_MD } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { setAuthToken } from "../../utils";
@@ -24,6 +24,7 @@ const Container = styled.div`
   ${MEDIA_QUERY_SM} {
     max-width: 768px;
     width: 100%;
+    padding: 10px 20px;
   }
 `;
 
@@ -58,9 +59,12 @@ const NavItem = styled(Link)`
   &:hover {
     opacity: 0.7;
   }
-  ${MEDIA_QUERY_SM} {
+  ${MEDIA_QUERY_MD} {
     padding: 2px;
     margin: 4px;
+  }
+  ${MEDIA_QUERY_SM} {
+    margin: 1px;
   }
 `;
 

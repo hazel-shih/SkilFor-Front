@@ -15,7 +15,8 @@ const CartWrapper = styled.section`
     padding: 156px 30px 182px 30px;
   }
   ${MEDIA_QUERY_SM} {
-    padding: 156px 10px 182px 10px;
+    padding: 135px 10px 182px 10px;
+    text-align: center;
   }
 `;
 const CartContainer = styled.div`
@@ -54,6 +55,7 @@ const CartTable = styled.table`
       width: 290px;
       :nth-of-type(7) {
         border-bottom: 3px solid ${(props) => props.theme.colors.grey_dark};
+        margin-bottom: 10px;
       }
       :before {
         content: attr(data-title);
@@ -90,6 +92,10 @@ const NoteTextArea = styled.textarea`
   padding: 2px 10px;
   opacity: 0.8;
   text-align: left;
+  ${MEDIA_QUERY_SM} {
+    height: 120px;
+    margin: 10px 0px;
+  }
 `;
 const BtnDiv = styled.div`
   display: flex;
