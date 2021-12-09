@@ -2,10 +2,11 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, getMyUserData } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
-import { AuthContext } from "../../contexts";
+import { AuthContext, AuthLoadingContext } from "../../contexts";
 
 export default function useLogin() {
-  const { setUser, setIsLoading } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
+  const { setIsLoading } = useContext(AuthLoadingContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [loginData, setLoginData] = useState({
@@ -21,8 +22,7 @@ export default function useLogin() {
 
     for (const [inputName, value] of Object.entries(loginData)) {
       if (value.trim().length === 0) {
-        //if (value === "") {
-        if (inputName === "登入用 email") {
+        if (inputName === "email") {
           setErrorMessage("請輸入登入用 Email");
         }
         if (inputName === "password") {

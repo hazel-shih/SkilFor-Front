@@ -6,7 +6,7 @@ import LogoSrc from "../../img/logo/logo.png";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
-import { AuthContext } from "../../contexts";
+import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { setAuthToken } from "../../utils";
 
 const Container = styled.div`
@@ -66,6 +66,7 @@ const NavItem = styled(Link)`
 
 function Nav() {
   const { user, setUser } = useContext(AuthContext);
+  const { isLoading } = useContext(AuthLoadingContext);
   const handleLogout = () => {
     setAuthToken("");
     setUser(null);
@@ -77,26 +78,29 @@ function Nav() {
           <Logo src={LogoSrc} />
         </div>
         <div>
-          <NavbarList>
-            <NavItem to="./filter">找老師</NavItem>
-            {!user && (
-              <>
-                <NavItem to="./login">登入</NavItem>
-                <NavItem to="./register">註冊</NavItem>
-              </>
-            )}
-            {user && (
-              <NavItem to="./" onClick={handleLogout}>
-                登出
+          {!isLoading && (
+            <NavbarList>
+              <NavItem to="./filter">找老師</NavItem>
+
+              {!user && (
+                <>
+                  <NavItem to="./login">登入</NavItem>
+                  <NavItem to="./register">註冊</NavItem>
+                </>
+              )}
+              {user && (
+                <NavItem to="./" onClick={handleLogout}>
+                  登出
+                </NavItem>
+              )}
+              <NavItem to="./question_and_answer">
+                <IconDiv>
+                  <Icons.NavIcons.Question />
+                </IconDiv>
               </NavItem>
-            )}
-            <NavItem to="./question_and_answer">
-              <IconDiv>
-                <Icons.NavIcons.Question />
-              </IconDiv>
-            </NavItem>
-            {user && <BurgerMenu />}
-          </NavbarList>
+              {user && <BurgerMenu />}
+            </NavbarList>
+          )}
         </div>
       </Navbar>
     </Container>

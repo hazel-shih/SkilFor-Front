@@ -17,13 +17,12 @@ export const RowContainer = styled.div`
   justify-content: center;
   align-items: end;
 `;
-
 export const ColumnContainer = styled(RowContainer)`
   flex-direction: column;
   align-items: center;
 `;
-
 export const AlertContainer = styled.div`
+  max-width: 350px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -36,7 +35,6 @@ export const AlertContainer = styled.div`
   box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.2);
   z-index: 5;
 `;
-
 export const AlertTitle = styled.h1`
   font-size: 1.2rem;
   color: ${(props) => props.theme.colors.grey_dark};
@@ -46,21 +44,17 @@ export const AlertTitle = styled.h1`
     margin-bottom: 10px;
   }
 `;
-
 export const AlertContent = styled.p`
   font-size: 1.1rem;
   margin-top: 10px;
   color: ${(props) => props.theme.colors.grey_dark};
 `;
-
 const SelectContainer = styled.select`
   height: 25px;
   font-size: 1rem;
   width: fit-content;
 `;
-
 const SelectOption = styled.option``;
-
 export const AlertButton = styled.button`
   border: none;
   border-radius: 5px;
@@ -75,7 +69,6 @@ export const AlertButton = styled.button`
     opacity: 0.8;
   }
 `;
-
 export const CloseButton = styled.img`
   position: absolute;
   right: 15px;
@@ -86,7 +79,6 @@ export const CloseButton = styled.img`
     opacity: 0.6;
   }
 `;
-
 const ErrorMessage = styled.p`
   font-weight: bold;
   color: #b61919;
@@ -108,6 +100,7 @@ function AddTaskAlertCard({
     resource: {
       teacherId,
       reserved: false,
+      studentNotes: null,
       eventColor: "#22577A",
       timePeriod: "",
     },
@@ -187,7 +180,6 @@ function AddTaskAlertCard({
     ]);
     setAlertShow(null);
   };
-
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
 import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
+import ReadTaskAlertCard from "./ReadTaskAlertCard";
+import { MONTH_EVENTS } from "../Calendar/constants";
+import { sleep } from "../../utils";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -21,33 +24,55 @@ function TeacherManageCalendar({ teacherId }) {
     date: "",
     day: "",
   });
+  useEffect(() => {
+    async function fetchData() {
+      await sleep(100);
+      setAllEvents(MONTH_EVENTS);
+    }
+    fetchData();
+  }, []);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     setAlertShow("add");
-    setSelectedDate({
+    let newEventTime = {
       year: dateDataObj.getFullYear(),
       month: dateDataObj.getMonth(),
       date: dateDataObj.getDate(),
       day: dateDataObj.getDay(),
-    });
+    };
+    setSelectedDate(newEventTime);
   };
 
   const handleEventClick = (e) => {
-    setAlertShow("delete");
+    setAlertShow("read");
     setSelectedEvent(e);
   };
 
   const eventStyleGetter = (event) => {
-    var backgroundColor = event.resource.eventColor;
-    var style = {
-      backgroundColor: backgroundColor,
-    };
+    var eventColor = event.resource.eventColor;
+    var reserved = event.resource.reserved;
+    var style;
+    if (!reserved) {
+      style = {
+        border: `2px solid ${eventColor}`,
+        backgroundColor: "white",
+        color: "black",
+        fontSize: "14px",
+      };
+    } else {
+      style = {
+        border: `2px solid ${eventColor}`,
+        backgroundColor: eventColor,
+        color: "white",
+        fontSize: "14px",
+      };
+    }
     return {
       style: style,
     };
   };
 
-  // //點擊month week day
+  // // //點擊month week day
   // const handleViewChange = (e) => {
   //   console.log("handleViewChange: ", e);
   // };
@@ -69,7 +94,7 @@ function TeacherManageCalendar({ teacherId }) {
         localizer={localizer}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500 }}
+        style={{ height: "100vh" }}
         events={allEvents}
         // onView={handleViewChange}
         // onRangeChange={handleRangeChange}
@@ -95,6 +120,15 @@ function TeacherManageCalendar({ teacherId }) {
           setAllEvents={setAllEvents}
           allEvents={allEvents}
           teacherId={teacherId}
+          selectedEvent={selectedEvent}
+        />
+      )}
+      {alertShow === "read" && (
+        <ReadTaskAlertCard
+          setAllEvents={setAllEvents}
+          allEvents={allEvents}
+          alertShow={alertShow}
+          setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
         />
       )}

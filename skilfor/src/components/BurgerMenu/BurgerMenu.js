@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
+import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import Avatar from "../../components/Avatar";
 import studentPic from "../../img/student.jpg";
+import { AuthBurgerContext } from "../../contexts";
 
 const Burger = styled.div`
   position: relative;
@@ -15,10 +17,21 @@ const BurgerBtn = styled.button`
   border: none;
   cursor: pointer;
   background-color: transparent;
+  color: ${(props) => props.theme.colors.grey_dark};
+  opacity: 1;
+  &:hover {
+    opacity: 0.7;
+  }
+  margin: 8px;
+  padding: 6px;
+  ${MEDIA_QUERY_SM} {
+    padding: 2px;
+    margin: 4px;
+  }
 `;
 
 const BurgerContent = styled.div`
-  display: ${(props) => (props.show ? "block" : "none")};
+  display: block;
   position: absolute;
   right: 0;
   background-color: ${(props) => props.theme.colors.white_pure};
@@ -46,27 +59,61 @@ const BurgerItem = styled(Link)`
 `;
 
 function BurgerMenu() {
+  const burgerRef = useRef(null);
   const [burgerContent, setBurgerContent] = useState(false);
 
   const handleBurgerToggle = () => {
     setBurgerContent(!burgerContent);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (burgerRef.current && !burgerRef.current.contains(e.target)) {
+        setBurgerContent(false);
+      }
+    };
+    document
+      .querySelector("#Outside")
+      .addEventListener("click", handleClickOutside);
+    return () => {
+      document
+        .querySelector("#Outside")
+        .removeEventListener("click", handleClickOutside);
+    };
+  }, [burgerRef, setBurgerContent]);
+
   return (
-    <Burger>
-      <BurgerBtn onClick={handleBurgerToggle}>
-        <IconDiv>
-          <Icons.NavIcons.Burger />
-        </IconDiv>
-      </BurgerBtn>
-      <BurgerContent show={burgerContent}>
-        <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
-        <BurgerItem to="./cart">購物車</BurgerItem>
-        <BurgerItem to="./calendar">行事曆</BurgerItem>
-        <BurgerItem to="./charge_points">儲值點數</BurgerItem>
-        <BurgerItem to="./identity/manage">管理個人資料</BurgerItem>
-      </BurgerContent>
-    </Burger>
+    <AuthBurgerContext.Provider
+      value={{ burgerRef, burgerContent, setBurgerContent }}
+    >
+      <Burger ref={burgerRef}>
+        <BurgerBtn onClick={handleBurgerToggle}>
+          <IconDiv>
+            <Icons.NavIcons.Burger />
+          </IconDiv>
+        </BurgerBtn>
+        {burgerContent && (
+          <BurgerContent>
+            <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
+            <BurgerItem to="./cart" onClick={handleBurgerToggle}>
+              購物車
+            </BurgerItem>
+            <BurgerItem to="./calendar" onClick={handleBurgerToggle}>
+              行事曆
+            </BurgerItem>
+            <BurgerItem to="./charge_points" onClick={handleBurgerToggle}>
+              儲值點數
+            </BurgerItem>
+            <BurgerItem
+              to="./teacher/manage/:teacherId"
+              onClick={handleBurgerToggle}
+            >
+              管理個人資料
+            </BurgerItem>
+          </BurgerContent>
+        )}
+      </Burger>
+    </AuthBurgerContext.Provider>
   );
 }
 
