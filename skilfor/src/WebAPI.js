@@ -137,7 +137,9 @@ export const getTeacherCourseInfos = async (setApiError, params) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!res.ok) throw new Error("fail to fetch data");
+    if (!res.ok) {
+      throw new Error("fail to fetch data");
+    }
     return await res.json();
   } catch (error) {
     return setApiError("發生了一點錯誤，請稍後再試");

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import CourseInfosForm from "./CourseInfosForm";
 import happy from "../../../img/happy.png";
@@ -119,7 +119,6 @@ const makeDeleteCourseApi = async (setApiError, courseId) => {
 };
 
 function CoursePage({ apiError, setApiError }) {
-  const { teacherId } = useParams();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
@@ -288,7 +287,7 @@ function CoursePage({ apiError, setApiError }) {
                 </PassContainer>
               </SuccessContainer>
               <SectionText>設定課程時段</SectionText>
-              <GoToLink to={`/teacher/calendar/${teacherId}`}>
+              <GoToLink to="/teacher/calendar">
                 前往行事曆設定課程時段 ➜
               </GoToLink>
             </>

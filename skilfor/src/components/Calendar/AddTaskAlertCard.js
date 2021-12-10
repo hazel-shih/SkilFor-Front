@@ -59,7 +59,7 @@ const SelectOption = styled.option``;
 export const AlertButton = styled.button`
   border: none;
   border-radius: 5px;
-  width: 90px;
+  min-width: 100px;
   color: white;
   background: ${(props) => props.color};
   margin: 0 auto;
