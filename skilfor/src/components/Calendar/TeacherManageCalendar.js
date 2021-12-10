@@ -4,16 +4,25 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AddTaskAlertCard from "./AddTaskAlertCard";
-import DeleteTaskAlertCard from "./DeleteTaskAlertCard";
 import ReadTaskAlertCard from "./ReadTaskAlertCard";
-import { MONTH_EVENTS } from "../Calendar/constants";
-import { sleep } from "../../utils";
+import AlertCard from "../AlertCard";
+import { getTeacherCourseInfos, getCalendarMonthEvents } from "../../WebAPI";
+import LoaderSpining from "../../components/LoaderSpining";
 
 const CalendarContainer = styled.div`
   position: relative;
 `;
-
-function TeacherManageCalendar({ teacherId }) {
+const LoadingSquare = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  opacity: 0.8;
+  z-index: 8;
+`;
+function TeacherManageCalendar() {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
@@ -24,15 +33,34 @@ function TeacherManageCalendar({ teacherId }) {
     date: "",
     day: "",
   });
+  const [apiError, setApiError] = useState(false);
+  const [courseList, setCourseList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  //拿當月的行程資料
   useEffect(() => {
-    async function fetchData() {
-      await sleep(100);
-      setAllEvents(MONTH_EVENTS);
-    }
-    fetchData();
-  }, []);
+    setLoading(true);
+    getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
+      (json) => {
+        if (!json || !json.success) {
+          setLoading(false);
+          return setApiError("發生了一點錯誤，請稍後再試");
+        }
+        let data = json.data.map((event) => {
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
+          return event;
+        });
+        setAllEvents(data);
+        setLoading(false);
+      }
+    );
+  }, [currentPage]);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
+    if (dateDataObj.getTime() < new Date().setHours(0, 0, 0, 0)) {
+      alert("無法新增今日以前的課程！");
+      return;
+    }
     setAlertShow("add");
     let newEventTime = {
       year: dateDataObj.getFullYear(),
@@ -42,12 +70,10 @@ function TeacherManageCalendar({ teacherId }) {
     };
     setSelectedDate(newEventTime);
   };
-
   const handleEventClick = (e) => {
     setAlertShow("read");
     setSelectedEvent(e);
   };
-
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
     var reserved = event.resource.reserved;
@@ -71,22 +97,39 @@ function TeacherManageCalendar({ teacherId }) {
       style: style,
     };
   };
-
-  // // //點擊month week day
-  // const handleViewChange = (e) => {
-  //   console.log("handleViewChange: ", e);
-  // };
-  // //點擊上下個月 or month、week 時觸發
-  // const handleRangeChange = (e) => {
-  //   console.log(e);
-  // };
+  useEffect(() => {
+    const getCourseList = async (setApiError) => {
+      let json = await getTeacherCourseInfos(setApiError, "audit=success");
+      if (!json || !json.success)
+        return setApiError("發生了一點錯誤，請稍後再試");
+      setCourseList(json.data);
+    };
+    getCourseList(setApiError);
+  }, [setApiError]);
 
   const handlePageChange = (currentMonthPage) => {
     setCurrentPage(currentMonthPage);
   };
-
+  const handleAlertOkClick = () => {
+    return setApiError(false);
+  };
   return (
     <CalendarContainer>
+      {loading && (
+        <>
+          <LoadingSquare />
+          <LoaderSpining />
+        </>
+      )}
+
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <Calendar
         onSelectEvent={handleEventClick}
         onSelectSlot={handleDateClick}
@@ -96,8 +139,6 @@ function TeacherManageCalendar({ teacherId }) {
         endAccessor="end"
         style={{ height: "100vh" }}
         events={allEvents}
-        // onView={handleViewChange}
-        // onRangeChange={handleRangeChange}
         views={["month", "day", "week"]}
         onNavigate={handlePageChange}
         date={currentPage}
@@ -110,17 +151,8 @@ function TeacherManageCalendar({ teacherId }) {
           selectedDate={selectedDate}
           setAllEvents={setAllEvents}
           allEvents={allEvents}
-          teacherId={teacherId}
-        />
-      )}
-      {alertShow === "delete" && (
-        <DeleteTaskAlertCard
-          alertShow={alertShow}
-          setAlertShow={setAlertShow}
-          setAllEvents={setAllEvents}
-          allEvents={allEvents}
-          teacherId={teacherId}
-          selectedEvent={selectedEvent}
+          setApiError={setApiError}
+          courseList={courseList}
         />
       )}
       {alertShow === "read" && (
@@ -130,6 +162,7 @@ function TeacherManageCalendar({ teacherId }) {
           alertShow={alertShow}
           setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
+          setApiError={setApiError}
         />
       )}
     </CalendarContainer>
