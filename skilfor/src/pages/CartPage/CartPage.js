@@ -233,7 +233,7 @@ function CartPage() {
       let total = 0;
       console.log(cartItems);
       for (let i = 0; i < cartItems.length; i++) {
-        if (cartItems.checked === true) {
+        if (cartItems[i].checked === true) {
           total += cartItems[i].price;
         }
       }
@@ -285,12 +285,10 @@ function CartPage() {
             ))}
           </CartBody>
         </CartTable>
-        {totalPrice !== 0 && (
-          <BtnDiv>
-            <TotalPrice>共計 NT$ {totalPrice}</TotalPrice>
-            <Btn to="./payment">確認購買</Btn>
-          </BtnDiv>
-        )}
+        <BtnDiv>
+          <TotalPrice>共計 NT$ {totalPrice}</TotalPrice>
+          <Btn to="./payment">確認購買</Btn>
+        </BtnDiv>
       </CartContainer>
     </CartWrapper>
   );
