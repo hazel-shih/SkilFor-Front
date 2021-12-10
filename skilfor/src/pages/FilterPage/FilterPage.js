@@ -184,7 +184,8 @@ function FilterPage() {
     const getAllCourseResults = async (setFilterError) => {
       let json = await getAllCourses(setFilterError);
       if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
-      if (json.data.length === 0) {
+      if (json.data.indexOf("目前尚未有課程") === 0) {
+        //if (json.data.length === 0) {
         return setFilterError("目前尚未有課程上架，請稍後再試");
       }
       setCourseResults(json.data);
@@ -199,7 +200,8 @@ function FilterPage() {
     ) => {
       let json = await getSpecificCourse(currentCategory.name, setFilterError);
       if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
-      if (json.data.length === 0) {
+      if (json.data.indexOf("目前尚未有課程") === 0) {
+        //if (json.data.length === 0) {
         return setFilterError(
           "oops ! 目前此領域課程尚未上架，先逛逛其他領域吧 ~"
         );
