@@ -63,13 +63,10 @@ function App() {
               <Route exact path="/" element={<HomePage />}></Route>
               <Route exact path="/filter" element={<FilterPage />}></Route>
               <Route exact path="/cart" element={<CartPage />}></Route>
-              <Route
-                path="/teacher/manage/:teacherId"
-                element={<TeacherManagePage />}
-              />
+              <Route path="/teacher/manage" element={<TeacherManagePage />} />
               <Route path="/course/:courseId" element={<FrontCoursePage />} />
               <Route
-                path="/teacher/calendar/:teacherId"
+                path="/teacher/calendar"
                 element={<TeacherCalendarPage />}
               />
             </Routes>

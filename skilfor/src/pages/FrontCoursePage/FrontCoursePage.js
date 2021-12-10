@@ -10,6 +10,7 @@ import {
 } from "../../components/constants/breakpoints";
 import { TEACHER_INFOS, COURSE_INFOS, COMMENTS } from "./constants";
 import { sleep } from "../../utils";
+import { nanoid } from "nanoid";
 
 const TeacherProfileWrapper = styled.section`
   padding: 180px 200px 232px 200px;
@@ -34,6 +35,10 @@ const TeacherAvatarContainer = styled(ColumnContainer)`
   align-items: center;
   justify-content: center;
   margin-right: 50px;
+  ${MEDIA_QUERY_SM} {
+    flex-direction: column;
+    margin-right: 0px;
+  }
 `;
 const TeacherAvatar = styled(AvatarContainer)`
   width: 150px;
@@ -41,7 +46,7 @@ const TeacherAvatar = styled(AvatarContainer)`
 `;
 const AvatarName = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin-top: 12px;
 `;
 const TeacherInfosContainer = styled(RowContainer)`
@@ -53,8 +58,7 @@ const TeacherInfosContainer = styled(RowContainer)`
 `;
 const CourseInfosContainer = styled(ColumnContainer)`
   color: ${(props) => props.theme.colors.grey_dark};
-  margin-left: 15px;
-  width: 100%;
+  width: 70%;
 `;
 const ItemContainer = styled(ColumnContainer)`
   border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
@@ -62,14 +66,15 @@ const ItemContainer = styled(ColumnContainer)`
 `;
 const ItemTitle = styled.h3`
   color: ${(props) => props.theme.colors.orange};
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin-bottom: 2px;
 `;
 const ItemContent = styled.p`
   color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1rem;
+  font-size: 1.2rem;
   padding-left: 5px;
   margin-bottom: 5px;
+  overflow-wrap: break-word;
 `;
 const SectionTitle = styled.h1`
   color: ${(props) => props.theme.colors.green_dark};
@@ -140,6 +145,7 @@ function FrontCoursePage() {
         {comments && comments.length !== 0 ? (
           comments.map((comment) => (
             <CommentCard
+              key={nanoid()}
               imgSrc={comment.imgSrc}
               name={comment.username}
               content={comment.content}
