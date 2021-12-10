@@ -28,7 +28,12 @@ export const getDay = (dayNum) => {
 };
 //處理文字時間轉數字時間格式
 export const getTimeNumber = (timeStr) => {
+  let timeNoon = timeStr.slice(0, 2);
+  timeStr = timeStr.slice(2, timeStr.length);
   let timeArr = timeStr.split(":").map((item) => Number(item));
+  if (timeNoon === "下午") {
+    timeArr[0] += 12;
+  }
   return timeArr;
 };
 
