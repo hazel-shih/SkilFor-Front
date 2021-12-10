@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 import {
   MEDIA_QUERY_MD,
@@ -134,7 +133,7 @@ const TotalPrice = styled.div`
     font-size: 1rem;
   }
 `;
-const Btn = styled(Link)`
+const Btn = styled.button`
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -167,21 +166,21 @@ const DeleteButton = styled.img`
   }
 `;
 
-function CartList({ item, onChange, onDelete }) {
+function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
   return (
     <tr>
       <td data-title="購買">
         <label>
           <CheckBox
             type="checkbox"
-            onChange={onChange}
+            onChange={onChangeCheck}
             checked={item.checked}
             id={item.courseId}
           />
         </label>
       </td>
       <td data-title="刪除">
-        <DeleteButton src={close} onClick={onDelete} id={item.courseId} />
+        <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
       </td>
       <td data-title="課程名稱">{item.courseName}</td>
       <td data-title="老師名稱">{item.teacherName}</td>
@@ -194,7 +193,12 @@ function CartList({ item, onChange, onDelete }) {
       <td data-title="價格">NT${item.price}</td>
       <td data-title="備註">
         <label>
-          <NoteTextArea placeholder="我想對老師說..." />
+          <NoteTextArea
+            placeholder="我想對老師說..."
+            onChange={onChangeNote}
+            id={item.courseId}
+            value={item.note}
+          />
         </label>
       </td>
     </tr>
@@ -214,7 +218,7 @@ function CartPage() {
     fetchData();
   }, []);
 
-  const handleChangeItem = (e) => {
+  const handleItemCheckChange = (e) => {
     const { id } = e.target;
     setCartItems(
       cartItems.map((item) => {
@@ -225,13 +229,11 @@ function CartPage() {
         };
       })
     );
-    console.log(cartItems);
   };
 
   useEffect(() => {
     function sumUpPrice() {
       let total = 0;
-      console.log(cartItems);
       for (let i = 0; i < cartItems.length; i++) {
         if (cartItems[i].checked === true) {
           total += cartItems[i].price;
@@ -242,10 +244,48 @@ function CartPage() {
     sumUpPrice();
   }, [cartItems]);
 
-  const handleDeleteItem = (e) => {
+  const handleItemDelete = (e) => {
     e.preventDefault();
+    const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
+    if (!confirmDelete) return;
     const { id } = e.target;
     setCartItems(cartItems.filter((item) => item.courseId !== id));
+  };
+
+  const handleItemNoteChange = (e) => {
+    const { id, value } = e.target;
+    setCartItems(
+      cartItems.map((item) => {
+        if (item.courseId !== id) return item;
+        return {
+          ...item,
+          note: value,
+        };
+      })
+    );
+  };
+
+  const handleConfirmPaymentClick = (e) => {
+    e.preventDefault();
+    const checkedItem = cartItems.find((item) => item.checked === true);
+    if (!checkedItem) return alert("尚未選擇要確認購買的課程");
+
+    const confirmPayment = window.confirm(
+      "按下確認購買後，將會於您的帳戶扣除點數"
+    );
+    if (!confirmPayment) return;
+    setCartItems(
+      cartItems.filter((item) => {
+        return !item.checked;
+      })
+    );
+    // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
+    // 扣點過程背景進入 loading 讓使用者不能亂點
+    // 多增加區塊顯示學生目前剩餘點數
+    // 加入判斷 此堂課是否已被其他人訂走
+    // 加入判斷 此時段是否跟學生其他上課時間衝突
+    // 加入判斷 此時斷跟其他要結帳的上課時間是否衝突
+    alert("成功扣點 !");
   };
 
   return (
@@ -277,9 +317,10 @@ function CartPage() {
               <CartList
                 item={item}
                 key={item.courseId}
-                onDelete={handleDeleteItem}
-                onChange={handleChangeItem}
-                id={item.id}
+                onDeleteItem={handleItemDelete}
+                onChangeCheck={handleItemCheckChange}
+                onChangeNote={handleItemNoteChange}
+                id={item.courseId}
                 checked={item.checked}
               />
             ))}
@@ -287,7 +328,7 @@ function CartPage() {
         </CartTable>
         <BtnDiv>
           <TotalPrice>共計 NT$ {totalPrice}</TotalPrice>
-          <Btn to="./payment">確認購買</Btn>
+          <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
         </BtnDiv>
       </CartContainer>
     </CartWrapper>
