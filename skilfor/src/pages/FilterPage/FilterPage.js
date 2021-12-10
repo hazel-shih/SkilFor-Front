@@ -172,7 +172,8 @@ function FilterPage() {
   useEffect(() => {
     const getCategoryOptions = async (setFilterError) => {
       let json = await getAllCategories(setFilterError);
-      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
+      if (!json || !json.success)
+        return setFilterError("發生了一點錯誤，請稍後再試");
       if (json.data.length === 0)
         return setFilterError("目前尚未有領域開放查詢，請稍後再試");
       setDropdownContent(json.data);
@@ -183,7 +184,8 @@ function FilterPage() {
   useEffect(() => {
     const getAllCourseResults = async (setFilterError) => {
       let json = await getAllCourses(setFilterError);
-      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
+      if (!json || !json.success)
+        return setFilterError("發生了一點錯誤，請稍後再試");
       if (json.data.indexOf("目前尚未有課程") === 0) {
         //if (json.data.length === 0) {
         return setFilterError("目前尚未有課程上架，請稍後再試");
@@ -199,7 +201,8 @@ function FilterPage() {
       setFilterError
     ) => {
       let json = await getSpecificCourse(currentCategory.name, setFilterError);
-      if (!json.success) return setFilterError("發生了一點錯誤，請稍後再試");
+      if (!json || !json.success)
+        return setFilterError("發生了一點錯誤，請稍後再試");
       if (json.data.indexOf("目前尚未有課程") === 0) {
         //if (json.data.length === 0) {
         return setFilterError(

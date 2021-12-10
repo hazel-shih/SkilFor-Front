@@ -5,7 +5,6 @@ const Wrapper = styled.div`
   background: linear-gradient(
     to right,
     ${(props) => props.theme.colors.orange},
-    transparent 10%,
     white 20%
   );
   margin: 0 auto;
@@ -14,6 +13,11 @@ const Wrapper = styled.div`
   height: 100%;
   ${MEDIA_QUERY_SM} {
     max-width: 768px;
+    background: linear-gradient(
+      to right,
+      ${(props) => props.theme.colors.orange},
+      white 10%
+    );
   }
 `;
 
@@ -35,23 +39,23 @@ const Title = styled.h1`
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
 `;
 
 const FormContainer = styled.form`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  min-height: 300px;
+  min-height: 275px;
   border: 1px solid ${(props) => props.theme.colors.grey_light};
   border-radius: 10px;
   padding: 15px 40px;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   ${MEDIA_QUERY_SM} {
-    padding: 15px;
+    padding: 10px;
   }
 `;
 

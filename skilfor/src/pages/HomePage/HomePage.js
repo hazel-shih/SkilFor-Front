@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
   ${MEDIA_QUERY_SM} {
-    padding: 95px 0px 150px 0px;
+    padding: 95px 0px 110px 0px;
   }
 `;
 
