@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   MEDIA_QUERY_MD,
@@ -6,6 +6,8 @@ import {
 } from "../../components/constants/breakpoints";
 import PageTitle from "../../components/PageTitle";
 import close from "../../img/close.png";
+import { sleep } from "../../utils";
+import { CART_LIST } from "./Constant";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -15,7 +17,8 @@ const CartWrapper = styled.section`
     padding: 156px 30px 182px 30px;
   }
   ${MEDIA_QUERY_SM} {
-    padding: 156px 10px 182px 10px;
+    padding: 135px 10px 182px 10px;
+    text-align: center;
   }
 `;
 const CartContainer = styled.div`
@@ -40,9 +43,18 @@ const CartTable = styled.table`
   border-spacing: 0;
   font-size: 1.2rem;
   table-layout: fixed;
+  td:nth-of-type(3) {
+    text-align: left;
+    ${MEDIA_QUERY_SM} {
+      text-align: right;
+    }
+  }
   th,
   td {
     padding: 6px 4px;
+    :nth-of-type(3) {
+      padding-left: 8px;
+    }
     border-bottom: 1px dotted ${(props) => props.theme.colors.grey_light};
     vertical-align: middle;
     ${MEDIA_QUERY_SM} {
@@ -54,6 +66,7 @@ const CartTable = styled.table`
       width: 290px;
       :nth-of-type(7) {
         border-bottom: 3px solid ${(props) => props.theme.colors.grey_dark};
+        margin-bottom: 10px;
       }
       :before {
         content: attr(data-title);
@@ -83,37 +96,44 @@ const CheckBox = styled.input`
   cursor: pointer;
 `;
 const NoteTextArea = styled.textarea`
-  height: 50px;
+  height: 75px;
   width: 100%;
   border: 1px solid ${(props) => props.theme.colors.grey_light};
   border-radius: 5px;
   padding: 2px 10px;
   opacity: 0.8;
   text-align: left;
+  ${MEDIA_QUERY_SM} {
+    height: 120px;
+    margin: 10px 0px;
+  }
 `;
 const BtnDiv = styled.div`
   display: flex;
   justify-content: flex-end;
-  align-items: flex-end;
-  padding: 2px 8px 2px 0px;
+  align-items: center;
   width: 760px;
+  height: 65px;
+  margin-top: 5px;
   ${MEDIA_QUERY_MD} {
     max-width: 650px;
   }
   ${MEDIA_QUERY_SM} {
     max-width: 295px;
+    height: 55px;
+    justify-content: space-between;
   }
 `;
-const TotalPrice = styled.p`
-  text-align: left;
+const TotalPrice = styled.div`
   font-weight: bold;
   padding: 10px 30px;
   color: ${(props) => props.theme.colors.orange};
   ${MEDIA_QUERY_SM} {
-    padding: 6px 30px 6px 1px;
+    padding: 6px 0px;
+    font-size: 1rem;
   }
 `;
-const Btn = styled(Link)`
+const Btn = styled.button`
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -125,7 +145,6 @@ const Btn = styled(Link)`
   text-align: center;
   font-size: 1.2rem;
   text-decoration: none;
-  margin-top: 5px;
   :hover {
     opacity: 0.9;
     font-weight: bold;
@@ -136,41 +155,50 @@ const Btn = styled(Link)`
     font-size: 1rem;
   }
 `;
-const DeleteButton = styled.button`
+const DeleteButton = styled.img`
+  width: 15px;
+  height: 15px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   :hover {
     opacity: 0.6;
   }
-  img {
-    width: 15px;
-    height: 15px;
-  }
 `;
 
-function CartList() {
+function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
   return (
     <tr>
       <td data-title="購買">
         <label>
-          <CheckBox type="checkbox" />
+          <CheckBox
+            type="checkbox"
+            onChange={onChangeCheck}
+            checked={item.checked}
+            id={item.courseId}
+          />
         </label>
       </td>
       <td data-title="刪除">
-        <DeleteButton>
-          <img src={close} alt="Delete" />
-        </DeleteButton>
+        <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
       </td>
-      <td data-title="課程名稱">一起來學 Javascript</td>
-      <td data-title="老師名稱">Jack</td>
+      <td data-title="課程名稱">{item.courseName}</td>
+      <td data-title="老師名稱">{item.teacherName}</td>
       <td data-title="上課時間">
-        2021/12/17 <br /> 10:30-11:30
+        {`${item.start.getFullYear()}/${
+          item.start.getMonth() + 1
+        }/${item.start.getDate()}`}
+        <br /> {item.timePeriod}
       </td>
-      <td data-title="價格">NT$2000</td>
+      <td data-title="價格">NT${item.price}</td>
       <td data-title="備註">
         <label>
-          <NoteTextArea placeholder="我想對老師說..." />
+          <NoteTextArea
+            placeholder="我想對老師說..."
+            onChange={onChangeNote}
+            id={item.courseId}
+            value={item.note}
+          />
         </label>
       </td>
     </tr>
@@ -178,16 +206,100 @@ function CartList() {
 }
 
 function CartPage() {
+  const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState("0");
+
+  useEffect(() => {
+    //API: get user cart data
+    async function fetchData() {
+      await sleep(100);
+      setCartItems(CART_LIST);
+    }
+    fetchData();
+  }, []);
+
+  const handleItemCheckChange = (e) => {
+    const { id } = e.target;
+    setCartItems(
+      cartItems.map((item) => {
+        if (item.courseId !== id) return item;
+        return {
+          ...item,
+          checked: !item.checked,
+        };
+      })
+    );
+  };
+
+  useEffect(() => {
+    function sumUpPrice() {
+      let total = 0;
+      for (let i = 0; i < cartItems.length; i++) {
+        if (cartItems[i].checked === true) {
+          total += cartItems[i].price;
+        }
+      }
+      return setTotalPrice(total);
+    }
+    sumUpPrice();
+  }, [cartItems]);
+
+  const handleItemDelete = (e) => {
+    e.preventDefault();
+    const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
+    if (!confirmDelete) return;
+    const { id } = e.target;
+    setCartItems(cartItems.filter((item) => item.courseId !== id));
+  };
+
+  const handleItemNoteChange = (e) => {
+    const { id, value } = e.target;
+    setCartItems(
+      cartItems.map((item) => {
+        if (item.courseId !== id) return item;
+        return {
+          ...item,
+          note: value,
+        };
+      })
+    );
+  };
+
+  const handleConfirmPaymentClick = (e) => {
+    e.preventDefault();
+    const checkedItem = cartItems.find((item) => item.checked === true);
+    if (!checkedItem) return alert("尚未選擇要確認購買的課程");
+
+    const confirmPayment = window.confirm(
+      "按下確認購買後，將會於您的帳戶扣除點數"
+    );
+    if (!confirmPayment) return;
+    setCartItems(
+      cartItems.filter((item) => {
+        return !item.checked;
+      })
+    );
+    // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
+    // 扣點過程背景進入 loading 讓使用者不能亂點
+    // 多增加區塊顯示學生目前剩餘點數
+    // 加入判斷 此堂課是否已被其他人訂走
+    // 加入判斷 此時段是否跟學生其他上課時間衝突
+    // 加入判斷 此時斷跟其他要結帳的上課時間是否衝突
+    alert("成功扣點 !");
+  };
+
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>
       <CartContainer>
         <CartTable>
           <colgroup>
-            <col span="1" style={{ width: "10%" }} />
-            <col span="1" style={{ width: "10%" }} />
-            <col span="4" style={{ width: "30%" }} />
-            <col span="1" style={{ width: "50%" }} />
+            <col span="2" style={{ width: "5%" }} />
+            <col span="1" style={{ width: "20%" }} />
+            <col span="1" style={{ width: "8%" }} />
+            <col span="1" style={{ width: "17%" }} />
+            <col span="1" style={{ width: "15%" }} />
+            <col span="1" style={{ width: "30%" }} />
           </colgroup>
           <CartHead>
             <tr>
@@ -201,15 +313,22 @@ function CartPage() {
             </tr>
           </CartHead>
           <CartBody>
-            <CartList />
-            <CartList />
-            <CartList />
-            <CartList />
+            {cartItems.map((item) => (
+              <CartList
+                item={item}
+                key={item.courseId}
+                onDeleteItem={handleItemDelete}
+                onChangeCheck={handleItemCheckChange}
+                onChangeNote={handleItemNoteChange}
+                id={item.courseId}
+                checked={item.checked}
+              />
+            ))}
           </CartBody>
         </CartTable>
         <BtnDiv>
-          <TotalPrice>共計 NT$8000</TotalPrice>
-          <Btn to="./payment">確認購買</Btn>
+          <TotalPrice>共計 NT$ {totalPrice}</TotalPrice>
+          <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
         </BtnDiv>
       </CartContainer>
     </CartWrapper>
