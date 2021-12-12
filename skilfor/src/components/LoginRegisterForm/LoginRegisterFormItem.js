@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
-import { Link } from "react-router-dom";
 
 export const FormItemContainer = styled.div`
   margin: 5px 0;
-  padding: 10px 0 0;
+  padding: 5px 0 0;
   width: 80%;
   height: 80px;
   ${MEDIA_QUERY_SM} {
-    height: 66px;
+    height: 55px;
   }
 `;
 
@@ -16,26 +15,13 @@ export const ItemName = styled.h1`
   color: ${(props) => props.theme.colors.grey_dark};
   font-size: 1.4rem;
   margin: 5px 0;
-  position: relative;
   ${MEDIA_QUERY_SM} {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     margin: 2px 0;
   }
-
   > span {
     font-size: 1rem;
     color: ${(props) => props.theme.colors.grey_light};
-  }
-`;
-
-const ForgetPassword = styled(Link)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 1.2rem;
-  text-decoration: none;
-  ${MEDIA_QUERY_SM} {
-    font-size: 1rem;
   }
 `;
 
@@ -46,7 +32,7 @@ const ItemLabel = styled.label`
   padding: 10px;
   float: left;
   ${MEDIA_QUERY_SM} {
-    padding: 2px;
+    padding: 6px;
     font-size: 1rem;
   }
 `;
@@ -70,7 +56,7 @@ const ItemRadioInput = styled(ItemInput)`
   zoom: 0.6;
   ${MEDIA_QUERY_SM} {
     width: 20%;
-    margin-right: 8px;
+    margin: 8px;
   }
 `;
 
@@ -80,12 +66,7 @@ export function FormItem({ itemName, id, value, type, name, handleChange }) {
       <FormItemContainer>
         <ItemName>
           {itemName}
-          {id === "password" && (
-            <span>
-              (至少需有六碼)
-              <ForgetPassword to="./reset_password">忘記密碼</ForgetPassword>
-            </span>
-          )}
+          {id === "password" && <span>(至少需有六碼)</span>}
         </ItemName>
         <ItemInput
           id={id}

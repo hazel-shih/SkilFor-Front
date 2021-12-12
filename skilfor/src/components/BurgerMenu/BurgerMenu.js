@@ -1,18 +1,17 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import Avatar from "../../components/Avatar";
 import studentPic from "../../img/student.jpg";
-import { AuthBurgerContext } from "../../contexts";
+import { AuthMenuContext } from "../../contexts";
+import useMenu from "../../components/Menu/useMenu";
 
 const Burger = styled.div`
   position: relative;
   display: inline-block;
 `;
-
 const BurgerBtn = styled.button`
   border: none;
   cursor: pointer;
@@ -29,7 +28,6 @@ const BurgerBtn = styled.button`
     margin: 4px;
   }
 `;
-
 const BurgerContent = styled.div`
   display: block;
   position: absolute;
@@ -40,7 +38,6 @@ const BurgerContent = styled.div`
   z-index: 1;
   color: white;
 `;
-
 const BurgerItem = styled(Link)`
   background-color: ${(props) => props.theme.colors.orange};
   color: ${(props) => props.theme.colors.white_pure};
@@ -59,58 +56,36 @@ const BurgerItem = styled(Link)`
 `;
 
 function BurgerMenu() {
-  const burgerRef = useRef(null);
-  const [burgerContent, setBurgerContent] = useState(false);
-
-  const handleBurgerToggle = () => {
-    setBurgerContent(!burgerContent);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (burgerRef.current && !burgerRef.current.contains(e.target)) {
-        setBurgerContent(false);
-      }
-    };
-    document
-      .querySelector("#Outside")
-      .addEventListener("click", handleClickOutside);
-    return () => {
-      document
-        .querySelector("#Outside")
-        .removeEventListener("click", handleClickOutside);
-    };
-  }, [burgerRef, setBurgerContent]);
-
+  const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   return (
-    <AuthBurgerContext.Provider
-      value={{ burgerRef, burgerContent, setBurgerContent }}
+    <AuthMenuContext.Provider
+      value={{ menuRef, menu, setMenu, handleMenuToggle }}
     >
-      <Burger ref={burgerRef}>
-        <BurgerBtn onClick={handleBurgerToggle}>
+      <Burger ref={menuRef}>
+        <BurgerBtn onClick={handleMenuToggle}>
           <IconDiv>
             <Icons.NavIcons.Burger />
           </IconDiv>
         </BurgerBtn>
-        {burgerContent && (
+        {menu && (
           <BurgerContent>
             <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
-            <BurgerItem to="./cart" onClick={handleBurgerToggle}>
+            <BurgerItem to="./cart" onClick={handleMenuToggle}>
               購物車
             </BurgerItem>
-            <BurgerItem to="/teacher/calendar" onClick={handleBurgerToggle}>
+            <BurgerItem to="/teacher/calendar" onClick={handleMenuToggle}>
               行事曆
             </BurgerItem>
-            <BurgerItem to="./charge_points" onClick={handleBurgerToggle}>
+            <BurgerItem to="./charge_points" onClick={handleMenuToggle}>
               儲值點數
             </BurgerItem>
-            <BurgerItem to="./teacher/manage" onClick={handleBurgerToggle}>
+            <BurgerItem to="./teacher/manage" onClick={handleMenuToggle}>
               管理個人資料
             </BurgerItem>
           </BurgerContent>
         )}
       </Burger>
-    </AuthBurgerContext.Provider>
+    </AuthMenuContext.Provider>
   );
 }
 

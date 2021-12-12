@@ -8,14 +8,22 @@ import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Typed from "typed.js";
 import { useEffect, useRef } from "react";
 
-const Container = styled.div``;
+const Container = styled.div`
+  padding: 100px 0px 100px 0px;
+  ${MEDIA_QUERY_SM} {
+    padding: 95px 0px 110px 0px;
+  }
+`;
 
 const Banner = styled.section`
-  padding: 196px 0 0;
   position: relative;
   background: url(${banner}) no-repeat center/cover;
   height: 500px;
   box-shadow: 0 4px 10px 0 rgba(255, 128, 0, 0.5);
+  max-width: 100%;
+  ${MEDIA_QUERY_SM} {
+    height: 300px;
+  }
 
   &:after {
     position: absolute;
@@ -35,14 +43,14 @@ const Banner = styled.section`
     margin: 0 auto;
     padding: 24px 40px;
     z-index: 2;
-    font-size: 30px;
+    font-size: 1.8rem;
     font-weight: bold;
     color: white;
     max-width: 700px;
     width: 100%;
     ${MEDIA_QUERY_SM} {
-      font-size: 20px;
-      padding: 24px 60px;
+      font-size: 1.4rem;
+      padding: 24px 40px;
     }
   }
 `;
@@ -57,8 +65,10 @@ const StudentStep = styled.div`
 const Title = styled.h1`
   padding: 20px;
   color: ${(props) => props.theme.colors.grey_dark};
+  font-size: 1.7rem;
   ${MEDIA_QUERY_SM} {
-    font-size: 20px;
+    font-size: 1.3rem;
+    text-align: center;
   }
 `;
 
@@ -70,58 +80,78 @@ const StepDiv = styled.div`
   margin: 0 auto;
   ${MEDIA_QUERY_SM} {
     padding: 5px 2px;
+    flex-direction: column;
   }
 `;
 
 const Img = styled.img`
   display: block;
-  width: 60%;
-  height: 400px;
+  width: 50%;
+  min-height: 285px;
   margin: 0 auto;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
+  ${MEDIA_QUERY_SM} {
+    min-height: 200px;
+    width: 100%;
+  }
 `;
 
 const StepContent = styled.div`
   padding: 0 25px;
   width: 50%;
-  height: 400px;
   color: ${(props) => props.theme.colors.green_dark};
   display: flex;
   justify-content: center;
   flex-direction: column;
-  font-weight: bold;
-  position: relative;
   ${MEDIA_QUERY_SM} {
-    padding: 0 6px;
+    width: 100%;
+    padding: 30px 20px 20px;
+    margin-bottom: 10px;
+    border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
+  }
+`;
+
+const SecondImg = styled(Img)`
+  ${MEDIA_QUERY_SM} {
+    order: 1;
+  }
+`;
+
+const StepTwoContent = styled(StepContent)`
+  ${MEDIA_QUERY_SM} {
+    order: 2;
   }
 `;
 
 const StepTitle = styled.h2`
+  font-weight: bold;
+  font-size: 1.5rem;
   ${MEDIA_QUERY_SM} {
-    font-size: 18px;
+    font-size: 1.2rem;
   }
 `;
 
 const StepDescription = styled.p`
   width: 100%;
   margin: 12px 0px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   ${MEDIA_QUERY_SM} {
-    font-size: 16px;
-    margin: 6px 2px;
+    font-size: 1rem;
   }
 `;
 
 const TeacherStep = styled(Banner)`
   background: url(${teacherStep}) no-repeat center/cover;
-  & > p {
-    transform: translate(-50%, -130%);
-  }
-`;
-
-const BtnDiv = styled.div`
+  height: 500px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  > p {
+    text-align: center;
+  }
+  ${MEDIA_QUERY_SM} {
+    height: 300px;
+  }
 `;
 
 const Btn = styled.button`
@@ -132,23 +162,31 @@ const Btn = styled.button`
   color: white;
   font-weight: bold;
   padding: 20px;
-  margin: 24px;
+  margin-bottom: 100px;
   min-width: 150px;
   z-index: 3;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
-
+  align-self: flex-end;
+  font-size: 1.2rem;
   ${MEDIA_QUERY_SM} {
-    padding: 15px 0;
+    padding: 10px;
     min-width: 120px;
-    font-size: 0.5rem;
-    margin: 10px 0;
+    font-size: 1rem;
+    margin-bottom: 50px;
+  }
+`;
+
+const BtnDiv = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  ${MEDIA_QUERY_SM} {
+    justify-content: center;
   }
 `;
 
 const FindATeacherBtn = styled(Btn)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  margin-bottom: 0px;
 `;
 
 function HomePage() {
@@ -176,7 +214,7 @@ function HomePage() {
       <StudentStep>
         <Title>上課三步驟</Title>
         <StepDiv>
-          <Img src={firstStep}></Img>
+          <Img src={firstStep} />
           <StepContent>
             <StepTitle>Step 1：根據學習需求找老師</StepTitle>
             <StepDescription>
@@ -185,16 +223,16 @@ function HomePage() {
           </StepContent>
         </StepDiv>
         <StepDiv>
-          <StepContent>
+          <StepTwoContent>
             <StepTitle>Step 2：預約與購買課程</StepTitle>
             <StepDescription>
               挑好老師後，可點選老師的行事曆選擇可上課時間。點選後，可到「購物車」中查看，確認資訊無誤，按下送出。出現「購買成功」即代表成功買好老師的時間了。
             </StepDescription>
-          </StepContent>
-          <Img src={secondStep}></Img>
+          </StepTwoContent>
+          <SecondImg src={secondStep} />
         </StepDiv>
         <StepDiv>
-          <Img src={thirdStep}></Img>
+          <Img src={thirdStep} />
           <StepContent>
             <StepTitle>Step 3：開始上課</StepTitle>
             <StepDescription>
@@ -207,13 +245,8 @@ function HomePage() {
         </StepDiv>
       </StudentStep>
       <TeacherStep src={teacherStep}>
-        <p>
-          上架你的才華，將熱情與技能分享給全世界
-          <br />
-        </p>
-        <BtnDiv>
-          <Btn>成為老師</Btn>
-        </BtnDiv>
+        <p>上架你的才華，將熱情與技能分享給全世界</p>
+        <Btn>成為老師</Btn>
       </TeacherStep>
     </Container>
   );

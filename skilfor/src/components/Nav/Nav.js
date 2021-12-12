@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import Icons from "../Icon/Icons";
-import LogoSrc from "../../img/logo/logo.png";
+import LogoSrc from "../../img/logo/logo.svg";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM, MEDIA_QUERY_MD } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
@@ -28,10 +28,13 @@ const Container = styled.div`
   }
 `;
 
-const Logo = styled.img`
-  height: 60px;
-  width: 60px;
+const Logo = styled(Link)`
   cursor: pointer;
+`;
+
+const Img = styled.img`
+  height: 80px;
+  width: 80px;
 `;
 
 const Navbar = styled.div`
@@ -78,9 +81,9 @@ function Nav() {
   return (
     <Container>
       <Navbar>
-        <div>
-          <Logo src={LogoSrc} />
-        </div>
+        <Logo to="./">
+          <Img src={LogoSrc} />
+        </Logo>
         <div>
           {!isLoading && (
             <NavbarList>
