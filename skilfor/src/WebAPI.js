@@ -318,8 +318,8 @@ export const getFrontCourseInfos = async (courseId, setApiError) => {
 };
 export const getFrontCalendarMonthEvents = async (
   courseId,
-  setApiError,
-  month
+  month,
+  setApiError
 ) => {
   let url = encodeURI(`${BASE_URL}/front-calendar/${courseId}`);
   try {
@@ -329,8 +329,6 @@ export const getFrontCalendarMonthEvents = async (
         "Content-Type": "application/json",
       },
     });
-    console.log(await res.json());
-    return;
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {

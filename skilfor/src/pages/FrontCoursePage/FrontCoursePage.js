@@ -83,6 +83,7 @@ const SectionTitle = styled.h1`
 `;
 const SectionIntro = styled(ItemContent)`
   font-size: 1.1rem;
+  white-space: pre-wrap;
 `;
 const CommentsContainer = styled(ColumnContainer)``;
 const NoStatusText = styled.p`

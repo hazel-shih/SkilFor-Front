@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReserveAlertCard from "./ReserveAlertCard";
 // import { sleep } from "../../../utils";
 import { getFrontCalendarMonthEvents } from "../../../WebAPI";
+import { AuthContext } from "../../../contexts";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -19,19 +20,30 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   const [allEvents, setAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(false);
   const [currentPage, setCurrentPage] = useState(new Date());
+  const { user } = useContext(AuthContext);
+  console.log(user);
+
   //拿課程行事曆資料
   useEffect(() => {
     async function fetchData() {
-      let json = await getFrontCalendarMonthEvents(courseId, setApiError);
+      let json = await getFrontCalendarMonthEvents(
+        courseId,
+        currentPage.getMonth() + 1,
+        setApiError
+      );
       if (!json || !json.success) {
         return setApiError("發生了一點錯誤，請稍後再試");
       }
       setAllEvents(json.data);
     }
     fetchData();
-  }, [courseId, setApiError]);
-
+  }, [courseId, setApiError, currentPage]);
   const handleEventClick = (e) => {
+    if (user && user.identity !== "student") {
+      return alert(
+        "學生身份才能使用課程預約功能！請以學生身份登入系統再試一次。"
+      );
+    }
     if (
       e.resource.reserved ||
       new Date(e.start).getTime() < new Date().getTime()
@@ -41,7 +53,6 @@ function FrontCourseCalendar({ courseId, setApiError }) {
     setAlertShow("read");
     setSelectedEvent(e);
   };
-
   const eventStyleGetter = (event) => {
     let style;
     let eventColor = event.resource.eventColor;
@@ -65,7 +76,6 @@ function FrontCourseCalendar({ courseId, setApiError }) {
       style: style,
     };
   };
-
   const handlePageChange = (currentMonthPage) => {
     setCurrentPage(currentMonthPage);
   };
