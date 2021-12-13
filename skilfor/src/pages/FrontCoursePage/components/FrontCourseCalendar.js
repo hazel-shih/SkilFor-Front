@@ -4,8 +4,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReserveAlertCard from "./ReserveAlertCard";
-import { COURSE_EVENT_LIST } from "../constants";
-import { sleep } from "../../../utils";
+// import { sleep } from "../../../utils";
 import { getFrontCalendarMonthEvents } from "../../../WebAPI";
 
 const CalendarContainer = styled.div`
@@ -33,18 +32,35 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   }, [courseId, setApiError]);
 
   const handleEventClick = (e) => {
+    if (
+      e.resource.reserved ||
+      new Date(e.start).getTime() < new Date().getTime()
+    ) {
+      return;
+    }
     setAlertShow("read");
     setSelectedEvent(e);
   };
 
   const eventStyleGetter = (event) => {
-    var eventColor = event.resource.eventColor;
-    var style = {
-      border: `2px solid ${eventColor}`,
-      backgroundColor: "white",
-      color: "black",
-      fontSize: "12px",
-    };
+    let style;
+    let eventColor = event.resource.eventColor;
+    if (event.resource.reserved) {
+      style = {
+        border: `2px solid #e6e6e6`,
+        backgroundColor: "#e6e6e6",
+        color: "#AAAAAA",
+        fontSize: "12px",
+      };
+    } else {
+      style = {
+        border: `2px solid ${eventColor}`,
+        backgroundColor: "white",
+        color: "black",
+        fontSize: "12px",
+      };
+    }
+
     return {
       style: style,
     };

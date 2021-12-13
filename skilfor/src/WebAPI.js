@@ -300,6 +300,22 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
   }
 };
 //課程前台頁面
+export const getFrontCourseInfos = async (courseId, setApiError) => {
+  let url = encodeURI(`${BASE_URL}/front-course/${courseId}`);
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
 export const getFrontCalendarMonthEvents = async (
   courseId,
   setApiError,
@@ -313,6 +329,8 @@ export const getFrontCalendarMonthEvents = async (
         "Content-Type": "application/json",
       },
     });
+    console.log(await res.json());
+    return;
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
