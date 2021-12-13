@@ -4,7 +4,7 @@ import {
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
 import { useState, useEffect } from "react";
-import TeacherFilterResult from "../FilterPage/TeacherFilterResult";
+import FilterResult from "../FilterPage/FilterResult";
 import {
   getAllCategories,
   getSpecificCourse,
@@ -262,10 +262,7 @@ function FilterPage() {
           )}
           {!filterError &&
             courseResults.map((courseResult) => (
-              <TeacherFilterResult
-                key={courseResult.courseId}
-                result={courseResult}
-              />
+              <FilterResult key={courseResult.courseId} result={courseResult} />
             ))}
         </ResultList>
       </Container>

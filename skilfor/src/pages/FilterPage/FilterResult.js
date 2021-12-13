@@ -22,16 +22,6 @@ const TeacherBlock = styled.div`
   }
 `;
 
-/*const EmptyBlock = styled.div`
-  height: 200px;
-  width: 560px;
-  margin: 25px 20px;
-  ${MEDIA_QUERY_SM} {
-    max-width: 300px;
-    display: block;
-    margin: 30px 0px;
-`;*/
-
 const CourseBlock = styled.div`
   color: ${(props) => props.theme.colors.grey_dark};
   padding: 8px 6px;
@@ -86,7 +76,7 @@ const BtnDiv = styled.div`
   }
 `;
 
-const CoursePrice = styled.p`
+const CoursePoint = styled.p`
   text-align: left;
   font-weight: bold;
   padding: 10px 0px 10px 10px;
@@ -119,7 +109,7 @@ const Btn = styled(Link)`
   }
 `;
 
-function TeacherFilterResult({ result }) {
+function FilterResult({ result }) {
   return (
     <>
       <TeacherBlock>
@@ -128,7 +118,7 @@ function TeacherFilterResult({ result }) {
           <CourseName>{result.courseName}</CourseName>
           <CourseIntro>{result.courseDescription}</CourseIntro>
           <BtnDiv>
-            <CoursePrice>NT${result.price}</CoursePrice>
+            <CoursePoint>點數：{result.price}</CoursePoint>
             <Btn to={`/course/${result.courseId}`}>更多資訊</Btn>
           </BtnDiv>
         </CourseBlock>
@@ -137,4 +127,4 @@ function TeacherFilterResult({ result }) {
   );
 }
 
-export default TeacherFilterResult;
+export default FilterResult;
