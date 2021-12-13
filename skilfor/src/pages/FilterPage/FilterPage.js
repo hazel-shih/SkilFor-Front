@@ -14,17 +14,17 @@ import { AuthMenuContext } from "../../contexts";
 import useMenu from "../../components/Menu/useMenu";
 
 const Container = styled.div`
-  padding: 120px 100px 160px 100px;
+  padding: 125px 100px 160px 100px;
   position: relative;
   text-align: center;
   margin: 0 auto;
   max-width: 1440px;
   ${MEDIA_QUERY_SM} {
-    padding: 120px 10px 160px 10px;
+    padding: 125px 10px 180px 10px;
   }
 `;
 const Title = styled.h1`
-  padding: 10px 0px 0px;
+  padding: 20px 0px;
   font-size: 1.5rem;
   color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
@@ -35,7 +35,7 @@ const DropdownLabel = styled.div`
   position: relative;
   display: inline-block;
   width: 560px;
-  margin: 30px auto 0px;
+  margin: 0 auto;
   ${MEDIA_QUERY_MD} {
     max-width: 375px;
   }
