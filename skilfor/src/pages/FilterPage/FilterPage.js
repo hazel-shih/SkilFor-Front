@@ -199,6 +199,7 @@ function FilterPage() {
       currentCategory,
       setFilterError
     ) => {
+      setCourseResults([]);
       let json = await getSpecificCourse(currentCategory.name, setFilterError);
       if (!json || !json.success)
         return setFilterError("發生了一點錯誤，請稍後再試");
