@@ -14,7 +14,7 @@ const CartWrapper = styled.section`
   display: flex;
   flex-direction: column;
   ${MEDIA_QUERY_MD} {
-    padding: 156px 30px 182px 30px;
+    padding: 156px 10px 182px 10px;
   }
   ${MEDIA_QUERY_SM} {
     padding: 135px 10px 182px 10px;
@@ -28,12 +28,12 @@ const CartContainer = styled.div`
   border: 1px solid ${(props) => props.theme.colors.grey_dark};
   border-radius: 10px;
   padding: 20px;
-  width: 800px;
+  max-width: 780px;
   ${MEDIA_QUERY_MD} {
-    max-width: 700px;
+    padding: 5px 10px;
+    max-width: 600px;
   }
   ${MEDIA_QUERY_SM} {
-    padding: 5px 10px;
     max-width: 320px;
   }
 `;
@@ -42,6 +42,9 @@ const CartTable = styled.table`
   text-align: center;
   border-spacing: 0;
   font-size: 1.2rem;
+  ${MEDIA_QUERY_MD} {
+    font-size: 1rem;
+  }
   table-layout: fixed;
   td:nth-of-type(3) {
     text-align: left;
@@ -112,11 +115,11 @@ const BtnDiv = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  width: 760px;
+  max-width: 730px;
   height: 65px;
   margin-top: 5px;
   ${MEDIA_QUERY_MD} {
-    max-width: 650px;
+    max-width: 560px;
   }
   ${MEDIA_QUERY_SM} {
     max-width: 295px;
@@ -124,7 +127,7 @@ const BtnDiv = styled.div`
     justify-content: space-between;
   }
 `;
-const TotalPrice = styled.div`
+const TotalPoints = styled.div`
   font-weight: bold;
   padding: 10px 30px;
   color: ${(props) => props.theme.colors.orange};
@@ -190,7 +193,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
         }/${item.start.getDate()}`}
         <br /> {item.timePeriod}
       </td>
-      <td data-title="價格">NT${item.price}</td>
+      <td data-title="點數">{item.price} 點</td>
       <td data-title="備註">
         <label>
           <NoteTextArea
@@ -207,7 +210,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
 
 function CartPage() {
   const [cartItems, setCartItems] = useState([]);
-  const [totalPrice, setTotalPrice] = useState("0");
+  const [totalPoints, setTotalPoints] = useState("0");
 
   useEffect(() => {
     //API: get user cart data
@@ -232,16 +235,16 @@ function CartPage() {
   };
 
   useEffect(() => {
-    function sumUpPrice() {
+    function sumUpPoints() {
       let total = 0;
       for (let i = 0; i < cartItems.length; i++) {
         if (cartItems[i].checked === true) {
           total += cartItems[i].price;
         }
       }
-      return setTotalPrice(total);
+      return setTotalPoints(total);
     }
-    sumUpPrice();
+    sumUpPoints();
   }, [cartItems]);
 
   const handleItemDelete = (e) => {
@@ -308,7 +311,7 @@ function CartPage() {
               <th>課程名稱</th>
               <th>老師名稱</th>
               <th>上課時間</th>
-              <th>價格</th>
+              <th>點數</th>
               <th>備註</th>
             </tr>
           </CartHead>
@@ -327,7 +330,7 @@ function CartPage() {
           </CartBody>
         </CartTable>
         <BtnDiv>
-          <TotalPrice>共計 NT$ {totalPrice}</TotalPrice>
+          <TotalPoints>共計 {totalPoints} 點</TotalPoints>
           <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
         </BtnDiv>
       </CartContainer>
