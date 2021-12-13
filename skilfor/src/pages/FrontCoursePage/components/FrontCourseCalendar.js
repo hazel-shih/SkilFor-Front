@@ -6,6 +6,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReserveAlertCard from "./ReserveAlertCard";
 import { COURSE_EVENT_LIST } from "../constants";
 import { sleep } from "../../../utils";
+import { getFrontCalendarMonthEvents } from "../../../WebAPI";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -13,24 +14,23 @@ const CalendarContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
 `;
-function FrontCourseCalendar({ courseId }) {
+function FrontCourseCalendar({ courseId, setApiError }) {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(false);
   const [currentPage, setCurrentPage] = useState(new Date());
+  //拿課程行事曆資料
   useEffect(() => {
     async function fetchData() {
-      await sleep(100);
-      COURSE_EVENT_LIST.map((event) => {
-        event.resource.courseName = event.title;
-        event.title = event.resource.timePeriod;
-        return event;
-      });
-      setAllEvents(COURSE_EVENT_LIST);
+      let json = await getFrontCalendarMonthEvents(courseId, setApiError);
+      if (!json || !json.success) {
+        return setApiError("發生了一點錯誤，請稍後再試");
+      }
+      setAllEvents(json.data);
     }
     fetchData();
-  }, []);
+  }, [courseId, setApiError]);
 
   const handleEventClick = (e) => {
     setAlertShow("read");

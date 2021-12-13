@@ -11,6 +11,7 @@ import {
 import { TEACHER_INFOS, COURSE_INFOS, COMMENTS } from "./constants";
 import { sleep } from "../../utils";
 import { nanoid } from "nanoid";
+import AlertCard from "../../components/AlertCard";
 
 const TeacherProfileWrapper = styled.section`
   padding: 180px 200px 232px 200px;
@@ -96,6 +97,7 @@ function FrontCoursePage() {
   const [teacherInfos, setTeacherInfos] = useState(null);
   const [courseInfos, setCourseInfos] = useState(null);
   const [comments, setComments] = useState(null);
+  const [apiError, setApiError] = useState(null);
 
   const FetchData = useCallback(async () => {
     await sleep(500);
@@ -107,8 +109,20 @@ function FrontCoursePage() {
     FetchData();
   });
 
+  const handleAlertOkClick = () => {
+    setApiError(false);
+    return;
+  };
   return (
     <TeacherProfileWrapper>
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <TeacherInfosContainer>
         <TeacherAvatarContainer>
           {teacherInfos && (
@@ -118,7 +132,6 @@ function FrontCoursePage() {
             </>
           )}
         </TeacherAvatarContainer>
-
         <CourseInfosContainer>
           <ItemContainer>
             <ItemTitle>領域</ItemTitle>
@@ -135,7 +148,7 @@ function FrontCoursePage() {
         </CourseInfosContainer>
       </TeacherInfosContainer>
       <SectionTitle>課程時間</SectionTitle>
-      <FrontCourseCalendar courseId={courseId} />
+      <FrontCourseCalendar courseId={courseId} setApiError={setApiError} />
       <SectionTitle>課程介紹</SectionTitle>
       {courseInfos && (
         <SectionIntro>{courseInfos.courseDescription}</SectionIntro>

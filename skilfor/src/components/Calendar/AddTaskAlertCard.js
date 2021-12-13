@@ -25,7 +25,7 @@ export const ColumnContainer = styled(RowContainer)`
 `;
 export const AlertContainer = styled.div`
   max-width: 350px;
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);

@@ -13,6 +13,7 @@ const AddToCartButton = styled(AlertButton)`
 `;
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
+  font-size: 1rem;
 `;
 export const TimeContainer = styled.div`
   display: flex;
@@ -30,12 +31,8 @@ const getDisplayDate = (dateObj) => {
   return dateStr.slice(0, dateStr.length - 3);
 };
 
-function ReserveAlertCard({
-  allEvents,
-  setAllEvents,
-  setAlertShow,
-  selectedEvent,
-}) {
+function ReserveAlertCard({ setAlertShow, selectedEvent }) {
+  console.log(selectedEvent);
   const handleCloseClick = () => {
     setAlertShow(null);
   };
@@ -47,10 +44,15 @@ function ReserveAlertCard({
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AlertTitle>{selectedEvent.resource.courseName}</AlertTitle>
+      <AlertTitle>將這堂課加入購物車</AlertTitle>
       <TimeContainer>
-        <TimeTitle>開始：{getDisplayDate(selectedEvent.start)}</TimeTitle>
-        <TimeTitle>結束：{getDisplayDate(selectedEvent.end)}</TimeTitle>
+        <TimeTitle>
+          開始：{getDisplayDate(new Date(selectedEvent.start))}
+        </TimeTitle>
+        <TimeTitle>
+          結束：{getDisplayDate(new Date(selectedEvent.end))}
+        </TimeTitle>
+        <TimeTitle>價格：{1000}</TimeTitle>
       </TimeContainer>
       <WrapContent>
         溫馨提醒：加入購物車不代表預約成功，請至購物車完成扣點手續，我們才能幫你保留這堂課程喔！

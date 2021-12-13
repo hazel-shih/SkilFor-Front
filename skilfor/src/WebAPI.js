@@ -299,3 +299,24 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
     return;
   }
 };
+//課程前台頁面
+export const getFrontCalendarMonthEvents = async (
+  courseId,
+  setApiError,
+  month
+) => {
+  let url = encodeURI(`${BASE_URL}/front-calendar/${courseId}`);
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
