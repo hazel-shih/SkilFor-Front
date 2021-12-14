@@ -125,7 +125,7 @@ function CourseInfosForm({
       </FormItemContainer>
       <FormItemContainer show={!isEditing}>
         <ItemTop>
-          <ItemName>Course Price</ItemName>
+          <ItemName>Course Points</ItemName>
         </ItemTop>
         <ItemBottom>
           <ItemValue show={!isEditing}>{courseInfos.price}</ItemValue>

@@ -22,19 +22,18 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  padding: 120px 100px 200px 100px;
+  padding: 125px 100px 160px 100px;
   width: 700px;
   height: 100%;
   min-height: 1000px;
   ${MEDIA_QUERY_SM} {
     max-width: 500px;
-    padding: 120px 50px 200px 50px;
+    padding: 125px 50px 160px 50px;
   }
 `;
 
 const Title = styled.h1`
-  padding: 6px 0px 10px;
-  margin-bottom: 10px;
+  padding: 20px 0px;
   font-size: 1.5rem;
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};

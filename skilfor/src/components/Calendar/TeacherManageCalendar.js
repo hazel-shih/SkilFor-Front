@@ -12,7 +12,7 @@ import LoaderSpining from "../../components/LoaderSpining";
 const CalendarContainer = styled.div`
   position: relative;
 `;
-const LoadingSquare = styled.div`
+export const LoadingSquare = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -121,7 +121,6 @@ function TeacherManageCalendar() {
           <LoaderSpining />
         </>
       )}
-
       {apiError && (
         <AlertCard
           color="#A45D5D"
