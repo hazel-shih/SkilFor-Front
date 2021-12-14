@@ -44,15 +44,15 @@ const CartTable = styled.table`
   ${MEDIA_QUERY_SM} {
     box-shadow: none;
   }
+  td:nth-of-type(3) {
+    text-align: left;
+  }
   th,
   td {
     padding: 10px 4px;
     border-bottom: 1px dotted ${(props) => props.theme.colors.orange};
     vertical-align: middle;
     text-align: center;
-    :nth-of-type(3) {
-      text-align: left;
-    }
     ${MEDIA_QUERY_SM} {
       display: flex;
       flex-direction: row;
@@ -167,30 +167,39 @@ const DeleteButton = styled.img`
 `;
 
 const ErrorTr = styled.tr`
-  color: red;
+  color: #cc0033;
   font-weight: bold;
-  background-color: ${(props) => props.theme.colors.green_light};
   > td {
     border-bottom: none;
     padding: 15px 0px 5px;
+    background-color: #fce4e4;
+    ${MEDIA_QUERY_SM} {
+      padding: 15px 5px 5px;
+      justify-content: center;
+      :before {
+        width: 0%;
+      }
+    }
   }
 `;
 function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
-  const [error, setError] = useState(false);
-  const [isExpired, setIsExpired] = useState(false);
+  const [error, setError] = useState(null);
+  const [expired, setExpired] = useState(false);
+  const [expiredStyle, setExpiredStyle] = useState({});
 
   useEffect(() => {
     function checkExpired() {
-      if (
-        item.start.getTime() < new Date().getTime() ||
-        item.end.getTime() < new Date().getTime()
-      ) {
-        setIsExpired(true);
-        setError("課程已過期");
+      if (item.start.getTime() < new Date().getTime()) {
+        setError("課程時間過期了，無法再購買囉");
+        setExpired(true);
+        setExpiredStyle({
+          backgroundColor: "#fce4e4",
+          color: "#AAAAAA",
+        });
       }
     }
     checkExpired();
-  }, [item, isExpired]);
+  }, [item, expired]);
 
   return (
     <>
@@ -200,35 +209,43 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
         </ErrorTr>
       )}
       <tr>
-        <td data-title="購買">
+        <td data-title="購買" style={expiredStyle}>
           <label>
             <CheckBox
               type="checkbox"
               onChange={onChangeCheck}
               checked={!!item.checked}
               id={item.courseId}
+              disabled={expired}
             />
           </label>
         </td>
-        <td data-title="刪除">
+        <td data-title="刪除" style={expiredStyle}>
           <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
         </td>
-        <td data-title="課程名稱">{item.courseName}</td>
-        <td data-title="老師">{item.teacherName}</td>
-        <td data-title="上課時間">
+        <td data-title="課程名稱" style={expiredStyle}>
+          {item.courseName}
+        </td>
+        <td data-title="老師" style={expiredStyle}>
+          {item.teacherName}
+        </td>
+        <td data-title="上課時間" style={expiredStyle}>
           {`${item.start.getFullYear()}/${
             item.start.getMonth() + 1
           }/${item.start.getDate()}`}
           <br /> {item.timePeriod}
         </td>
-        <td data-title="點數">{item.price} 點</td>
-        <td data-title="備註">
+        <td data-title="點數" style={expiredStyle}>
+          {item.price} 點
+        </td>
+        <td data-title="備註" style={expiredStyle}>
           <label>
             <NoteTextArea
               placeholder="我想對老師說..."
               onChange={onChangeNote}
               id={item.courseId}
               value={item.note}
+              disabled={expired}
             />
           </label>
         </td>
@@ -317,10 +334,8 @@ function CartPage() {
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     // 加入判斷 此時斷跟其他要結帳的上課時間是否衝突
-    // 加入判斷 今天以前的課程已經過期
     alert("成功扣點 !");
   };
-
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>
