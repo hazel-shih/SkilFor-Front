@@ -4,9 +4,10 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import ReserveAlertCard from "./ReserveAlertCard";
-// import { sleep } from "../../../utils";
 import { getFrontCalendarMonthEvents } from "../../../WebAPI";
 import { AuthContext } from "../../../contexts";
+import LoaderSpining from "../../../components/LoaderSpining";
+import { LoadingSquare } from "../../../components/Calendar/TeacherManageCalendar";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -20,11 +21,12 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   const [allEvents, setAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(false);
   const [currentPage, setCurrentPage] = useState(new Date());
+  const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
-  console.log(user);
 
   //拿課程行事曆資料
   useEffect(() => {
+    setLoading(true);
     async function fetchData() {
       let json = await getFrontCalendarMonthEvents(
         courseId,
@@ -32,9 +34,11 @@ function FrontCourseCalendar({ courseId, setApiError }) {
         setApiError
       );
       if (!json || !json.success) {
+        setLoading(false);
         return setApiError("發生了一點錯誤，請稍後再試");
       }
       setAllEvents(json.data);
+      setLoading(false);
     }
     fetchData();
   }, [courseId, setApiError, currentPage]);
@@ -85,6 +89,12 @@ function FrontCourseCalendar({ courseId, setApiError }) {
 
   return (
     <CalendarContainer>
+      {loading && (
+        <>
+          <LoadingSquare />
+          <LoaderSpining />
+        </>
+      )}
       <Calendar
         onSelectEvent={handleEventClick}
         selectable
