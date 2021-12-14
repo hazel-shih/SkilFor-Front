@@ -142,7 +142,7 @@ function FrontCoursePage() {
             {infos && <ItemContent>{infos.courseName}</ItemContent>}
           </ItemContainer>
           <ItemContainer>
-            <ItemTitle>單堂價格</ItemTitle>
+            <ItemTitle>單堂點數</ItemTitle>
             {infos && <ItemContent>{infos.price}</ItemContent>}
           </ItemContainer>
         </CourseInfosContainer>

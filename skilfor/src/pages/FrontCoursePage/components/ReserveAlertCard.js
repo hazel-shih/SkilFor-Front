@@ -56,7 +56,7 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
         <TimeTitle>
           結束：{getDisplayDate(new Date(selectedEvent.end))}
         </TimeTitle>
-        <TimeTitle>價格：{1000}</TimeTitle>
+        <TimeTitle>單堂點數：{1000}</TimeTitle>
       </TimeContainer>
       <WrapContent>
         溫馨提醒：加入購物車不代表預約成功，請至購物車完成扣點手續，我們才能幫你保留這堂課程喔！

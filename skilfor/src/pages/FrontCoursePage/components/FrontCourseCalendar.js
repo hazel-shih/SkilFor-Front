@@ -23,7 +23,6 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   const [currentPage, setCurrentPage] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const { user } = useContext(AuthContext);
-
   //拿課程行事曆資料
   useEffect(() => {
     setLoading(true);
@@ -43,7 +42,7 @@ function FrontCourseCalendar({ courseId, setApiError }) {
     fetchData();
   }, [courseId, setApiError, currentPage]);
   const handleEventClick = (e) => {
-    if (user && user.identity !== "student") {
+    if (!user || (user && user.identity !== "student")) {
       return alert(
         "學生身份才能使用課程預約功能！請以學生身份登入系統再試一次。"
       );
