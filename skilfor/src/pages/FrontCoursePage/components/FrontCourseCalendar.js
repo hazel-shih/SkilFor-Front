@@ -56,7 +56,10 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   const eventStyleGetter = (event) => {
     let style;
     let eventColor = event.resource.eventColor;
-    if (event.resource.reserved) {
+    if (
+      event.resource.reserved ||
+      new Date(event.start).getTime() < new Date().getTime()
+    ) {
       style = {
         border: `2px solid #e6e6e6`,
         backgroundColor: "#e6e6e6",
