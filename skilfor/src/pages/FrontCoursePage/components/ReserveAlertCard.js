@@ -7,6 +7,7 @@ import {
   CloseButton,
 } from "../../../components/Calendar/AddTaskAlertCard";
 import close from "../../../img/close.png";
+import { addCartItem } from "../../../WebAPI";
 
 const AddToCartButton = styled(AlertButton)`
   min-width: 100px;
@@ -31,14 +32,17 @@ const getDisplayDate = (dateObj) => {
   return dateStr.slice(0, dateStr.length - 3);
 };
 
-function ReserveAlertCard({ setAlertShow, selectedEvent }) {
-  console.log(selectedEvent);
+function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const handleCloseClick = () => {
     setAlertShow(null);
   };
   const handleReserveEvent = () => {
-    //打加入購物車 API
-    alert("加入成功！");
+    addCartItem(setApiError, selectedEvent.id).then((json) => {
+      if (json && !json.success && json.errMessage) {
+        return alert(json.errMessage[0]);
+      }
+      if (json && json.success) alert("加入成功！請至購物車結帳吧！");
+    });
     setAlertShow(false);
   };
   return (

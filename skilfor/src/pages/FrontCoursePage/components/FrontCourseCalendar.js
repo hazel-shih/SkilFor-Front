@@ -110,11 +110,9 @@ function FrontCourseCalendar({ courseId, setApiError }) {
       />
       {alertShow === "read" && (
         <ReserveAlertCard
-          setAllEvents={setAllEvents}
-          allEvents={allEvents}
-          alertShow={alertShow}
           setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
+          setApiError={setApiError}
         />
       )}
     </CalendarContainer>
