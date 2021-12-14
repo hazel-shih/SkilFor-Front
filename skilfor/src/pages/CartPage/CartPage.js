@@ -23,14 +23,9 @@ const CartWrapper = styled.section`
 `;
 const CartContainer = styled.div`
   align-self: center;
-  margin-bottom: 10px;
   min-height: 300px;
-  border: 1px solid ${(props) => props.theme.colors.grey_dark};
-  border-radius: 10px;
-  padding: 20px;
   max-width: 780px;
   ${MEDIA_QUERY_MD} {
-    padding: 5px 10px;
     max-width: 600px;
   }
   ${MEDIA_QUERY_SM} {
@@ -39,36 +34,35 @@ const CartContainer = styled.div`
 `;
 const CartTable = styled.table`
   width: 100%;
-  text-align: center;
   border-spacing: 0;
   font-size: 1.2rem;
+  table-layout: fixed;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   ${MEDIA_QUERY_MD} {
     font-size: 1rem;
   }
-  table-layout: fixed;
-  td:nth-of-type(3) {
-    text-align: left;
-    ${MEDIA_QUERY_SM} {
-      text-align: right;
-    }
+  ${MEDIA_QUERY_SM} {
+    box-shadow: none;
   }
   th,
   td {
-    padding: 6px 4px;
-    :nth-of-type(3) {
-      padding-left: 8px;
-    }
-    border-bottom: 1px dotted ${(props) => props.theme.colors.grey_light};
+    padding: 10px 4px;
+    border-bottom: 1px dotted ${(props) => props.theme.colors.orange};
     vertical-align: middle;
+    text-align: center;
+    :nth-of-type(3) {
+      text-align: left;
+    }
     ${MEDIA_QUERY_SM} {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      text-align: right;
+      text-align: right !important;
       width: 290px;
+      border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
       :nth-of-type(7) {
-        border-bottom: 3px solid ${(props) => props.theme.colors.grey_dark};
+        border-bottom: 3px double ${(props) => props.theme.colors.grey_dark};
         margin-bottom: 10px;
       }
       :before {
@@ -83,8 +77,8 @@ const CartTable = styled.table`
   }
 `;
 const CartHead = styled.thead`
-  padding: 10px;
   width: 100%;
+  background-color: ${(props) => props.theme.colors.grey_light};
   ${MEDIA_QUERY_SM} {
     display: none;
   }
@@ -101,11 +95,14 @@ const CheckBox = styled.input`
 const NoteTextArea = styled.textarea`
   height: 75px;
   width: 100%;
-  border: 1px solid ${(props) => props.theme.colors.grey_light};
+  border: 2px dashed ${(props) => props.theme.colors.green_dark};
   border-radius: 5px;
   padding: 2px 10px;
   opacity: 0.8;
   text-align: left;
+  :focus {
+    border: 2px solid ${(props) => props.theme.colors.green_light};
+  }
   ${MEDIA_QUERY_SM} {
     height: 120px;
     margin: 10px 0px;
@@ -169,42 +166,74 @@ const DeleteButton = styled.img`
   }
 `;
 
+const ErrorTr = styled.tr`
+  color: red;
+  font-weight: bold;
+  background-color: ${(props) => props.theme.colors.green_light};
+  > td {
+    border-bottom: none;
+    padding: 15px 0px 5px;
+  }
+`;
 function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
+  const [error, setError] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    function checkExpired() {
+      if (
+        item.start.getTime() < new Date().getTime() ||
+        item.end.getTime() < new Date().getTime()
+      ) {
+        setIsExpired(true);
+        setError("課程已過期");
+      }
+    }
+    checkExpired();
+  }, [item, isExpired]);
+
   return (
-    <tr>
-      <td data-title="購買">
-        <label>
-          <CheckBox
-            type="checkbox"
-            onChange={onChangeCheck}
-            checked={item.checked}
-            id={item.courseId}
-          />
-        </label>
-      </td>
-      <td data-title="刪除">
-        <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
-      </td>
-      <td data-title="課程名稱">{item.courseName}</td>
-      <td data-title="老師名稱">{item.teacherName}</td>
-      <td data-title="上課時間">
-        {`${item.start.getFullYear()}/${
-          item.start.getMonth() + 1
-        }/${item.start.getDate()}`}
-        <br /> {item.timePeriod}
-      </td>
-      <td data-title="點數">{item.price} 點</td>
-      <td data-title="備註">
-        <label>
-          <NoteTextArea
-            placeholder="我想對老師說..."
-            onChange={onChangeNote}
-            id={item.courseId}
-            value={item.note}
-          />
-        </label>
-      </td>
-    </tr>
+    <>
+      {error && (
+        <ErrorTr>
+          <td colSpan="7">{error}</td>
+        </ErrorTr>
+      )}
+      <tr>
+        <td data-title="購買">
+          <label>
+            <CheckBox
+              type="checkbox"
+              onChange={onChangeCheck}
+              checked={!!item.checked}
+              id={item.courseId}
+            />
+          </label>
+        </td>
+        <td data-title="刪除">
+          <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
+        </td>
+        <td data-title="課程名稱">{item.courseName}</td>
+        <td data-title="老師">{item.teacherName}</td>
+        <td data-title="上課時間">
+          {`${item.start.getFullYear()}/${
+            item.start.getMonth() + 1
+          }/${item.start.getDate()}`}
+          <br /> {item.timePeriod}
+        </td>
+        <td data-title="點數">{item.price} 點</td>
+        <td data-title="備註">
+          <label>
+            <NoteTextArea
+              placeholder="我想對老師說..."
+              onChange={onChangeNote}
+              id={item.courseId}
+              value={item.note}
+            />
+          </label>
+        </td>
+      </tr>
+    </>
   );
 }
 
@@ -288,6 +317,7 @@ function CartPage() {
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     // 加入判斷 此時斷跟其他要結帳的上課時間是否衝突
+    // 加入判斷 今天以前的課程已經過期
     alert("成功扣點 !");
   };
 
@@ -309,7 +339,7 @@ function CartPage() {
               <th>購買</th>
               <th>刪除</th>
               <th>課程名稱</th>
-              <th>老師名稱</th>
+              <th>老師</th>
               <th>上課時間</th>
               <th>點數</th>
               <th>備註</th>
