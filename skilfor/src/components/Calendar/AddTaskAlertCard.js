@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
 import { TIME_OPTIONS, COLOR_HEX_LIST } from "./constants";
@@ -24,7 +25,7 @@ export const ColumnContainer = styled(RowContainer)`
 `;
 export const AlertContainer = styled.div`
   max-width: 350px;
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -59,7 +60,7 @@ const SelectOption = styled.option``;
 export const AlertButton = styled.button`
   border: none;
   border-radius: 5px;
-  width: 90px;
+  min-width: 100px;
   color: white;
   background: ${(props) => props.color};
   margin: 0 auto;
@@ -94,9 +95,10 @@ function AddTaskAlertCard({
   setApiError,
   courseList,
 }) {
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
-    title: courseList[0].courseName,
+    title: courseList.length === 0 ? null : courseList[0].courseName,
     start: "上午0:00",
     end: "上午0:30",
     resource: {
@@ -105,7 +107,7 @@ function AddTaskAlertCard({
       eventColor: "#22577A",
       timePeriod: "",
     },
-    courseId: courseList[0].id,
+    courseId: courseList.length === 0 ? null : courseList[0].id,
     id: nanoid(),
   });
   const handleNewEventAnswerChange = (e) => {
@@ -169,12 +171,10 @@ function AddTaskAlertCard({
       endTimeNumArr[1]
     );
     if (formatedStartTime.getTime() < new Date().getTime()) {
-      setError("無法新增過去時間的課程");
-      return;
+      return setError("無法新增過去時間的課程");
     }
     if (checkEventsConflict(allEvents, formatedStartTime, formatedEndTime)) {
-      setError("此時段與當天其他時段重疊！");
-      return;
+      return setError("此時段與當天其他時段重疊！");
     }
     let postData = {
       ...newEvent,
@@ -196,76 +196,92 @@ function AddTaskAlertCard({
       setAlertShow(null);
     });
   };
-
+  const handleGoToBack = () => {
+    navigate("/teacher/manage");
+  };
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AlertTitle>新增一個上課時段</AlertTitle>
-      <AlertTitle>{`${selectedDate.month + 1}月${
-        selectedDate.date
-      }日 星期${getDay(selectedDate.day)}`}</AlertTitle>
-      <RowContainer>
-        <AlertContent>課程名稱：</AlertContent>
-        <SelectContainer
-          onChange={handleNewEventAnswerChange}
-          id="title"
-          value={newEvent.title}
-        >
-          {courseList.map((item) => {
-            return (
-              <SelectOption key={nanoid()}>{item.courseName}</SelectOption>
-            );
-          })}
-        </SelectContainer>
-      </RowContainer>
-      <RowContainer>
-        <AlertContent>開始時間：</AlertContent>
-        <SelectContainer
-          id="start"
-          onChange={handleNewEventAnswerChange}
-          value={newEvent.start}
-        >
-          {createTimeOptions("start").map((item) => {
-            return (
-              <SelectOption key={nanoid()} value={item.id}>
-                {item}
-              </SelectOption>
-            );
-          })}
-        </SelectContainer>
-      </RowContainer>
-      <RowContainer>
-        <AlertContent>結束時間：</AlertContent>
-        <SelectContainer
-          id="end"
-          onChange={handleNewEventAnswerChange}
-          value={newEvent.end}
-        >
-          {createTimeOptions("end", newEvent.start).map((item) => {
-            return <SelectOption key={nanoid()}>{item}</SelectOption>;
-          })}
-        </SelectContainer>
-      </RowContainer>
-      <RowContainer>
-        <AlertContent>設定活動顏色：</AlertContent>
-        <SelectContainer
-          id="eventColor"
-          onChange={handleNewEventAnswerChange}
-          value={newEvent.resource.eventColor}
-        >
-          {COLOR_HEX_LIST.map((color) => {
-            return (
-              <SelectOption key={nanoid()} value={color.value}>
-                {color.displayName}
-              </SelectOption>
-            );
-          })}
-        </SelectContainer>
-      </RowContainer>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-      <AlertButton onClick={handleAddNewEvent} color="#75A29E">
-        確定新增
-      </AlertButton>
+      {courseList.length !== 0 ? (
+        <>
+          <AlertTitle>新增一個上課時段</AlertTitle>
+          <AlertTitle>{`${selectedDate.month + 1}月${
+            selectedDate.date
+          }日 星期${getDay(selectedDate.day)}`}</AlertTitle>
+          <RowContainer>
+            <AlertContent>課程名稱：</AlertContent>
+            <SelectContainer
+              onChange={handleNewEventAnswerChange}
+              id="title"
+              value={newEvent.title}
+            >
+              {courseList.map((item) => {
+                return (
+                  <SelectOption key={nanoid()}>{item.courseName}</SelectOption>
+                );
+              })}
+            </SelectContainer>
+          </RowContainer>
+          <RowContainer>
+            <AlertContent>開始時間：</AlertContent>
+            <SelectContainer
+              id="start"
+              onChange={handleNewEventAnswerChange}
+              value={newEvent.start}
+            >
+              {createTimeOptions("start").map((item) => {
+                return (
+                  <SelectOption key={nanoid()} value={item.id}>
+                    {item}
+                  </SelectOption>
+                );
+              })}
+            </SelectContainer>
+          </RowContainer>
+          <RowContainer>
+            <AlertContent>結束時間：</AlertContent>
+            <SelectContainer
+              id="end"
+              onChange={handleNewEventAnswerChange}
+              value={newEvent.end}
+            >
+              {createTimeOptions("end", newEvent.start).map((item) => {
+                return <SelectOption key={nanoid()}>{item}</SelectOption>;
+              })}
+            </SelectContainer>
+          </RowContainer>
+          <RowContainer>
+            <AlertContent>設定活動顏色：</AlertContent>
+            <SelectContainer
+              id="eventColor"
+              onChange={handleNewEventAnswerChange}
+              value={newEvent.resource.eventColor}
+            >
+              {COLOR_HEX_LIST.map((color) => {
+                return (
+                  <SelectOption key={nanoid()} value={color.value}>
+                    {color.displayName}
+                  </SelectOption>
+                );
+              })}
+            </SelectContainer>
+          </RowContainer>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <AlertButton onClick={handleAddNewEvent} color="#75A29E">
+            確定新增
+          </AlertButton>
+        </>
+      ) : (
+        <>
+          <AlertTitle>目前沒有新增課程的權限</AlertTitle>
+          <AlertContent>
+            請先到後台新增課程，等待資料審核通過後就可以開課囉！
+          </AlertContent>
+          <AlertButton onClick={handleGoToBack} color="#75A29E">
+            我知道了
+          </AlertButton>
+        </>
+      )}
     </AlertContainer>
   );
 }

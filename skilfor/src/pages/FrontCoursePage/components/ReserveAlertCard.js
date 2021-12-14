@@ -7,12 +7,14 @@ import {
   CloseButton,
 } from "../../../components/Calendar/AddTaskAlertCard";
 import close from "../../../img/close.png";
+import { addCartItem } from "../../../WebAPI";
 
 const AddToCartButton = styled(AlertButton)`
   min-width: 100px;
 `;
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
+  font-size: 1rem;
 `;
 export const TimeContainer = styled.div`
   display: flex;
@@ -30,27 +32,30 @@ const getDisplayDate = (dateObj) => {
   return dateStr.slice(0, dateStr.length - 3);
 };
 
-function ReserveAlertCard({
-  allEvents,
-  setAllEvents,
-  setAlertShow,
-  selectedEvent,
-}) {
+function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const handleCloseClick = () => {
     setAlertShow(null);
   };
   const handleReserveEvent = () => {
-    //打加入購物車 API
-    alert("加入成功！");
+    addCartItem(setApiError, selectedEvent.id).then((json) => {
+      if (json && !json.success && json.errMessage) {
+        return alert(json.errMessage[0]);
+      }
+      if (json && json.success) alert("加入成功！請至購物車結帳吧！");
+    });
     setAlertShow(false);
   };
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AlertTitle>{selectedEvent.resource.courseName}</AlertTitle>
+      <AlertTitle>將這堂課加入購物車</AlertTitle>
       <TimeContainer>
-        <TimeTitle>開始：{getDisplayDate(selectedEvent.start)}</TimeTitle>
-        <TimeTitle>結束：{getDisplayDate(selectedEvent.end)}</TimeTitle>
+        <TimeTitle>
+          開始：{getDisplayDate(new Date(selectedEvent.start))}
+        </TimeTitle>
+        <TimeTitle>
+          結束：{getDisplayDate(new Date(selectedEvent.end))}
+        </TimeTitle>
       </TimeContainer>
       <WrapContent>
         溫馨提醒：加入購物車不代表預約成功，請至購物車完成扣點手續，我們才能幫你保留這堂課程喔！

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router";
 import { AvatarContainer } from "../../components/Avatar/Avatar";
@@ -8,9 +8,9 @@ import {
   MEDIA_QUERY_MD,
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
-import { TEACHER_INFOS, COURSE_INFOS, COMMENTS } from "./constants";
-import { sleep } from "../../utils";
 import { nanoid } from "nanoid";
+import AlertCard from "../../components/AlertCard";
+import { getFrontCourseInfos } from "../../WebAPI";
 
 const TeacherProfileWrapper = styled.section`
   padding: 180px 200px 232px 200px;
@@ -83,6 +83,7 @@ const SectionTitle = styled.h1`
 `;
 const SectionIntro = styled(ItemContent)`
   font-size: 1.1rem;
+  white-space: pre-wrap;
 `;
 const CommentsContainer = styled(ColumnContainer)``;
 const NoStatusText = styled.p`
@@ -93,53 +94,63 @@ const NoStatusText = styled.p`
 function FrontCoursePage() {
   window.scroll(0, 0);
   const { courseId } = useParams();
-  const [teacherInfos, setTeacherInfos] = useState(null);
-  const [courseInfos, setCourseInfos] = useState(null);
+  const [infos, setInfos] = useState(null);
   const [comments, setComments] = useState(null);
-
-  const FetchData = useCallback(async () => {
-    await sleep(500);
-    setTeacherInfos(TEACHER_INFOS);
-    setCourseInfos(COURSE_INFOS);
-    setComments(COMMENTS);
-  }, []);
+  const [apiError, setApiError] = useState(null);
+  //拿老師與課程資訊資料
   useEffect(() => {
-    FetchData();
-  });
+    async function fetchData() {
+      let json = await getFrontCourseInfos(courseId, setApiError);
+      if (!json || !json.success) {
+        return setApiError("發生了一點錯誤，請稍後再試");
+      }
+      setInfos(json.data);
+    }
+    fetchData();
+  }, [courseId, setApiError]);
 
+  const handleAlertOkClick = () => {
+    setApiError(false);
+    return;
+  };
   return (
     <TeacherProfileWrapper>
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          title="錯誤"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
+      )}
       <TeacherInfosContainer>
         <TeacherAvatarContainer>
-          {teacherInfos && (
+          {infos && (
             <>
-              <TeacherAvatar imgSrc={teacherInfos.avatar} />
-              <AvatarName>{teacherInfos.username}</AvatarName>
+              <TeacherAvatar imgSrc={infos.avatar} />
+              <AvatarName>{infos.username}</AvatarName>
             </>
           )}
         </TeacherAvatarContainer>
-
         <CourseInfosContainer>
           <ItemContainer>
             <ItemTitle>領域</ItemTitle>
-            {courseInfos && <ItemContent>{courseInfos.category}</ItemContent>}
+            {infos && <ItemContent>{infos.category}</ItemContent>}
           </ItemContainer>
           <ItemContainer>
             <ItemTitle>課程名稱</ItemTitle>
-            {courseInfos && <ItemContent>{courseInfos.courseName}</ItemContent>}
+            {infos && <ItemContent>{infos.courseName}</ItemContent>}
           </ItemContainer>
           <ItemContainer>
-            <ItemTitle>單堂價格</ItemTitle>
-            {courseInfos && <ItemContent>{courseInfos.price}</ItemContent>}
+            <ItemTitle>單堂點數</ItemTitle>
+            {infos && <ItemContent>{infos.price}</ItemContent>}
           </ItemContainer>
         </CourseInfosContainer>
       </TeacherInfosContainer>
       <SectionTitle>課程時間</SectionTitle>
-      <FrontCourseCalendar courseId={courseId} />
+      <FrontCourseCalendar courseId={courseId} setApiError={setApiError} />
       <SectionTitle>課程介紹</SectionTitle>
-      {courseInfos && (
-        <SectionIntro>{courseInfos.courseDescription}</SectionIntro>
-      )}
+      {infos && <SectionIntro>{infos.courseDescription}</SectionIntro>}
       <SectionTitle>課程評價</SectionTitle>
       <CommentsContainer>
         {comments && comments.length !== 0 ? (

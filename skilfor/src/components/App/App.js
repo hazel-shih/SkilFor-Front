@@ -34,7 +34,6 @@ export const Loading = styled.div`
 function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     setIsLoading(true);
     const token = getAuthToken();
@@ -55,7 +54,7 @@ function App() {
       <AuthLoadingContext.Provider value={{ isLoading, setIsLoading }}>
         <Router>
           <div id="Outside">
-            {isLoading && <Loading>載入中...</Loading>}
+            {/* {isLoading && <Loading>載入中...</Loading>} */}
             <Nav />
             <Routes>
               <Route exact path="/login" element={<LoginPage />}></Route>
