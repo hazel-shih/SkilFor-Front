@@ -154,8 +154,8 @@ function TeacherManagePage() {
         <FormContainer>
           {page === "self" && (
             <SelfPage
-              teacherInfos={teacherInfos}
-              setTeacherInfos={setTeacherInfos}
+              infos={teacherInfos}
+              setInfos={setTeacherInfos}
               setApiError={setApiError}
             />
           )}

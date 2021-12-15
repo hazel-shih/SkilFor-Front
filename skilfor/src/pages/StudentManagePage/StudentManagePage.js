@@ -23,8 +23,6 @@ const StudentManageContainer = styled(TeacherManageContainer)``;
 function StudentManagePage() {
   useCheckToken();
   const navigate = useNavigate();
-  //個人資料或課程資料頁面
-  const [page, setPage] = useState("self");
   //老師個人資訊
   const [studentInfos, setStudentInfos] = useState(null);
   const [apiError, setApiError] = useState(false);
@@ -38,11 +36,7 @@ function StudentManagePage() {
     // };
     // getData(setApiError);
   }, []);
-  //當個人資訊與儲值按鈕被按時
-  const handlePageBtnClick = (e) => {
-    const { id: currentPage } = e.target;
-    setPage(currentPage);
-  };
+
   const handleAlertOkClick = () => {
     setApiError(false);
     if (apiError === "請先登入才能使用後台功能") {
@@ -65,27 +59,17 @@ function StudentManagePage() {
           />
         )}
         <UserInfoContainer>
-          {studentInfos && (
-            <Avatar imgSrc={student} name={studentInfos.username} />
-          )}
+          {true && <Avatar imgSrc={student} name="Hazel Student" />}
           <PageBtnsContainer>
-            <PageBtn
-              id="self"
-              onClick={handlePageBtnClick}
-              isClick={page === "self"}
-            >
-              個人資料
-            </PageBtn>
+            <PageBtn isClick={true}>個人資料</PageBtn>
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
-          {page === "self" && (
-            <SelfPage
-              studentInfos={studentInfos}
-              setStudentInfos={setStudentInfos}
-              setApiError={setApiError}
-            />
-          )}
+          <SelfPage
+            infos={studentInfos}
+            setInfos={setStudentInfos}
+            setApiError={setApiError}
+          />
         </FormContainer>
       </StudentManageContainer>
     </StudentManageWrapper>
