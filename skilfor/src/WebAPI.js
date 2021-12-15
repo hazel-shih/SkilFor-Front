@@ -68,8 +68,8 @@ export const register = async (
   }
 };
 
-export const getTeacherInfos = async (setApiError) => {
-  let url = `${BASE_URL}/teacher/info`;
+export const getUserInfos = async (setApiError) => {
+  let url = `${BASE_URL}/user/info`;
   const token = getAuthToken();
   try {
     const res = await fetch(url, {
@@ -86,8 +86,8 @@ export const getTeacherInfos = async (setApiError) => {
   }
 };
 
-export const updateTeacherInfos = async (setApiError, newTeacherInfos) => {
-  let url = `${BASE_URL}/teacher/info`;
+export const updateUserInfos = async (setApiError, newTeacherInfos) => {
+  let url = `${BASE_URL}/user/info`;
   const token = getAuthToken();
   try {
     const res = await fetch(url, {

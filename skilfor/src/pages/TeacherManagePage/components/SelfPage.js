@@ -15,7 +15,7 @@ import {
   EditInput,
 } from "./CourseInfosForm";
 import useEdit from "../hooks/useEdit";
-import { updateTeacherInfos } from "../../../WebAPI";
+import { updateUserInfos } from "../../../WebAPI";
 import { validateEmail } from "../../../utils";
 
 const formDataVerify = (formData) => {
@@ -29,7 +29,7 @@ const formDataVerify = (formData) => {
   return errorArr;
 };
 const postTeacherInfos = async (setApiError, editContent) => {
-  let json = await updateTeacherInfos(setApiError, editContent);
+  let json = await updateUserInfos(setApiError, editContent);
   if (json.errMessage) {
     return setApiError("請先登入才能使用後台功能");
   }

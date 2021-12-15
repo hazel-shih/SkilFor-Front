@@ -6,7 +6,7 @@ import PageTitle from "../../components/PageTitle";
 import SelfPage from "../TeacherManagePage/components/SelfPage";
 import useCheckToken from "../TeacherManagePage/hooks/useCheckToken";
 import student from "../../img/student1.png";
-// import { getStudentInfos } from "../../WebAPI.js";
+import { getUserInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
 import {
   TeacherManageWrapper,
@@ -27,14 +27,14 @@ function StudentManagePage() {
   const [studentInfos, setStudentInfos] = useState(null);
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
-    // const getData = async (setApiError) => {
-    //   let json = await getStudentInfos(setApiError);
-    //   if (!json || !json.success) {
-    //     return setApiError("請先登入才能使用後台功能");
-    //   }
-    //   setStudentInfos(json.data);
-    // };
-    // getData(setApiError);
+    const getData = async (setApiError) => {
+      let json = await getUserInfos(setApiError);
+      if (!json || !json.success) {
+        return setApiError("請先登入才能使用後台功能");
+      }
+      setStudentInfos(json.data);
+    };
+    getData(setApiError);
   }, []);
 
   const handleAlertOkClick = () => {
@@ -59,7 +59,9 @@ function StudentManagePage() {
           />
         )}
         <UserInfoContainer>
-          {true && <Avatar imgSrc={student} name="Hazel Student" />}
+          {studentInfos && (
+            <Avatar imgSrc={student} name={studentInfos.username} />
+          )}
           <PageBtnsContainer>
             <PageBtn isClick={true}>個人資料</PageBtn>
           </PageBtnsContainer>
