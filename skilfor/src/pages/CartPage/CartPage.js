@@ -8,6 +8,7 @@ import PageTitle from "../../components/PageTitle";
 import close from "../../img/close.png";
 import { sleep } from "../../utils";
 import { CART_LIST } from "./Constant";
+import { getCartItems } from "../../WebAPI";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -182,14 +183,37 @@ const ErrorTr = styled.tr`
     }
   }
 `;
+const ErrorMessage = styled.div`
+  color: #cc0033;
+  font-weight: bold;
+  font-size: 1.3rem;
+  width: 560px;
+  background-color: #fce4e4;
+  border: 1px solid #fcc2c3;
+  border-radius: 20px;
+  padding: 40px 30px 30px;
+  line-height: 30px;
+  text-shadow: 1px 1px rgba(250, 250, 250, 0.3);
+  min-width: 300px;
+  margin: 50px 0px;
+  text-align: center;
+  align-self: center;
+  ${MEDIA_QUERY_MD} {
+    max-width: 375px;
+  }
+  ${MEDIA_QUERY_SM} {
+    max-width: 300px;
+  }
+`;
 function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
   const [error, setError] = useState(null);
   const [expired, setExpired] = useState(false);
   const [expiredStyle, setExpiredStyle] = useState({});
 
-  useEffect(() => {
+  /*useEffect(() => {
     function checkExpired() {
-      if (item.start.getTime() < new Date().getTime()) {
+      if (item.start) < new Date() {
+      //if (item.start.getTime() < new Date().getTime()) {
         setError("課程時間過期了，無法再購買囉");
         setExpired(true);
         setExpiredStyle({
@@ -199,7 +223,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
       }
     }
     checkExpired();
-  }, [item, expired]);
+  }, [item, expired]);*/
 
   return (
     <>
@@ -215,13 +239,17 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
               type="checkbox"
               onChange={onChangeCheck}
               checked={!!item.checked}
-              id={item.courseId}
+              id={item.scheduleId}
               disabled={expired}
             />
           </label>
         </td>
         <td data-title="刪除" style={expiredStyle}>
-          <DeleteButton src={close} onClick={onDeleteItem} id={item.courseId} />
+          <DeleteButton
+            src={close}
+            onClick={onDeleteItem}
+            id={item.scheduleId}
+          />
         </td>
         <td data-title="課程名稱" style={expiredStyle}>
           {item.courseName}
@@ -230,9 +258,10 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
           {item.teacherName}
         </td>
         <td data-title="上課時間" style={expiredStyle}>
-          {`${item.start.getFullYear()}/${
+          {/*`${item.start.getFullYear()}/${
             item.start.getMonth() + 1
-          }/${item.start.getDate()}`}
+          }/${item.start.getDate()}`*/}
+          {item.start}
           <br /> {item.timePeriod}
         </td>
         <td data-title="點數" style={expiredStyle}>
@@ -243,8 +272,8 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
             <NoteTextArea
               placeholder="我想對老師說..."
               onChange={onChangeNote}
-              id={item.courseId}
-              value={item.note}
+              id={item.scheduleId}
+              value={item.note || ""}
               disabled={expired}
             />
           </label>
@@ -257,21 +286,31 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
 function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
-
+  const [apiError, setApiError] = useState(false);
   useEffect(() => {
+    const getUserCartItems = async (setApiError) => {
+      let json = await getCartItems(setApiError);
+      if (!json || !json.success)
+        return setApiError("發生了一點錯誤，請稍後再試");
+      if (json.data.length === 0) {
+        return setApiError("目前未有課程加入購物車");
+      }
+      setCartItems(json.data);
+    };
+    getUserCartItems(setApiError);
     //API: get user cart data
-    async function fetchData() {
+    /*async function fetchData() {
       await sleep(100);
       setCartItems(CART_LIST);
     }
-    fetchData();
+    fetchData();*/
   }, []);
 
   const handleItemCheckChange = (e) => {
     const { id } = e.target;
     setCartItems(
       cartItems.map((item) => {
-        if (item.courseId !== id) return item;
+        if (item.scheduleId !== id) return item;
         return {
           ...item,
           checked: !item.checked,
@@ -298,14 +337,14 @@ function CartPage() {
     const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
     if (!confirmDelete) return;
     const { id } = e.target;
-    setCartItems(cartItems.filter((item) => item.courseId !== id));
+    setCartItems(cartItems.filter((item) => item.scheduleId !== id));
   };
 
   const handleItemNoteChange = (e) => {
     const { id, value } = e.target;
     setCartItems(
       cartItems.map((item) => {
-        if (item.courseId !== id) return item;
+        if (item.scheduleId !== id) return item;
         return {
           ...item,
           note: value,
@@ -339,46 +378,49 @@ function CartPage() {
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>
-      <CartContainer>
-        <CartTable>
-          <colgroup>
-            <col span="2" style={{ width: "5%" }} />
-            <col span="1" style={{ width: "20%" }} />
-            <col span="1" style={{ width: "8%" }} />
-            <col span="1" style={{ width: "17%" }} />
-            <col span="1" style={{ width: "15%" }} />
-            <col span="1" style={{ width: "30%" }} />
-          </colgroup>
-          <CartHead>
-            <tr>
-              <th>購買</th>
-              <th>刪除</th>
-              <th>課程名稱</th>
-              <th>老師</th>
-              <th>上課時間</th>
-              <th>點數</th>
-              <th>備註</th>
-            </tr>
-          </CartHead>
-          <CartBody>
-            {cartItems.map((item) => (
-              <CartList
-                item={item}
-                key={item.courseId}
-                onDeleteItem={handleItemDelete}
-                onChangeCheck={handleItemCheckChange}
-                onChangeNote={handleItemNoteChange}
-                id={item.courseId}
-                checked={item.checked}
-              />
-            ))}
-          </CartBody>
-        </CartTable>
-        <BtnDiv>
-          <TotalPoints>共計 {totalPoints} 點</TotalPoints>
-          <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
-        </BtnDiv>
-      </CartContainer>
+      {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
+      {!apiError && (
+        <CartContainer>
+          <CartTable>
+            <colgroup>
+              <col span="2" style={{ width: "5%" }} />
+              <col span="1" style={{ width: "20%" }} />
+              <col span="1" style={{ width: "8%" }} />
+              <col span="1" style={{ width: "17%" }} />
+              <col span="1" style={{ width: "15%" }} />
+              <col span="1" style={{ width: "30%" }} />
+            </colgroup>
+            <CartHead>
+              <tr>
+                <th>購買</th>
+                <th>刪除</th>
+                <th>課程名稱</th>
+                <th>老師</th>
+                <th>上課時間</th>
+                <th>點數</th>
+                <th>備註</th>
+              </tr>
+            </CartHead>
+            <CartBody>
+              {cartItems.map((item) => (
+                <CartList
+                  item={item}
+                  key={item.scheduleId}
+                  onDeleteItem={handleItemDelete}
+                  onChangeCheck={handleItemCheckChange}
+                  onChangeNote={handleItemNoteChange}
+                  id={item.scheduleId}
+                  checked={item.checked}
+                />
+              ))}
+            </CartBody>
+          </CartTable>
+          <BtnDiv>
+            <TotalPoints>共計 {totalPoints} 點</TotalPoints>
+            <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
+          </BtnDiv>
+        </CartContainer>
+      )}
     </CartWrapper>
   );
 }
