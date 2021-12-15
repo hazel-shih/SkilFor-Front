@@ -8,7 +8,7 @@ import PageTitle from "../../components/PageTitle";
 import close from "../../img/close.png";
 import { sleep } from "../../utils";
 import { CART_LIST } from "./Constant";
-import { getCartItems } from "../../WebAPI";
+//import { getCartItems } from "../../WebAPI";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -205,15 +205,19 @@ const ErrorMessage = styled.div`
     max-width: 300px;
   }
 `;
+const getDisplayDate = (dateObj) => {
+  let dateStr = dateObj.toLocaleString();
+  return dateStr.slice(0, dateStr.length - 10);
+};
+
 function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
   const [error, setError] = useState(null);
   const [expired, setExpired] = useState(false);
   const [expiredStyle, setExpiredStyle] = useState({});
 
-  /*useEffect(() => {
+  useEffect(() => {
     function checkExpired() {
-      if (item.start) < new Date() {
-      //if (item.start.getTime() < new Date().getTime()) {
+      if (new Date(item.start).getTime() < new Date().getTime()) {
         setError("課程時間過期了，無法再購買囉");
         setExpired(true);
         setExpiredStyle({
@@ -223,7 +227,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
       }
     }
     checkExpired();
-  }, [item, expired]);*/
+  }, [item, expired]);
 
   return (
     <>
@@ -258,10 +262,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
           {item.teacherName}
         </td>
         <td data-title="上課時間" style={expiredStyle}>
-          {/*`${item.start.getFullYear()}/${
-            item.start.getMonth() + 1
-          }/${item.start.getDate()}`*/}
-          {item.start}
+          {getDisplayDate(new Date(item.start))}
           <br /> {item.timePeriod}
         </td>
         <td data-title="點數" style={expiredStyle}>
@@ -288,7 +289,7 @@ function CartPage() {
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
-    const getUserCartItems = async (setApiError) => {
+    /*const getUserCartItems = async (setApiError) => {
       let json = await getCartItems(setApiError);
       if (!json || !json.success)
         return setApiError("發生了一點錯誤，請稍後再試");
@@ -297,13 +298,12 @@ function CartPage() {
       }
       setCartItems(json.data);
     };
-    getUserCartItems(setApiError);
-    //API: get user cart data
-    /*async function fetchData() {
+    getUserCartItems(setApiError);*/
+    async function fetchData() {
       await sleep(100);
       setCartItems(CART_LIST);
     }
-    fetchData();*/
+    fetchData();
   }, []);
 
   const handleItemCheckChange = (e) => {
