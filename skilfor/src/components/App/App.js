@@ -71,7 +71,7 @@ function App() {
                   user && user.identity === "teacher" ? (
                     <TeacherManagePage />
                   ) : (
-                    <StudentManagePage />
+                    user && user.identity === "student" && <StudentManagePage />
                   )
                 }
               />
@@ -82,7 +82,8 @@ function App() {
                   user && user.identity === "teacher" ? (
                     <TeacherCalendarPage />
                   ) : (
-                    <StudentCalendarPage />
+                    user &&
+                    user.identity === "student" && <StudentCalendarPage />
                   )
                 }
               />
