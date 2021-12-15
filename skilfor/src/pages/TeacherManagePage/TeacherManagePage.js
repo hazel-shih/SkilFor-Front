@@ -12,7 +12,7 @@ import { getTeacherInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
 
 //styled component
-const TeacherManageWrapper = styled.section`
+export const TeacherManageWrapper = styled.section`
   padding: 156px 80px 232px 80px;
   ${MEDIA_QUERY_MD} {
     padding: 156px 30px 182px 30px;
@@ -21,17 +21,17 @@ const TeacherManageWrapper = styled.section`
 export const RowContainer = styled.div`
   display: flex;
 `;
-const ColumnContainer = styled.div`
+export const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const TeacherManageContainer = styled(RowContainer)`
+export const TeacherManageContainer = styled(RowContainer)`
   margin-bottom: 30px;
   ${MEDIA_QUERY_MD} {
     flex-direction: column;
   }
 `;
-const UserInfoContainer = styled(ColumnContainer)`
+export const UserInfoContainer = styled(ColumnContainer)`
   background: ${(props) => props.theme.colors.grey_bg};
   min-width: 200px;
   margin-right: 50px;
@@ -40,10 +40,10 @@ const UserInfoContainer = styled(ColumnContainer)`
     margin-bottom: 40px;
   }
 `;
-const PageBtnsContainer = styled(ColumnContainer)`
+export const PageBtnsContainer = styled(ColumnContainer)`
   padding: 20px 25px;
 `;
-const PageBtn = styled.button`
+export const PageBtn = styled.button`
   color: ${(props) => (props.isClick ? "white" : props.theme.colors.grey_dark)};
   background: ${(props) => props.isClick && props.theme.colors.orange};
   font-size: 1.1rem;
@@ -53,7 +53,7 @@ const PageBtn = styled.button`
   border-radius: 10px;
   cursor: pointer;
 `;
-const FormContainer = styled(ColumnContainer)`
+export const FormContainer = styled(ColumnContainer)`
   width: 100%;
   min-height: 500px;
   border: 1px solid ${(props) => props.theme.colors.grey_dark};
@@ -154,8 +154,8 @@ function TeacherManagePage() {
         <FormContainer>
           {page === "self" && (
             <SelfPage
-              teacherInfos={teacherInfos}
-              setTeacherInfos={setTeacherInfos}
+              infos={teacherInfos}
+              setInfos={setTeacherInfos}
               setApiError={setApiError}
             />
           )}

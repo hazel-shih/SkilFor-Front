@@ -34,7 +34,7 @@ const postTeacherInfos = async (setApiError, editContent) => {
     return setApiError("請先登入才能使用後台功能");
   }
 };
-function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
+function SelfPage({ infos, setInfos, setApiError }) {
   const [error, setError] = useState([]);
   const {
     isEditing,
@@ -42,11 +42,11 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
     editContent,
     setEditContent,
     handleEditClick,
-  } = useEdit(setError, teacherInfos);
+  } = useEdit(setError, infos);
   //設定預設課程個人編輯 value
   useEffect(() => {
-    setEditContent(teacherInfos);
-  }, [teacherInfos, setEditContent]);
+    setEditContent(infos);
+  }, [infos, setEditContent]);
   //編輯欄位時
   const handleSelfInputChange = (e) => {
     const { id: inputName, value } = e.target;
@@ -57,14 +57,14 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
   };
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {
-    if (editContent === teacherInfos) {
+    if (editContent === infos) {
       return setIsEditing(false);
     }
     let errorArr = formDataVerify(editContent);
     if (errorArr.length === 0) {
       setIsEditing(false);
       postTeacherInfos(setApiError, editContent);
-      setTeacherInfos(editContent);
+      setInfos(editContent);
       return;
     }
     setError(errorArr);
@@ -96,13 +96,13 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
         <ItemTop>
           <ItemName>Name</ItemName>
         </ItemTop>
-        {teacherInfos && (
+        {infos && (
           <ItemBottom>
-            <ItemValue show={!isEditing}>{teacherInfos.username}</ItemValue>
+            <ItemValue show={!isEditing}>{infos.username}</ItemValue>
             {isEditing && (
               <EditInput
                 error={error.includes("username")}
-                defaultValue={teacherInfos.username}
+                defaultValue={infos.username}
                 onChange={handleSelfInputChange}
                 id="username"
               />
@@ -114,13 +114,13 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
         <ItemTop>
           <ItemName>Avatar</ItemName>
         </ItemTop>
-        {teacherInfos && (
+        {infos && (
           <ItemBottom>
-            <ItemValue show={!isEditing}>{teacherInfos.avatar}</ItemValue>
-            {isEditing && teacherInfos && (
+            <ItemValue show={!isEditing}>{infos.avatar}</ItemValue>
+            {isEditing && infos && (
               <EditInput
                 error={error.includes("avatar")}
-                defaultValue={teacherInfos.avatar}
+                defaultValue={infos.avatar}
                 onChange={handleSelfInputChange}
                 id="avatar"
               />
@@ -132,16 +132,16 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
         <ItemTop>
           <ItemName>Contact Email</ItemName>
         </ItemTop>
-        {teacherInfos && (
+        {infos && (
           <ItemBottom>
-            <ItemValue show={!isEditing}>{teacherInfos.contactEmail}</ItemValue>
-            {isEditing && teacherInfos && (
+            <ItemValue show={!isEditing}>{infos.contactEmail}</ItemValue>
+            {isEditing && infos && (
               <EditInput
                 error={
                   error.includes("contactEmail") ||
                   error.includes("invalid email")
                 }
-                defaultValue={teacherInfos.contactEmail}
+                defaultValue={infos.contactEmail}
                 onChange={handleSelfInputChange}
                 id="contactEmail"
               />
@@ -153,9 +153,9 @@ function SelfPage({ teacherInfos, setTeacherInfos, setApiError }) {
         <ItemTop>
           <ItemName>Login Email</ItemName>
         </ItemTop>
-        {teacherInfos && (
+        {infos && (
           <ItemBottom>
-            <ItemValue show={true}>{teacherInfos.email}</ItemValue>
+            <ItemValue show={true}>{infos.email}</ItemValue>
           </ItemBottom>
         )}
       </FormItemContainer>

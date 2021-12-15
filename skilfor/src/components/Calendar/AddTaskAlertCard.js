@@ -197,7 +197,7 @@ function AddTaskAlertCard({
     });
   };
   const handleGoToBack = () => {
-    navigate("/teacher/manage");
+    navigate("/manage");
   };
   return (
     <AlertContainer color="#75A29E">

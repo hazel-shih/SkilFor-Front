@@ -73,14 +73,14 @@ function BurgerMenu() {
             <BurgerItem to="./cart" onClick={handleMenuToggle}>
               購物車
             </BurgerItem>
-            <BurgerItem to="/teacher/calendar" onClick={handleMenuToggle}>
+            <BurgerItem to="/calendar" onClick={handleMenuToggle}>
               行事曆
             </BurgerItem>
-            <BurgerItem to="./charge_points" onClick={handleMenuToggle}>
+            <BurgerItem to="/point" onClick={handleMenuToggle}>
               儲值點數
             </BurgerItem>
-            <BurgerItem to="./teacher/manage" onClick={handleMenuToggle}>
-              管理個人資料
+            <BurgerItem to="/manage" onClick={handleMenuToggle}>
+              管理後台
             </BurgerItem>
           </BurgerContent>
         )}

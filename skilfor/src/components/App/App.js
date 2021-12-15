@@ -14,6 +14,9 @@ import RegisterPage from "../../pages/RegisterPage";
 import TeacherCalendarPage from "../../pages/TeacherCalendarPage";
 import FilterPage from "../../pages/FilterPage";
 import CartPage from "../../pages/CartPage";
+import PointPage from "../../pages/PointPage";
+import StudentCalendarPage from "../../pages/StudentCalendarPage";
+import StudentManagePage from "../../pages/StudentManagePage";
 
 export const Loading = styled.div`
   position: fixed;
@@ -62,12 +65,29 @@ function App() {
               <Route exact path="/" element={<HomePage />}></Route>
               <Route exact path="/filter" element={<FilterPage />}></Route>
               <Route exact path="/cart" element={<CartPage />}></Route>
-              <Route path="/teacher/manage" element={<TeacherManagePage />} />
+              <Route
+                path="/manage"
+                element={
+                  user && user.identity === "teacher" ? (
+                    <TeacherManagePage />
+                  ) : (
+                    user && user.identity === "student" && <StudentManagePage />
+                  )
+                }
+              />
               <Route path="/course/:courseId" element={<FrontCoursePage />} />
               <Route
-                path="/teacher/calendar"
-                element={<TeacherCalendarPage />}
+                path="/calendar"
+                element={
+                  user && user.identity === "teacher" ? (
+                    <TeacherCalendarPage />
+                  ) : (
+                    user &&
+                    user.identity === "student" && <StudentCalendarPage />
+                  )
+                }
               />
+              <Route path="/point" element={<PointPage />} />
             </Routes>
             <Footer />
           </div>

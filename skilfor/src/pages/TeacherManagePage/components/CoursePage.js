@@ -287,9 +287,7 @@ function CoursePage({ apiError, setApiError }) {
                 </PassContainer>
               </SuccessContainer>
               <SectionText>設定課程時段</SectionText>
-              <GoToLink to="/teacher/calendar">
-                前往行事曆設定課程時段 ➜
-              </GoToLink>
+              <GoToLink to="/calendar">前往行事曆設定課程時段 ➜</GoToLink>
             </>
           )}
           {selectedCourseInfos.audit === "pending" && (
