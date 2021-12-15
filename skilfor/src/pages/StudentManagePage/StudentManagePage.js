@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Avatar from "../../components/Avatar";
 import PageTitle from "../../components/PageTitle";
-import SelfPage from "./components/SelfPage";
-import useCheckToken from "./hooks/useCheckToken";
-import { getStudentInfos } from "../../WebAPI.js";
+import SelfPage from "../TeacherManagePage/components/SelfPage";
+import useCheckToken from "../TeacherManagePage/hooks/useCheckToken";
+import student from "../../img/student1.png";
+// import { getStudentInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
 import {
   TeacherManageWrapper,
@@ -14,7 +15,7 @@ import {
   PageBtnsContainer,
   PageBtn,
   FormContainer,
-} from "../TeacherManagePage";
+} from "../TeacherManagePage/TeacherManagePage";
 
 const StudentManageWrapper = styled(TeacherManageWrapper)``;
 const StudentManageContainer = styled(TeacherManageContainer)``;
@@ -65,7 +66,7 @@ function StudentManagePage() {
         )}
         <UserInfoContainer>
           {studentInfos && (
-            <Avatar imgSrc={studentInfos.avatar} name={studentInfos.username} />
+            <Avatar imgSrc={student} name={studentInfos.username} />
           )}
           <PageBtnsContainer>
             <PageBtn
@@ -74,13 +75,6 @@ function StudentManagePage() {
               isClick={page === "self"}
             >
               個人資料
-            </PageBtn>
-            <PageBtn
-              id="point"
-              onClick={handlePageBtnClick}
-              isClick={page === "point"}
-            >
-              我要儲值
             </PageBtn>
           </PageBtnsContainer>
         </UserInfoContainer>
@@ -92,10 +86,6 @@ function StudentManagePage() {
               setApiError={setApiError}
             />
           )}
-          {page === "point" &&
-            {
-              /* <CoursePage apiError={apiError} setApiError={setApiError} /> */
-            }}
         </FormContainer>
       </StudentManageContainer>
     </StudentManageWrapper>

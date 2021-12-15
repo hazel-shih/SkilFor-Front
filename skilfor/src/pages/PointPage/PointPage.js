@@ -1,5 +1,5 @@
 function PointPage() {
-  return <div>Point</div>;
+  return <div>PointPage</div>;
 }
 
 export default PointPage;
