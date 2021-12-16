@@ -90,13 +90,18 @@ const StorePointButton = styled.button`
   padding: 10px;
   border: 1px solid ${(props) => props.theme.colors.green_dark};
   cursor: pointer;
+  :hover {
+    opacity: 0.8;
+  }
 `;
 
 function PointPage() {
   const pointInput = useRef(null);
   const handleStorePointClick = () => {
+    let value = Number(pointInput.current.value);
+    if (value === "" || !(value > 0)) return;
     //將儲值金額發 API 給後端
-    console.log(pointInput.current.value);
+    console.log(value);
   };
   const handleChooseClick = (price, points) => {
     //將儲值金額發 API 給後端
