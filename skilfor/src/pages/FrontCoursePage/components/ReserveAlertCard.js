@@ -36,8 +36,9 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const handleCloseClick = () => {
     setAlertShow(null);
   };
+  console.log(selectedEvent);
   const handleReserveEvent = () => {
-    addCartItem(setApiError, selectedEvent.id).then((json) => {
+    addCartItem(setApiError, selectedEvent.scheduleId).then((json) => {
       if (json && !json.success && json.errMessage) {
         return alert(json.errMessage[0]);
       }

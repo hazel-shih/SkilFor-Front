@@ -140,7 +140,7 @@ function TeacherManagePage() {
               onClick={handlePageBtnClick}
               isClick={page === "self"}
             >
-              個人資料
+              個人資訊
             </PageBtn>
             <PageBtn
               id="course"

@@ -63,7 +63,7 @@ function StudentManagePage() {
             <Avatar imgSrc={student} name={studentInfos.username} />
           )}
           <PageBtnsContainer>
-            <PageBtn isClick={true}>個人資料</PageBtn>
+            <PageBtn isClick={true}>個人資訊</PageBtn>
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
