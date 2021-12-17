@@ -8,7 +8,7 @@ import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
 import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 import useCheckToken from "./hooks/useCheckToken";
-import { getTeacherInfos } from "../../WebAPI.js";
+import { getUserInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
 
 //styled component
@@ -96,7 +96,7 @@ function TeacherManagePage() {
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
     const getData = async (setApiError) => {
-      let json = await getTeacherInfos(setApiError);
+      let json = await getUserInfos(setApiError);
       if (!json || !json.success) {
         return setApiError("請先登入才能使用後台功能");
       }
@@ -140,7 +140,7 @@ function TeacherManagePage() {
               onClick={handlePageBtnClick}
               isClick={page === "self"}
             >
-              個人資料
+              個人資訊
             </PageBtn>
             <PageBtn
               id="course"
