@@ -358,3 +358,22 @@ export const addCartItem = async (setApiError, eventId) => {
     return setApiError("目前無法新增課程至購物車，請稍後再試");
   }
 };
+
+export const getCartItems = async (setApiError) => {
+  let url = `${BASE_URL}/shopping-cart`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return error.message;
+  }
+};
