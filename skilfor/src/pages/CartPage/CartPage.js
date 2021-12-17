@@ -210,14 +210,23 @@ const getDisplayDate = (dateObj) => {
   return dateStr.slice(0, dateStr.length - 10);
 };
 
-function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
+function CartList({
+  item,
+  onChangeCheck,
+  onClickCheck,
+  onDeleteItem,
+  onChangeNote,
+}) {
   const [error, setError] = useState(null);
   const [expired, setExpired] = useState(false);
   const [expiredStyle, setExpiredStyle] = useState({});
 
   useEffect(() => {
     function checkExpired() {
-      if (new Date(item.start).getTime() < new Date().getTime()) {
+      if (
+        new Date(item.start).getTime() < new Date().getTime() ||
+        item.hasError === true
+      ) {
         setError("課程時間過期了，無法再購買囉");
         setExpired(true);
         setExpiredStyle({
@@ -242,6 +251,7 @@ function CartList({ item, onChangeCheck, onDeleteItem, onChangeNote }) {
             <CheckBox
               type="checkbox"
               onChange={onChangeCheck}
+              onClick={onClickCheck}
               checked={!!item.checked}
               id={item.scheduleId}
               disabled={expired}
@@ -318,6 +328,46 @@ function CartPage() {
       })
     );
   };
+  //判斷新checked的item是否有跟其他item時間衝突
+  const handleAddItemCheck = (e) => {
+    const { id } = e.target;
+    let targetItem = cartItems.find((item) => item.scheduleId === id);
+    if (targetItem.checked) return;
+    let existedCheckItems = cartItems.filter((item) => item.checked === true);
+    if (existedCheckItems.length === 0) {
+      return false;
+    } else {
+      const { start, end } = targetItem;
+      let startPoint = new Date(start).getTime();
+      let endPoint = new Date(end).getTime();
+      let timeS = "";
+      let startTimeArr = [];
+      let timeE = "";
+      let endTimeArr = [];
+      for (let i = 0; i < existedCheckItems.length; i++) {
+        timeS = new Date(existedCheckItems[i].start).getTime();
+        startTimeArr.push(timeS);
+      }
+      startTimeArr.push(startPoint);
+      for (let j = 0; j < existedCheckItems.length; j++) {
+        timeE = new Date(existedCheckItems[j].end).getTime();
+        endTimeArr.push(timeE);
+      }
+      endTimeArr.push(endPoint);
+      let begin = startTimeArr.sort();
+      let over = endTimeArr.sort();
+      for (let k = 1; k < begin.length; k++) {
+        if (
+          begin[k] < over[k - 1] ||
+          (begin[k] === begin[k - 1] && over[k] === over[k - 1])
+        ) {
+          alert("課程時間與其他已勾選的課程重複，請擇一購買");
+          return (targetItem.checked = !targetItem.checked);
+        }
+      }
+      return console.log("all clear");
+    }
+  };
 
   useEffect(() => {
     function sumUpPoints() {
@@ -372,7 +422,6 @@ function CartPage() {
     // 多增加區塊顯示學生目前剩餘點數
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
-    // 加入判斷 此時斷跟其他要結帳的上課時間是否衝突
     alert("成功扣點 !");
   };
   return (
@@ -408,9 +457,12 @@ function CartPage() {
                   key={item.scheduleId}
                   onDeleteItem={handleItemDelete}
                   onChangeCheck={handleItemCheckChange}
+                  onClickCheck={handleAddItemCheck}
                   onChangeNote={handleItemNoteChange}
                   id={item.scheduleId}
                   checked={item.checked}
+                  start={item.start}
+                  end={item.end}
                 />
               ))}
             </CartBody>
