@@ -61,9 +61,14 @@ function StudentReadTaskCard({
             瀏覽此課程頁面 ➜
           </NoneStyleLink>
         </AlertContent>
-        <AlertButton color="#75A29E" onClick={handleCancelEvent}>
-          取消此時段
-        </AlertButton>
+        <AlertContent>
+          課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
+        </AlertContent>
+        {selectedEvent.start.getTime() - new Date().getTime() > 86400000 && (
+          <AlertButton color="#75A29E" onClick={handleCancelEvent}>
+            取消此時段
+          </AlertButton>
+        )}
       </ContentContainer>
     </AlertContainer>
   );

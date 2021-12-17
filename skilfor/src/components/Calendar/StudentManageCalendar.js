@@ -50,12 +50,22 @@ function StudentManageCalendar() {
   };
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
-    var style = {
-      border: `2px solid ${eventColor}`,
-      backgroundColor: eventColor,
-      color: "white",
-      fontSize: "14px",
-    };
+    let style;
+    if (new Date(event.start).getTime() < new Date().getTime()) {
+      style = {
+        border: `2px solid #e6e6e6`,
+        backgroundColor: "#e6e6e6",
+        color: "#AAAAAA",
+        fontSize: "12px",
+      };
+    } else {
+      style = {
+        border: `2px solid ${eventColor}`,
+        backgroundColor: eventColor,
+        color: "white",
+        fontSize: "14px",
+      };
+    }
     return {
       style: style,
     };

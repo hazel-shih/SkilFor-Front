@@ -165,8 +165,8 @@ export const MONTH_EVENTS = [
   },
   {
     title: "教你煮超美味紅豆湯",
-    start: new Date(2021, 11, 19, 1, 30),
-    end: new Date(2021, 11, 19, 2, 0),
+    start: new Date(2021, 11, 25, 1, 30),
+    end: new Date(2021, 11, 25, 2, 0),
     courseId: "08881556",
     resource: {
       teacherId: "1",
