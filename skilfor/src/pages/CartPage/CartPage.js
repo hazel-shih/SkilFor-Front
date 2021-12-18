@@ -4,11 +4,14 @@ import {
   MEDIA_QUERY_MD,
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
-import PageTitle from "../../components/PageTitle";
 import close from "../../img/close.png";
 import { sleep } from "../../utils";
 import { CART_LIST } from "./Constant";
 //import { getCartItems } from "../../WebAPI";
+import {
+  checkEventsConflict,
+  checkOverlap,
+} from "../../components/Calendar/utils";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -22,16 +25,15 @@ const CartWrapper = styled.section`
     text-align: center;
   }
 `;
+const PageTitle = styled.h1`
+  color: ${(props) => props.theme.colors.grey_dark};
+  font-size: 1.8rem;
+`;
 const CartContainer = styled.div`
   align-self: center;
   min-height: 300px;
-  max-width: 780px;
-  ${MEDIA_QUERY_MD} {
-    max-width: 600px;
-  }
-  ${MEDIA_QUERY_SM} {
-    max-width: 320px;
-  }
+  max-width: 800px;
+  margin: 0 auto;
 `;
 const CartTable = styled.table`
   width: 100%;
@@ -44,6 +46,8 @@ const CartTable = styled.table`
   }
   ${MEDIA_QUERY_SM} {
     box-shadow: none;
+    display: flex;
+    justify-content: center;
   }
   td:nth-of-type(3) {
     text-align: left;
@@ -54,13 +58,14 @@ const CartTable = styled.table`
     border-bottom: 1px dotted ${(props) => props.theme.colors.orange};
     vertical-align: middle;
     text-align: center;
+    position: relative;
     ${MEDIA_QUERY_SM} {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       text-align: right !important;
-      width: 290px;
+      max-width: 400px;
       border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
       :nth-of-type(7) {
         border-bottom: 3px double ${(props) => props.theme.colors.grey_dark};
@@ -72,7 +77,7 @@ const CartTable = styled.table`
         text-align: left;
         font-weight: bold;
         padding: 6px 0;
-        width: 50%;
+        width: 30%;
       }
     }
   }
@@ -101,6 +106,7 @@ const NoteTextArea = styled.textarea`
   padding: 2px 10px;
   opacity: 0.8;
   text-align: left;
+  resize: none;
   :focus {
     border: 2px solid ${(props) => props.theme.colors.green_light};
   }
@@ -109,18 +115,19 @@ const NoteTextArea = styled.textarea`
     margin: 10px 0px;
   }
 `;
-const BtnDiv = styled.div`
+const WrapDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+`;
+const NoWrapDiv = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  max-width: 730px;
-  height: 65px;
   margin-top: 5px;
-  ${MEDIA_QUERY_MD} {
-    max-width: 560px;
-  }
+  width: 100%;
   ${MEDIA_QUERY_SM} {
-    max-width: 295px;
     height: 55px;
     justify-content: space-between;
   }
@@ -156,6 +163,18 @@ const Btn = styled.button`
     font-size: 1rem;
   }
 `;
+const DeleteExpiredItemBtn = styled(Btn)`
+  width: 150px;
+  margin: 10px 0px;
+  background-color: white;
+  color: ${(props) => props.theme.colors.green_dark};
+  border: 1px solid ${(props) => props.theme.colors.green_dark};
+  :hover {
+    background-color: ${(props) => props.theme.colors.green_dark};
+    color: white;
+  }
+  padding: 5px 0px;
+`;
 const DeleteButton = styled.img`
   width: 15px;
   height: 15px;
@@ -166,14 +185,13 @@ const DeleteButton = styled.img`
     opacity: 0.6;
   }
 `;
-
 const ErrorTr = styled.tr`
-  color: #cc0033;
+  color: #00bfa5;
   font-weight: bold;
   > td {
     border-bottom: none;
-    padding: 15px 0px 5px;
-    background-color: #fce4e4;
+    padding-top: 5px;
+    background-color: #fff59d;
     ${MEDIA_QUERY_SM} {
       padding: 15px 5px 5px;
       justify-content: center;
@@ -205,6 +223,22 @@ const ErrorMessage = styled.div`
     max-width: 300px;
   }
 `;
+const ExpiredCover = styled.div`
+  display: ${(props) => (props.show ? "block" : "none")};
+  position: absolute;
+  border-bottom: 1px solid #e6e6e6;
+  background-color: rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.5;
+`;
+const RemainingPoints = styled(TotalPoints)`
+  padding-right: 0px;
+  color: ${(props) => props.theme.colors.green_dark};
+`;
+
 const getDisplayDate = (dateObj) => {
   let dateStr = dateObj.toLocaleString();
   return dateStr.slice(0, dateStr.length - 10);
@@ -216,37 +250,47 @@ function CartList({
   onClickCheck,
   onDeleteItem,
   onChangeNote,
+  overlapTimeArr,
 }) {
-  const [error, setError] = useState(null);
   const [expired, setExpired] = useState(false);
-  const [expiredStyle, setExpiredStyle] = useState({});
+  const [errorNotice, setErrorNotice] = useState("");
+  const [errorStyle, setErrorStyle] = useState({});
 
   useEffect(() => {
-    function checkExpired() {
-      if (
-        new Date(item.start).getTime() < new Date().getTime() ||
-        item.hasError === true
-      ) {
-        setError("課程時間過期了，無法再購買囉");
+    function checkError() {
+      setErrorNotice("");
+      setErrorStyle({});
+      if (new Date(item.start).getTime() < new Date().getTime()) {
         setExpired(true);
-        setExpiredStyle({
-          backgroundColor: "#fce4e4",
+        setErrorStyle({
+          backgroundColor: "#fafafa",
           color: "#AAAAAA",
         });
       }
+
+      if (overlapTimeArr.length === 0) return;
+      overlapTimeArr.forEach((e) => {
+        if (e === item.scheduleId) {
+          setErrorNotice("課程時段重複了，請擇一購買喔");
+          setErrorStyle({
+            backgroundColor: "#fff59d",
+          });
+        }
+      });
     }
-    checkExpired();
-  }, [item, expired]);
+    checkError();
+  }, [item, expired, overlapTimeArr]);
 
   return (
     <>
-      {error && (
+      {errorNotice && (
         <ErrorTr>
-          <td colSpan="7">{error}</td>
+          <td colSpan="7">{errorNotice}</td>
         </ErrorTr>
       )}
       <tr>
-        <td data-title="購買" style={expiredStyle}>
+        <td data-title="購買" style={errorStyle}>
+          <ExpiredCover show={expired} />
           <label>
             <CheckBox
               type="checkbox"
@@ -258,27 +302,33 @@ function CartList({
             />
           </label>
         </td>
-        <td data-title="刪除" style={expiredStyle}>
+        <td data-title="刪除" style={errorStyle}>
+          <ExpiredCover show={expired} />
           <DeleteButton
             src={close}
             onClick={onDeleteItem}
             id={item.scheduleId}
           />
         </td>
-        <td data-title="課程名稱" style={expiredStyle}>
+        <td data-title="課程名稱" style={errorStyle}>
+          <ExpiredCover show={expired} />
           {item.courseName}
         </td>
-        <td data-title="老師" style={expiredStyle}>
+        <td data-title="老師" style={errorStyle}>
+          <ExpiredCover show={expired} />
           {item.teacherName}
         </td>
-        <td data-title="上課時間" style={expiredStyle}>
+        <td data-title="上課時間" style={errorStyle}>
+          <ExpiredCover show={expired} />
           {getDisplayDate(new Date(item.start))}
           <br /> {item.timePeriod}
         </td>
-        <td data-title="點數" style={expiredStyle}>
+        <td data-title="點數" style={errorStyle}>
+          <ExpiredCover show={expired} />
           {item.price} 點
         </td>
-        <td data-title="備註" style={expiredStyle}>
+        <td data-title="備註" style={errorStyle}>
+          <ExpiredCover show={expired} />
           <label>
             <NoteTextArea
               placeholder="我想對老師說..."
@@ -329,7 +379,7 @@ function CartPage() {
     );
   };
   //判斷新checked的item是否有跟其他item時間衝突
-  const handleAddItemCheck = (e) => {
+  /*const handleAddItemCheck = (e) => {
     const { id } = e.target;
     let targetItem = cartItems.find((item) => item.scheduleId === id);
     if (targetItem.checked) return;
@@ -366,6 +416,39 @@ function CartPage() {
         }
       }
       return console.log("all clear");
+    }
+  };*/
+
+  const [overlapTimeArr, setOverlapTimeArr] = useState([]);
+  const handleAddItemCheck = (e) => {
+    const { id } = e.target;
+    let targetItem = cartItems.find((item) => item.scheduleId === id);
+    if (targetItem.checked) return setOverlapTimeArr([]);
+    let existedCheckItems = cartItems.filter((item) => item.checked === true);
+    if (existedCheckItems.length === 0) {
+      return false;
+    } else {
+      const { start, end } = targetItem;
+      let startPoint = new Date(start).getTime();
+      let endPoint = new Date(end).getTime();
+      for (let i = 0; i < existedCheckItems.length; i++) {
+        let eventStartTime = new Date(existedCheckItems[i].start).getTime();
+        let eventEndTime = new Date(existedCheckItems[i].end).getTime();
+        if (
+          checkOverlap(
+            [startPoint, endPoint],
+            [eventStartTime, eventEndTime]
+          ) ||
+          checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
+        ) {
+          setOverlapTimeArr([
+            existedCheckItems[i].scheduleId,
+            targetItem.scheduleId,
+          ]);
+          return (targetItem.checked = !targetItem.checked);
+        }
+      }
+      return false;
     }
   };
 
@@ -424,12 +507,26 @@ function CartPage() {
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");
   };
+
+  const handleExpiredItemDelete = (e) => {
+    e.preventDefault();
+    setCartItems(
+      cartItems.filter(
+        (item) => new Date(item.start).getTime() >= new Date().getTime()
+      )
+    );
+  };
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>
       {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
       {!apiError && (
         <CartContainer>
+          <WrapDiv>
+            <DeleteExpiredItemBtn onClick={handleExpiredItemDelete}>
+              清除過期課程
+            </DeleteExpiredItemBtn>
+          </WrapDiv>
           <CartTable>
             <colgroup>
               <col span="2" style={{ width: "5%" }} />
@@ -463,14 +560,18 @@ function CartPage() {
                   checked={item.checked}
                   start={item.start}
                   end={item.end}
+                  overlapTimeArr={overlapTimeArr}
                 />
               ))}
             </CartBody>
           </CartTable>
-          <BtnDiv>
-            <TotalPoints>共計 {totalPoints} 點</TotalPoints>
-            <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
-          </BtnDiv>
+          <WrapDiv>
+            <RemainingPoints>剩餘點數 1000 點</RemainingPoints>
+            <NoWrapDiv>
+              <TotalPoints>共計 {totalPoints} 點</TotalPoints>
+              <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
+            </NoWrapDiv>
+          </WrapDiv>
         </CartContainer>
       )}
     </CartWrapper>
