@@ -173,7 +173,10 @@ function AddTaskAlertCard({
     if (formatedStartTime.getTime() < new Date().getTime()) {
       return setError("無法新增過去時間的課程");
     }
-    if (checkEventsConflict(allEvents, formatedStartTime, formatedEndTime)) {
+    if (
+      checkEventsConflict(allEvents, formatedStartTime, formatedEndTime) !==
+      false
+    ) {
       return setError("此時段與當天其他時段重疊！");
     }
     let postData = {

@@ -8,10 +8,7 @@ import close from "../../img/close.png";
 import { sleep } from "../../utils";
 import { CART_LIST } from "./Constant";
 //import { getCartItems } from "../../WebAPI";
-import {
-  checkEventsConflict,
-  checkOverlap,
-} from "../../components/Calendar/utils";
+import { checkEventsConflict } from "../../components/Calendar/utils";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -379,76 +376,21 @@ function CartPage() {
     );
   };
   //判斷新checked的item是否有跟其他item時間衝突
-  /*const handleAddItemCheck = (e) => {
-    const { id } = e.target;
-    let targetItem = cartItems.find((item) => item.scheduleId === id);
-    if (targetItem.checked) return;
-    let existedCheckItems = cartItems.filter((item) => item.checked === true);
-    if (existedCheckItems.length === 0) {
-      return false;
-    } else {
-      const { start, end } = targetItem;
-      let startPoint = new Date(start).getTime();
-      let endPoint = new Date(end).getTime();
-      let timeS = "";
-      let startTimeArr = [];
-      let timeE = "";
-      let endTimeArr = [];
-      for (let i = 0; i < existedCheckItems.length; i++) {
-        timeS = new Date(existedCheckItems[i].start).getTime();
-        startTimeArr.push(timeS);
-      }
-      startTimeArr.push(startPoint);
-      for (let j = 0; j < existedCheckItems.length; j++) {
-        timeE = new Date(existedCheckItems[j].end).getTime();
-        endTimeArr.push(timeE);
-      }
-      endTimeArr.push(endPoint);
-      let begin = startTimeArr.sort();
-      let over = endTimeArr.sort();
-      for (let k = 1; k < begin.length; k++) {
-        if (
-          begin[k] < over[k - 1] ||
-          (begin[k] === begin[k - 1] && over[k] === over[k - 1])
-        ) {
-          alert("課程時間與其他已勾選的課程重複，請擇一購買");
-          return (targetItem.checked = !targetItem.checked);
-        }
-      }
-      return console.log("all clear");
-    }
-  };*/
-
   const [overlapTimeArr, setOverlapTimeArr] = useState([]);
   const handleAddItemCheck = (e) => {
     const { id } = e.target;
     let targetItem = cartItems.find((item) => item.scheduleId === id);
     if (targetItem.checked) return setOverlapTimeArr([]);
     let existedCheckItems = cartItems.filter((item) => item.checked === true);
-    if (existedCheckItems.length === 0) {
-      return false;
-    } else {
-      const { start, end } = targetItem;
-      let startPoint = new Date(start).getTime();
-      let endPoint = new Date(end).getTime();
-      for (let i = 0; i < existedCheckItems.length; i++) {
-        let eventStartTime = new Date(existedCheckItems[i].start).getTime();
-        let eventEndTime = new Date(existedCheckItems[i].end).getTime();
-        if (
-          checkOverlap(
-            [startPoint, endPoint],
-            [eventStartTime, eventEndTime]
-          ) ||
-          checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
-        ) {
-          setOverlapTimeArr([
-            existedCheckItems[i].scheduleId,
-            targetItem.scheduleId,
-          ]);
-          return (targetItem.checked = !targetItem.checked);
-        }
-      }
-      return false;
+    const { start, end } = targetItem;
+    let overlapItemResult = checkEventsConflict(
+      existedCheckItems,
+      new Date(start),
+      new Date(end)
+    );
+    if (overlapItemResult !== false) {
+      setOverlapTimeArr([overlapItemResult[1], targetItem.scheduleId]);
+      return (targetItem.checked = !targetItem.checked);
     }
   };
 
@@ -471,6 +413,15 @@ function CartPage() {
     if (!confirmDelete) return;
     const { id } = e.target;
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
+  };
+
+  const handleExpiredItemDelete = (e) => {
+    e.preventDefault();
+    setCartItems(
+      cartItems.filter(
+        (item) => new Date(item.start).getTime() >= new Date().getTime()
+      )
+    );
   };
 
   const handleItemNoteChange = (e) => {
@@ -502,20 +453,11 @@ function CartPage() {
     );
     // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
     // 扣點過程背景進入 loading 讓使用者不能亂點
-    // 多增加區塊顯示學生目前剩餘點數
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");
   };
 
-  const handleExpiredItemDelete = (e) => {
-    e.preventDefault();
-    setCartItems(
-      cartItems.filter(
-        (item) => new Date(item.start).getTime() >= new Date().getTime()
-      )
-    );
-  };
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>

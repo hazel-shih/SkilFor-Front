@@ -55,20 +55,22 @@ export const checkEventsConflict = (
   formatedEndTime
 ) => {
   let today = formatedStartTime.getDate();
-  let todayEvents = events.filter((event) => event.start.getDate() === today);
+  let todayEvents = events.filter(
+    (event) => new Date(event.start).getDate() === today
+  );
   if (todayEvents.length === 0) {
     return false;
   } else {
     let startPoint = formatedStartTime.getTime();
     let endPoint = formatedEndTime.getTime();
     for (let i = 0; i < todayEvents.length; i++) {
-      let eventStartTime = todayEvents[i].start.getTime();
-      let eventEndTime = todayEvents[i].end.getTime();
+      let eventStartTime = new Date(todayEvents[i].start).getTime();
+      let eventEndTime = new Date(todayEvents[i].end).getTime();
       if (
         checkOverlap([startPoint, endPoint], [eventStartTime, eventEndTime]) ||
         checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
       ) {
-        return true;
+        return [true, todayEvents[i].scheduleId];
       }
     }
     return false;
