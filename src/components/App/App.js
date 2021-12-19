@@ -55,7 +55,7 @@ function App() {
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <AuthLoadingContext.Provider value={{ isLoading, setIsLoading }}>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <div id="Outside">
             {/* {isLoading && <Loading>載入中...</Loading>} */}
             <Nav />
