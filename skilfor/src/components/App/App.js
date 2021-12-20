@@ -60,11 +60,15 @@ function App() {
             {/* {isLoading && <Loading>載入中...</Loading>} */}
             <Nav />
             <Routes>
-              <Route exact path="/login" element={<LoginPage />}></Route>
-              <Route exact path="/register" element={<RegisterPage />}></Route>
-              <Route exact path="/" element={<HomePage />}></Route>
-              <Route exact path="/filter" element={<FilterPage />}></Route>
-              <Route exact path="/cart" element={<CartPage />}></Route>
+              <Route exact path="/login" element={<LoginPage />} />
+              <Route exact path="/register" element={<RegisterPage />} />
+              <Route exact path="/" element={<HomePage />} />
+              <Route exact path="/filter" element={<FilterPage />} />
+              <Route
+                exact
+                path="/cart"
+                element={user && user.identity === "student" && <CartPage />}
+              />
               <Route
                 path="/manage"
                 element={

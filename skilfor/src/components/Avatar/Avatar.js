@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { AuthContext } from "../../contexts";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -42,11 +44,12 @@ const AvatarStatus = styled.p`
 `;
 
 function Avatar({ imgSrc, name, status }) {
+  const { user } = useContext(AuthContext);
   return (
     <AvatarWrapper>
       <AvatarContainer imgSrc={imgSrc} />
       <AvatarName>{name}</AvatarName>
-      <AvatarStatus>{status}</AvatarStatus>
+      {user.identity === "student" && <AvatarStatus>{status}</AvatarStatus>}
     </AvatarWrapper>
   );
 }
