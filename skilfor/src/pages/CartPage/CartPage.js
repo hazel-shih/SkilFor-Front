@@ -29,7 +29,7 @@ const PageTitle = styled.h1`
 const CartContainer = styled.div`
   align-self: center;
   min-height: 300px;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
 `;
 const CartTable = styled.table`
@@ -56,6 +56,8 @@ const CartTable = styled.table`
     vertical-align: middle;
     text-align: center;
     position: relative;
+    white-space: pre-line;
+    word-break: break-word;
     ${MEDIA_QUERY_SM} {
       display: flex;
       flex-direction: row;

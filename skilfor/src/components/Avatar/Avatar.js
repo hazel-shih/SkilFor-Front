@@ -49,7 +49,9 @@ function Avatar({ imgSrc, name, status }) {
     <AvatarWrapper>
       <AvatarContainer imgSrc={imgSrc} />
       <AvatarName>{name}</AvatarName>
-      {user.identity === "student" && <AvatarStatus>{status}</AvatarStatus>}
+      {user && user.identity === "student" && (
+        <AvatarStatus>{status}</AvatarStatus>
+      )}
     </AvatarWrapper>
   );
 }

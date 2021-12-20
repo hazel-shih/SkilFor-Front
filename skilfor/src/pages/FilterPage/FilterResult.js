@@ -3,7 +3,7 @@ import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Avatar from "../../components/Avatar";
 import { Link } from "react-router-dom";
 
-const TeacherBlock = styled.div`
+const FilterResultBlock = styled.div`
   display: inline-flex;
   flex-wrap: nowrap;
   justify-content: center;
@@ -21,21 +21,22 @@ const TeacherBlock = styled.div`
     }
   }
 `;
-
 const CourseBlock = styled.div`
   color: ${(props) => props.theme.colors.grey_dark};
   padding: 8px 6px;
   width: 1200px;
   height: 200px;
   border: 2px dotted ${(props) => props.theme.colors.green_dark};
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   ${MEDIA_QUERY_SM} {
     padding: 5px;
     width: 300px;
     height: 180px;
   }
 `;
-
+const CourseIntro = styled.div``;
 const CourseName = styled.h2`
   font-size: 1.3rem;
   text-align: left;
@@ -46,8 +47,7 @@ const CourseName = styled.h2`
     font-size: 1.2rem;
   }
 `;
-
-const CourseIntro = styled.p`
+const CourseDescription = styled.p`
   line-height: 1.8rem;
   font-size: 1.2rem;
   overflow: hidden;
@@ -64,18 +64,15 @@ const CourseIntro = styled.p`
     margin: 10px 10px 4px;
   }
 `;
-
 const BtnDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   padding: 2px 8px 2px 0px;
-  height: 100px;
   ${MEDIA_QUERY_SM} {
     height: 65px;
   }
 `;
-
 const CoursePoint = styled.p`
   text-align: left;
   font-weight: bold;
@@ -85,7 +82,6 @@ const CoursePoint = styled.p`
     padding: 6px 0px 6px 6px;
   }
 `;
-
 const Btn = styled(Link)`
   border-radius: 40px;
   border: none;
@@ -112,17 +108,19 @@ const Btn = styled(Link)`
 function FilterResult({ result }) {
   return (
     <>
-      <TeacherBlock>
+      <FilterResultBlock>
         <Avatar imgSrc={result.teacherAvatar} name={result.teacherName} />
         <CourseBlock>
-          <CourseName>{result.courseName}</CourseName>
-          <CourseIntro>{result.courseDescription}</CourseIntro>
+          <CourseIntro>
+            <CourseName>{result.courseName}</CourseName>
+            <CourseDescription>{result.courseDescription}</CourseDescription>
+          </CourseIntro>
           <BtnDiv>
             <CoursePoint>點數：{result.price}</CoursePoint>
             <Btn to={`/course/${result.courseId}`}>更多資訊</Btn>
           </BtnDiv>
         </CourseBlock>
-      </TeacherBlock>
+      </FilterResultBlock>
     </>
   );
 }
