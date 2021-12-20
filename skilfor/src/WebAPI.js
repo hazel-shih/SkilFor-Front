@@ -361,7 +361,27 @@ export const getCartItems = async (setApiError) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
+  }
+};
+
+export const deleteCartItem = async (id, setApiError) => {
+  let url = `${BASE_URL}/shopping-cart`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scheduleId: id,
+      }),
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };

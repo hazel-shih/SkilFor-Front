@@ -6,8 +6,8 @@ import {
 } from "../../components/constants/breakpoints";
 import CartList from "../CartPage/CartList";
 import { sleep } from "../../utils";
-import { CART_LIST } from "./Constant";
-//import { getCartItems } from "../../WebAPI";
+//import { CART_LIST } from "./Constant";
+import { getCartItems, deleteCartItem } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
 
 const CartWrapper = styled.section`
@@ -182,7 +182,7 @@ export default function CartPage() {
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
-    /*const getUserCartItems = async (setApiError) => {
+    const getUserCartItems = async (setApiError) => {
       let json = await getCartItems(setApiError);
       if (!json || !json.success)
         return setApiError("發生了一點錯誤，請稍後再試");
@@ -191,12 +191,12 @@ export default function CartPage() {
       }
       setCartItems(json.data);
     };
-    getUserCartItems(setApiError);*/
-    async function fetchData() {
+    getUserCartItems(setApiError);
+    /*async function fetchData() {
       await sleep(100);
       setCartItems(CART_LIST);
     }
-    fetchData();
+    fetchData();*/
   }, []);
 
   const handleItemCheckChange = (e) => {
@@ -248,6 +248,7 @@ export default function CartPage() {
     const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
     if (!confirmDelete) return;
     const { id } = e.target;
+    deleteCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
   };
 
