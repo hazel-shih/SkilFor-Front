@@ -4,11 +4,11 @@ import {
   MEDIA_QUERY_MD,
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
-import PageTitle from "../../components/PageTitle";
-import close from "../../img/close.png";
+import CartList from "../CartPage/CartList";
 import { sleep } from "../../utils";
-import { CART_LIST } from "./Constant";
-//import { getCartItems } from "../../WebAPI";
+//import { CART_LIST } from "./Constant";
+import { getCartItems, deleteCartItem } from "../../WebAPI";
+import { checkEventsConflict } from "../../components/Calendar/utils";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -22,16 +22,15 @@ const CartWrapper = styled.section`
     text-align: center;
   }
 `;
+const PageTitle = styled.h1`
+  color: ${(props) => props.theme.colors.grey_dark};
+  font-size: 1.8rem;
+`;
 const CartContainer = styled.div`
   align-self: center;
   min-height: 300px;
-  max-width: 780px;
-  ${MEDIA_QUERY_MD} {
-    max-width: 600px;
-  }
-  ${MEDIA_QUERY_SM} {
-    max-width: 320px;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 const CartTable = styled.table`
   width: 100%;
@@ -44,6 +43,8 @@ const CartTable = styled.table`
   }
   ${MEDIA_QUERY_SM} {
     box-shadow: none;
+    display: flex;
+    justify-content: center;
   }
   td:nth-of-type(3) {
     text-align: left;
@@ -54,13 +55,16 @@ const CartTable = styled.table`
     border-bottom: 1px dotted ${(props) => props.theme.colors.orange};
     vertical-align: middle;
     text-align: center;
+    position: relative;
+    white-space: pre-line;
+    word-break: break-word;
     ${MEDIA_QUERY_SM} {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
       text-align: right !important;
-      width: 290px;
+      max-width: 400px;
       border-bottom: 2px dotted ${(props) => props.theme.colors.orange};
       :nth-of-type(7) {
         border-bottom: 3px double ${(props) => props.theme.colors.grey_dark};
@@ -72,7 +76,7 @@ const CartTable = styled.table`
         text-align: left;
         font-weight: bold;
         padding: 6px 0;
-        width: 50%;
+        width: 30%;
       }
     }
   }
@@ -88,39 +92,19 @@ const CartBody = styled.tbody`
   font-size: 1.2rem;
   color: ${(props) => props.theme.colors.grey_dark};
 `;
-const CheckBox = styled.input`
-  width: 18px;
-  height: 16px;
-  cursor: pointer;
+const WrapDiv = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
 `;
-const NoteTextArea = styled.textarea`
-  height: 75px;
-  width: 100%;
-  border: 2px dashed ${(props) => props.theme.colors.green_dark};
-  border-radius: 5px;
-  padding: 2px 10px;
-  opacity: 0.8;
-  text-align: left;
-  :focus {
-    border: 2px solid ${(props) => props.theme.colors.green_light};
-  }
-  ${MEDIA_QUERY_SM} {
-    height: 120px;
-    margin: 10px 0px;
-  }
-`;
-const BtnDiv = styled.div`
+const NoWrapDiv = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  max-width: 730px;
-  height: 65px;
   margin-top: 5px;
-  ${MEDIA_QUERY_MD} {
-    max-width: 560px;
-  }
+  width: 100%;
   ${MEDIA_QUERY_SM} {
-    max-width: 295px;
     height: 55px;
     justify-content: space-between;
   }
@@ -156,32 +140,17 @@ const Btn = styled.button`
     font-size: 1rem;
   }
 `;
-const DeleteButton = styled.img`
-  width: 15px;
-  height: 15px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
+const DeleteExpiredItemBtn = styled(Btn)`
+  width: 150px;
+  margin: 10px 0px;
+  background-color: white;
+  color: ${(props) => props.theme.colors.green_dark};
+  border: 1px solid ${(props) => props.theme.colors.green_dark};
   :hover {
-    opacity: 0.6;
+    background-color: ${(props) => props.theme.colors.green_dark};
+    color: white;
   }
-`;
-
-const ErrorTr = styled.tr`
-  color: #cc0033;
-  font-weight: bold;
-  > td {
-    border-bottom: none;
-    padding: 15px 0px 5px;
-    background-color: #fce4e4;
-    ${MEDIA_QUERY_SM} {
-      padding: 15px 5px 5px;
-      justify-content: center;
-      :before {
-        width: 0%;
-      }
-    }
-  }
+  padding: 5px 0px;
 `;
 const ErrorMessage = styled.div`
   color: #cc0033;
@@ -205,101 +174,17 @@ const ErrorMessage = styled.div`
     max-width: 300px;
   }
 `;
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 10);
-};
+const RemainingPoints = styled(TotalPoints)`
+  padding-right: 0px;
+  color: ${(props) => props.theme.colors.green_dark};
+`;
 
-function CartList({
-  item,
-  onChangeCheck,
-  onClickCheck,
-  onDeleteItem,
-  onChangeNote,
-}) {
-  const [error, setError] = useState(null);
-  const [expired, setExpired] = useState(false);
-  const [expiredStyle, setExpiredStyle] = useState({});
-
-  useEffect(() => {
-    function checkExpired() {
-      if (
-        new Date(item.start).getTime() < new Date().getTime() ||
-        item.hasError === true
-      ) {
-        setError("課程時間過期了，無法再購買囉");
-        setExpired(true);
-        setExpiredStyle({
-          backgroundColor: "#fce4e4",
-          color: "#AAAAAA",
-        });
-      }
-    }
-    checkExpired();
-  }, [item, expired]);
-
-  return (
-    <>
-      {error && (
-        <ErrorTr>
-          <td colSpan="7">{error}</td>
-        </ErrorTr>
-      )}
-      <tr>
-        <td data-title="購買" style={expiredStyle}>
-          <label>
-            <CheckBox
-              type="checkbox"
-              onChange={onChangeCheck}
-              onClick={onClickCheck}
-              checked={!!item.checked}
-              id={item.scheduleId}
-              disabled={expired}
-            />
-          </label>
-        </td>
-        <td data-title="刪除" style={expiredStyle}>
-          <DeleteButton
-            src={close}
-            onClick={onDeleteItem}
-            id={item.scheduleId}
-          />
-        </td>
-        <td data-title="課程名稱" style={expiredStyle}>
-          {item.courseName}
-        </td>
-        <td data-title="老師" style={expiredStyle}>
-          {item.teacherName}
-        </td>
-        <td data-title="上課時間" style={expiredStyle}>
-          {getDisplayDate(new Date(item.start))}
-          <br /> {item.timePeriod}
-        </td>
-        <td data-title="點數" style={expiredStyle}>
-          {item.price} 點
-        </td>
-        <td data-title="備註" style={expiredStyle}>
-          <label>
-            <NoteTextArea
-              placeholder="我想對老師說..."
-              onChange={onChangeNote}
-              id={item.scheduleId}
-              value={item.note || ""}
-              disabled={expired}
-            />
-          </label>
-        </td>
-      </tr>
-    </>
-  );
-}
-
-function CartPage() {
+export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
-    /*const getUserCartItems = async (setApiError) => {
+    const getUserCartItems = async (setApiError) => {
       let json = await getCartItems(setApiError);
       if (!json || !json.success)
         return setApiError("發生了一點錯誤，請稍後再試");
@@ -308,12 +193,12 @@ function CartPage() {
       }
       setCartItems(json.data);
     };
-    getUserCartItems(setApiError);*/
-    async function fetchData() {
+    getUserCartItems(setApiError);
+    /*async function fetchData() {
       await sleep(100);
       setCartItems(CART_LIST);
     }
-    fetchData();
+    fetchData();*/
   }, []);
 
   const handleItemCheckChange = (e) => {
@@ -328,44 +213,29 @@ function CartPage() {
       })
     );
   };
-  //判斷新checked的item是否有跟其他item時間衝突
+
+  const [overlapTimeItems, setOverlapTimeItems] = useState([]);
   const handleAddItemCheck = (e) => {
+    setOverlapTimeItems([]);
     const { id } = e.target;
     let targetItem = cartItems.find((item) => item.scheduleId === id);
     if (targetItem.checked) return;
     let existedCheckItems = cartItems.filter((item) => item.checked === true);
-    if (existedCheckItems.length === 0) {
-      return false;
-    } else {
-      const { start, end } = targetItem;
-      let startPoint = new Date(start).getTime();
-      let endPoint = new Date(end).getTime();
-      let timeS = "";
-      let startTimeArr = [];
-      let timeE = "";
-      let endTimeArr = [];
-      for (let i = 0; i < existedCheckItems.length; i++) {
-        timeS = new Date(existedCheckItems[i].start).getTime();
-        startTimeArr.push(timeS);
-      }
-      startTimeArr.push(startPoint);
-      for (let j = 0; j < existedCheckItems.length; j++) {
-        timeE = new Date(existedCheckItems[j].end).getTime();
-        endTimeArr.push(timeE);
-      }
-      endTimeArr.push(endPoint);
-      let begin = startTimeArr.sort();
-      let over = endTimeArr.sort();
-      for (let k = 1; k < begin.length; k++) {
-        if (
-          begin[k] < over[k - 1] ||
-          (begin[k] === begin[k - 1] && over[k] === over[k - 1])
-        ) {
-          alert("課程時間與其他已勾選的課程重複，請擇一購買");
-          return (targetItem.checked = !targetItem.checked);
-        }
-      }
-      return console.log("all clear");
+    const { start, end } = targetItem;
+    let overlapItemResult = checkEventsConflict(
+      existedCheckItems,
+      new Date(start),
+      new Date(end)
+    );
+    if (overlapItemResult !== false) {
+      alert("課程時段重複了，請擇一購買喔");
+      setOverlapTimeItems([
+        overlapItemResult[1].scheduleId,
+        targetItem.scheduleId,
+      ]);
+      overlapItemResult[1].checked = !overlapItemResult[1].checked;
+      targetItem.checked = !targetItem.checked;
+      return;
     }
   };
 
@@ -382,12 +252,32 @@ function CartPage() {
     sumUpPoints();
   }, [cartItems]);
 
+  const deleteUserCartItem = async (scheduleId, setApiError) => {
+    let json = await deleteCartItem(scheduleId, setApiError);
+    if (!json && !json.success)
+      return setApiError("發生了一點錯誤，請稍後再試");
+  };
+
   const handleItemDelete = (e) => {
     e.preventDefault();
     const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
     if (!confirmDelete) return;
     const { id } = e.target;
+    deleteUserCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
+  };
+
+  const handleExpiredItemDelete = (e) => {
+    e.preventDefault();
+    setCartItems(
+      cartItems.filter((item, setApiError) => {
+        if (new Date(item.start).getTime() < new Date().getTime()) {
+          deleteUserCartItem(item.scheduleId, setApiError);
+          return false;
+        }
+        return true;
+      })
+    );
   };
 
   const handleItemNoteChange = (e) => {
@@ -418,18 +308,22 @@ function CartPage() {
       })
     );
     // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
-    // 扣點過程背景進入 loading 讓使用者不能亂點
-    // 多增加區塊顯示學生目前剩餘點數
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");
   };
+
   return (
     <CartWrapper>
       <PageTitle>購物車</PageTitle>
       {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
       {!apiError && (
         <CartContainer>
+          <WrapDiv>
+            <DeleteExpiredItemBtn onClick={handleExpiredItemDelete}>
+              清除過期課程
+            </DeleteExpiredItemBtn>
+          </WrapDiv>
           <CartTable>
             <colgroup>
               <col span="2" style={{ width: "5%" }} />
@@ -463,18 +357,20 @@ function CartPage() {
                   checked={item.checked}
                   start={item.start}
                   end={item.end}
+                  overlapTimeItems={overlapTimeItems}
                 />
               ))}
             </CartBody>
           </CartTable>
-          <BtnDiv>
-            <TotalPoints>共計 {totalPoints} 點</TotalPoints>
-            <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
-          </BtnDiv>
+          <WrapDiv>
+            <RemainingPoints>剩餘點數 1000 點</RemainingPoints>
+            <NoWrapDiv>
+              <TotalPoints>共計 {totalPoints} 點</TotalPoints>
+              <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
+            </NoWrapDiv>
+          </WrapDiv>
         </CartContainer>
       )}
     </CartWrapper>
   );
 }
-
-export default CartPage;

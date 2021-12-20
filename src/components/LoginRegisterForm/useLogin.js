@@ -37,32 +37,25 @@ export default function useLogin() {
       }
     }
 
-    login(loginData.identity, loginData.email, loginData.password).then(
-      (data) => {
-        if (!data) {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage("網站更新中請稍後再登入");
-        }
-        if (data.success === false) {
-          setIsLoading(false);
-          scrollTop();
-          return setErrorMessage(data.errMessage);
-        }
-        setAuthToken(data.token);
-        getMyUserData().then((response) => {
-          if (response.success === false) {
-            setAuthToken("");
-            setIsLoading(false);
-            scrollTop();
-            return setErrorMessage(response.errMessage);
-          }
-          setUser(response.user);
-          setIsLoading(false);
-          navigate("/");
-        });
+    login(loginData, setErrorMessage).then((data) => {
+      if (!data || !data.success) {
+        setIsLoading(false);
+        scrollTop();
+        return setErrorMessage("網站更新中請稍後再登入");
       }
-    );
+      setAuthToken(data.token);
+      getMyUserData().then((response) => {
+        if (!response || !response.success) {
+          setAuthToken("");
+          setIsLoading(false);
+          scrollTop();
+          return setErrorMessage(response.errMessage);
+        }
+        setUser(response.user);
+        setIsLoading(false);
+        navigate("/");
+      });
+    });
   };
 
   const scrollTop = () => {

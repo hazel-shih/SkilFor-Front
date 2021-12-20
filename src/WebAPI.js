@@ -1,25 +1,21 @@
 import { getAuthToken } from "./utils";
 const BASE_URL = "https://skilforapi.bocyun.tw";
 
-export const login = async (identity, email, password) => {
+export const login = async (loginData, setErrorMessage) => {
   try {
     const res = await fetch(`${BASE_URL}/members/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        identity,
-        email,
-        password,
-      }),
+      body: JSON.stringify(loginData),
     });
-    /*if (!res.ok) {
-      throw new Error(res.statusText);
-    }*/
+    if (!res.ok) {
+      throw new Error("fail to fetch data");
+    }
     return await res.json();
   } catch (error) {
-    return console.log(error.message);
+    return setErrorMessage("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -33,38 +29,30 @@ export const getMyUserData = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    if (!res.ok) {
+      throw new Error("fail to fetch data");
+    }
     return await res.json();
   } catch (error) {
-    return console.log(error.message);
+    return error.message;
   }
 };
 
-export const register = async (
-  username,
-  identity,
-  email,
-  contactEmail,
-  password,
-  checkPassword
-) => {
+export const register = async (registerData, setErrorMessage) => {
   try {
     const res = await fetch(`${BASE_URL}/members/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        username,
-        identity,
-        email,
-        contactEmail,
-        password,
-        checkPassword,
-      }),
+      body: JSON.stringify(registerData),
     });
+    if (!res.ok) {
+      throw new Error("fail to fetch data");
+    }
     return await res.json();
   } catch (error) {
-    return error.message;
+    return setErrorMessage("發生了一點錯誤，請稍後再試");
   }
 };
 
@@ -373,7 +361,27 @@ export const getCartItems = async (setApiError) => {
     if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    setApiError("發生了一點錯誤，請稍後再試");
-    return error.message;
+    return setApiError("發生了一點錯誤，請稍後再試");
+  }
+};
+
+export const deleteCartItem = async (scheduleId, setApiError) => {
+  let url = `${BASE_URL}/shopping-cart`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scheduleId,
+      }),
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
