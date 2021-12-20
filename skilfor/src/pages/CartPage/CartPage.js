@@ -213,12 +213,13 @@ export default function CartPage() {
       })
     );
   };
-  //判斷新checked的item是否有跟其他item時間衝突
-  const [overlapTimeArr, setOverlapTimeArr] = useState([]);
+
+  const [overlapTimeItems, setOverlapTimeItems] = useState([]);
   const handleAddItemCheck = (e) => {
+    setOverlapTimeItems([]);
     const { id } = e.target;
     let targetItem = cartItems.find((item) => item.scheduleId === id);
-    if (targetItem.checked) return setOverlapTimeArr([]);
+    if (targetItem.checked) return;
     let existedCheckItems = cartItems.filter((item) => item.checked === true);
     const { start, end } = targetItem;
     let overlapItemResult = checkEventsConflict(
@@ -227,8 +228,14 @@ export default function CartPage() {
       new Date(end)
     );
     if (overlapItemResult !== false) {
-      setOverlapTimeArr([overlapItemResult[1], targetItem.scheduleId]);
-      return (targetItem.checked = !targetItem.checked);
+      alert("課程時段重複了，請擇一購買喔");
+      setOverlapTimeItems([
+        overlapItemResult[1].scheduleId,
+        targetItem.scheduleId,
+      ]);
+      overlapItemResult[1].checked = !overlapItemResult[1].checked;
+      targetItem.checked = !targetItem.checked;
+      return;
     }
   };
 
@@ -341,7 +348,7 @@ export default function CartPage() {
                   checked={item.checked}
                   start={item.start}
                   end={item.end}
-                  overlapTimeArr={overlapTimeArr}
+                  overlapTimeItems={overlapTimeItems}
                 />
               ))}
             </CartBody>

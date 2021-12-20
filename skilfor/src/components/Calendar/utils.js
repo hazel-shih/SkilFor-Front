@@ -70,7 +70,7 @@ export const checkEventsConflict = (
         checkOverlap([startPoint, endPoint], [eventStartTime, eventEndTime]) ||
         checkOverlap([eventStartTime, eventEndTime], [startPoint, endPoint])
       ) {
-        return [true, todayEvents[i].scheduleId];
+        return [true, todayEvents[i]];
       }
     }
     return false;

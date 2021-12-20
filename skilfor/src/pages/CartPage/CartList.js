@@ -74,7 +74,7 @@ export default function CartList({
   onClickCheck,
   onDeleteItem,
   onChangeNote,
-  overlapTimeArr,
+  overlapTimeItems,
 }) {
   const [expired, setExpired] = useState(false);
   const [errorNotice, setErrorNotice] = useState("");
@@ -92,26 +92,27 @@ export default function CartList({
         });
       }
 
-      if (overlapTimeArr.length === 0) return;
-      overlapTimeArr.forEach((e) => {
-        if (e === item.scheduleId) {
-          setErrorNotice("課程時段重複了，請擇一購買喔");
-          setErrorStyle({
-            backgroundColor: "#fff59d",
-          });
-        }
-      });
+      if (overlapTimeItems.length === 0) return;
+      if (overlapTimeItems) {
+        overlapTimeItems.forEach((element) => {
+          if (element === item.scheduleId) {
+            setErrorStyle({
+              backgroundColor: "#fff59d",
+            });
+          }
+        });
+      }
     }
     checkError();
-  }, [item, expired, overlapTimeArr]);
+  }, [item, expired, overlapTimeItems]);
 
   return (
     <>
-      {errorNotice && (
+      {/*errorNotice ? (
         <ErrorTr>
           <td colSpan="7">{errorNotice}</td>
         </ErrorTr>
-      )}
+      ) : null*/}
       <tr>
         <td data-title="購買" style={errorStyle}>
           <ExpiredCover show={expired} />
@@ -145,7 +146,8 @@ export default function CartList({
         <td data-title="上課時間" style={errorStyle}>
           <ExpiredCover show={expired} />
           {getDisplayDate(new Date(item.start))}
-          <br /> {item.timePeriod}
+          <br />
+          {item.timePeriod}
         </td>
         <td data-title="點數" style={errorStyle}>
           <ExpiredCover show={expired} />
