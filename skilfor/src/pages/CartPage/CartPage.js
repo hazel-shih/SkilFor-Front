@@ -252,21 +252,31 @@ export default function CartPage() {
     sumUpPoints();
   }, [cartItems]);
 
+  const deleteUserCartItem = async (scheduleId, setApiError) => {
+    let json = await deleteCartItem(scheduleId, setApiError);
+    if (!json && !json.success)
+      return setApiError("發生了一點錯誤，請稍後再試");
+  };
+
   const handleItemDelete = (e) => {
     e.preventDefault();
     const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
     if (!confirmDelete) return;
     const { id } = e.target;
-    deleteCartItem(id, setApiError);
+    deleteUserCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
   };
 
   const handleExpiredItemDelete = (e) => {
     e.preventDefault();
     setCartItems(
-      cartItems.filter(
-        (item) => new Date(item.start).getTime() >= new Date().getTime()
-      )
+      cartItems.filter((item, setApiError) => {
+        if (new Date(item.start).getTime() < new Date().getTime()) {
+          deleteUserCartItem(item.scheduleId, setApiError);
+          return false;
+        }
+        return true;
+      })
     );
   };
 
@@ -298,7 +308,6 @@ export default function CartPage() {
       })
     );
     // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
-    // 扣點過程背景進入 loading 讓使用者不能亂點
     // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");

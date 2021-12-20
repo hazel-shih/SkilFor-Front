@@ -365,7 +365,7 @@ export const getCartItems = async (setApiError) => {
   }
 };
 
-export const deleteCartItem = async (id, setApiError) => {
+export const deleteCartItem = async (scheduleId, setApiError) => {
   let url = `${BASE_URL}/shopping-cart`;
   const token = getAuthToken();
   try {
@@ -376,7 +376,7 @@ export const deleteCartItem = async (id, setApiError) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        scheduleId: id,
+        scheduleId,
       }),
     });
     if (!res.ok) throw new Error("fail to fetch data");
