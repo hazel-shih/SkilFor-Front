@@ -4,16 +4,21 @@ import {
   AlertContent,
   AlertButton,
 } from "../Calendar/AddTaskAlertCard";
+import styled from "styled-components";
+
+const ErrorAlertContainer = styled(AlertContainer)`
+  z-index: 10;
+`;
 
 function AlertCard({ color, title, content, handleAlertOkClick }) {
   return (
-    <AlertContainer color={color}>
+    <ErrorAlertContainer color={color}>
       <AlertTitle>{title}</AlertTitle>
       <AlertContent>{content}</AlertContent>
       <AlertButton color={color} onClick={handleAlertOkClick}>
         OK
       </AlertButton>
-    </AlertContainer>
+    </ErrorAlertContainer>
   );
 }
 
