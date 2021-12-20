@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import ReadTaskAlertCard from "./ReadTaskAlertCard";
+import StudentReadTaskCard from "./StudentReadTaskCard";
 import AlertCard from "../AlertCard";
 import { getCalendarMonthEvents } from "../../WebAPI";
 import LoaderSpining from "../../components/LoaderSpining";
 import { CalendarContainer, LoadingSquare } from "./TeacherManageCalendar";
+import { MONTH_EVENTS } from "./constants";
 
 function StudentManageCalendar() {
   const localizer = momentLocalizer(moment);
@@ -18,7 +19,7 @@ function StudentManageCalendar() {
   const [loading, setLoading] = useState(false);
   //拿當月的行程資料
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     // getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
     //   (json) => {
     //     if (!json || !json.success) {
@@ -34,6 +35,8 @@ function StudentManageCalendar() {
     //     setLoading(false);
     //   }
     // );
+    setAllEvents(MONTH_EVENTS);
+    setLoading(false);
   }, [currentPage]);
   const handleEventClick = (e) => {
     setAlertShow("read");
@@ -47,14 +50,13 @@ function StudentManageCalendar() {
   };
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
-    var reserved = event.resource.reserved;
-    var style;
-    if (!reserved) {
+    let style;
+    if (new Date(event.start).getTime() < new Date().getTime()) {
       style = {
-        border: `2px solid ${eventColor}`,
-        backgroundColor: "white",
-        color: "black",
-        fontSize: "14px",
+        border: `2px solid #e6e6e6`,
+        backgroundColor: "#e6e6e6",
+        color: "#AAAAAA",
+        fontSize: "12px",
       };
     } else {
       style = {
@@ -98,7 +100,7 @@ function StudentManageCalendar() {
         eventPropGetter={eventStyleGetter}
       />
       {alertShow === "read" && (
-        <ReadTaskAlertCard
+        <StudentReadTaskCard
           setAllEvents={setAllEvents}
           allEvents={allEvents}
           alertShow={alertShow}

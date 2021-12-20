@@ -80,11 +80,12 @@ const SectionTitle = styled.h1`
 `;
 const StorePointInput = styled.input`
   padding: 5px;
-  height: 41px;
+  height: 40px;
   border: 2px solid ${(props) => props.theme.colors.grey_dark};
 `;
 const StorePointButton = styled.button`
   border: none;
+  height: 40px;
   background: ${(props) => props.theme.colors.green_dark};
   color: white;
   padding: 10px;
@@ -93,6 +94,10 @@ const StorePointButton = styled.button`
   :hover {
     opacity: 0.8;
   }
+`;
+const StorePointContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 function PointPage() {
@@ -142,13 +147,17 @@ function PointPage() {
         />
       </PriceCardContainer>
       <SectionTitle>自行選擇儲值金額 (一元兌換 1 point)</SectionTitle>
-      <StorePointInput
-        type="number"
-        placeholder="請輸入儲值金額"
-        min="1"
-        ref={pointInput}
-      ></StorePointInput>
-      <StorePointButton onClick={handleStorePointClick}>儲值</StorePointButton>
+      <StorePointContainer>
+        <StorePointInput
+          type="number"
+          placeholder="請輸入儲值金額"
+          min="1"
+          ref={pointInput}
+        />
+        <StorePointButton onClick={handleStorePointClick}>
+          儲值
+        </StorePointButton>
+      </StorePointContainer>
     </PointPageWrapper>
   );
 }

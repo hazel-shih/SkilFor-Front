@@ -75,6 +75,7 @@ export const MONTH_EVENTS = [
     title: "一起來學 Ruby 囉！",
     start: new Date(2021, 11, 12, 1, 30),
     end: new Date(2021, 11, 12, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: "彭恰恰",
       studentNotes: "彭彭彭",
@@ -87,6 +88,7 @@ export const MONTH_EVENTS = [
     title: "一起來學 Ruby 囉！",
     start: new Date(2021, 11, 13, 1, 30),
     end: new Date(2021, 11, 13, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -99,6 +101,7 @@ export const MONTH_EVENTS = [
     title: "一起來學 Ruby 囉！",
     start: new Date(2021, 11, 14, 1, 30),
     end: new Date(2021, 11, 14, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -111,6 +114,7 @@ export const MONTH_EVENTS = [
     title: "教你煮超美味紅豆湯",
     start: new Date(2021, 11, 15, 1, 30),
     end: new Date(2021, 11, 15, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -123,6 +127,7 @@ export const MONTH_EVENTS = [
     title: "教你煮超美味紅豆湯",
     start: new Date(2021, 11, 16, 1, 30),
     end: new Date(2021, 11, 16, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -135,6 +140,7 @@ export const MONTH_EVENTS = [
     title: "教你煮超美味紅豆湯",
     start: new Date(2021, 11, 17, 1, 30),
     end: new Date(2021, 11, 17, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -147,6 +153,7 @@ export const MONTH_EVENTS = [
     title: "教你煮超美味紅豆湯",
     start: new Date(2021, 11, 18, 1, 30),
     end: new Date(2021, 11, 18, 2, 0),
+    courseId: "08881556",
     resource: {
       reserved: "HAZEL",
       studentNotes:
@@ -158,8 +165,9 @@ export const MONTH_EVENTS = [
   },
   {
     title: "教你煮超美味紅豆湯",
-    start: new Date(2021, 11, 19, 1, 30),
-    end: new Date(2021, 11, 19, 2, 0),
+    start: new Date(2021, 11, 25, 1, 30),
+    end: new Date(2021, 11, 25, 2, 0),
+    courseId: "08881556",
     resource: {
       teacherId: "1",
       reserved: false,
