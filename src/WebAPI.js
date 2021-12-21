@@ -277,7 +277,7 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        id: eventId,
+        scheduleId: eventId,
       }),
     });
     if (!res.ok) throw new Error("fail to fetch data");
