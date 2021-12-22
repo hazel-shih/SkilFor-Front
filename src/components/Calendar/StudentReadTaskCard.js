@@ -7,7 +7,6 @@ import {
   CloseButton,
 } from "./AddTaskAlertCard";
 import close from "../../img/close.png";
-import { deleteCalendarEvent } from "../../WebAPI";
 import {
   TimeTitle,
   TimeContainer,
@@ -29,23 +28,12 @@ const NoneStyleLink = styled(Link)`
 `;
 
 function StudentReadTaskCard({
-  allEvents,
-  setAllEvents,
   setAlertShow,
   selectedEvent,
-  setApiError,
+  handleCancelEvent,
 }) {
   const handleCloseClick = () => {
     setAlertShow(null);
-  };
-  const handleCancelEvent = () => {
-    let confirmAlert = window.confirm("確定刪除取消此時段的課程嗎？");
-    if (!confirmAlert) return;
-    deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
-      if (!json || !json.success) return setApiError("課程取消失敗");
-      setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
-    });
-    setAlertShow(false);
   };
   return (
     <AlertContainer color="#75A29E">
@@ -65,7 +53,10 @@ function StudentReadTaskCard({
           課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
         </AlertContent>
         {selectedEvent.start.getTime() - new Date().getTime() > 86400000 && (
-          <AlertButton color="#75A29E" onClick={handleCancelEvent}>
+          <AlertButton
+            color="#75A29E"
+            onClick={() => handleCancelEvent(selectedEvent.id)}
+          >
             取消此時段
           </AlertButton>
         )}

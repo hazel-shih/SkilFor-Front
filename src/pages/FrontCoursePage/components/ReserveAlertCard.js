@@ -36,11 +36,10 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const handleCloseClick = () => {
     setAlertShow(null);
   };
-  console.log(selectedEvent);
   const handleReserveEvent = () => {
     addCartItem(setApiError, selectedEvent.scheduleId).then((json) => {
       if (json && !json.success && json.errMessage) {
-        return alert(json.errMessage[0]);
+        return setApiError(json.errMessage[0]);
       }
       if (json && json.success) alert("加入成功！請至購物車結帳吧！");
     });

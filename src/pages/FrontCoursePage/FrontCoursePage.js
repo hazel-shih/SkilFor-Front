@@ -148,7 +148,7 @@ function FrontCoursePage() {
         </CourseInfosContainer>
       </TeacherInfosContainer>
       <SectionTitle>課程時間</SectionTitle>
-      <FrontCourseCalendar courseId={courseId} setApiError={setApiError} />
+      <FrontCourseCalendar courseId={courseId} />
       <SectionTitle>課程介紹</SectionTitle>
       {infos && <SectionIntro>{infos.courseDescription}</SectionIntro>}
       <SectionTitle>課程評價</SectionTitle>

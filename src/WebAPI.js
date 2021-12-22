@@ -228,7 +228,7 @@ export const getAllCourses = async (setApiError) => {
   }
 };
 
-//行事曆管理頁面
+//老師行事曆管理頁面
 export const getCalendarMonthEvents = async (setApiError, month) => {
   let url = encodeURI(`${BASE_URL}/teacher/calendar?month=${month}`);
   const token = getAuthToken();
@@ -250,6 +250,7 @@ export const getCalendarMonthEvents = async (setApiError, month) => {
 export const addNewCalendarEvent = async (setApiError, newEvent) => {
   let url = `${BASE_URL}/teacher/calendar`;
   const token = getAuthToken();
+  console.log(newEvent);
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -277,7 +278,7 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        id: eventId,
+        scheduleId: eventId,
       }),
     });
     if (!res.ok) throw new Error("fail to fetch data");
@@ -287,6 +288,49 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
     return;
   }
 };
+
+//學生行事曆管理頁面
+export const getStudentCalendarMonthEvents = async (setApiError, month) => {
+  let url = encodeURI(`${BASE_URL}/student/calendar?month=${month}`);
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
+  console.log(scheduleId);
+  let url = encodeURI(`${BASE_URL}/student/calendar`);
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scheduleId: scheduleId,
+      }),
+    });
+    if (!res.ok) throw new Error("fail to cancel event");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+
 //課程前台頁面
 export const getFrontCourseInfos = async (courseId, setApiError) => {
   let url = encodeURI(`${BASE_URL}/front-course/${courseId}`);
@@ -340,7 +384,6 @@ export const addCartItem = async (setApiError, eventId) => {
         scheduleId: eventId,
       }),
     });
-    if (!res.ok) throw new Error("fail to add cart item");
     return await res.json();
   } catch (error) {
     return setApiError("目前無法新增課程至購物車，請稍後再試");

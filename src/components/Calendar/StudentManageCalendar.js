@@ -4,10 +4,12 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import StudentReadTaskCard from "./StudentReadTaskCard";
 import AlertCard from "../AlertCard";
-import { getCalendarMonthEvents } from "../../WebAPI";
+import {
+  getStudentCalendarMonthEvents,
+  cancelStudentCalendarEvent,
+} from "../../WebAPI";
 import LoaderSpining from "../../components/LoaderSpining";
 import { CalendarContainer, LoadingSquare } from "./TeacherManageCalendar";
-import { MONTH_EVENTS } from "./constants";
 
 function StudentManageCalendar() {
   const localizer = momentLocalizer(moment);
@@ -20,23 +22,21 @@ function StudentManageCalendar() {
   //拿當月的行程資料
   useEffect(() => {
     setLoading(true);
-    // getCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
-    //   (json) => {
-    //     if (!json || !json.success) {
-    //       setLoading(false);
-    //       return setApiError("發生了一點錯誤，請稍後再試");
-    //     }
-    //     let data = json.data.map((event) => {
-    //       event.start = new Date(event.start);
-    //       event.end = new Date(event.end);
-    //       return event;
-    //     });
-    //     setAllEvents(data);
-    //     setLoading(false);
-    //   }
-    // );
-    setAllEvents(MONTH_EVENTS);
-    setLoading(false);
+    getStudentCalendarMonthEvents(setApiError, currentPage.getMonth() + 1).then(
+      (json) => {
+        if (!json || !json.success) {
+          setLoading(false);
+          return setApiError("發生了一點錯誤，請稍後再試");
+        }
+        let data = json.data.map((event) => {
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
+          return event;
+        });
+        setAllEvents(data);
+        setLoading(false);
+      }
+    );
   }, [currentPage]);
   const handleEventClick = (e) => {
     setAlertShow("read");
@@ -70,6 +70,19 @@ function StudentManageCalendar() {
       style: style,
     };
   };
+  const handleCancelEvent = (eventId) => {
+    let confirm = window.confirm("確認要取消這堂課嗎？");
+    if (!confirm) return;
+    cancelStudentCalendarEvent(setApiError, eventId).then((json) => {
+      if (!json || !json.success) {
+        setLoading(false);
+        return setApiError("目前無法取消課程，請稍後再試");
+      }
+      setAlertShow(false);
+      setAllEvents(allEvents.filter((event) => event.id !== eventId));
+      alert("課程取消成功！我們已經將此堂課的課程點數退還給你囉！");
+    });
+  };
   return (
     <CalendarContainer>
       {loading && (
@@ -101,12 +114,9 @@ function StudentManageCalendar() {
       />
       {alertShow === "read" && (
         <StudentReadTaskCard
-          setAllEvents={setAllEvents}
-          allEvents={allEvents}
-          alertShow={alertShow}
           setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
-          setApiError={setApiError}
+          handleCancelEvent={handleCancelEvent}
         />
       )}
     </CalendarContainer>

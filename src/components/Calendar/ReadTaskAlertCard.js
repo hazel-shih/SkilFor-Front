@@ -20,6 +20,7 @@ const WrapContent = styled(AlertContent)`
 `;
 const getDisplayDate = (dateObj) => {
   let dateStr = dateObj.toLocaleString();
+  console.log(dateStr);
   return dateStr.slice(0, dateStr.length - 3);
 };
 
@@ -30,6 +31,7 @@ function ReadTaskAlertCard({
   selectedEvent,
   setApiError,
 }) {
+  console.log(selectedEvent);
   const handleCloseClick = () => {
     setAlertShow(null);
   };

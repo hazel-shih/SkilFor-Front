@@ -189,6 +189,7 @@ function AddTaskAlertCard({
         timePeriod: `${start} ~ ${end}`,
       },
     };
+    console.log(postData);
     addNewCalendarEvent(setApiError, postData).then((json) => {
       if (!json || !json.success) {
         setAlertShow(null);
