@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/SkilFor-Front/static/css/main.a8a8579f.chunk.css",
-    "main.js": "/SkilFor-Front/static/js/main.d8891ac1.chunk.js",
-    "main.js.map": "/SkilFor-Front/static/js/main.d8891ac1.chunk.js.map",
+    "main.js": "/SkilFor-Front/static/js/main.f9f7ede5.chunk.js",
+    "main.js.map": "/SkilFor-Front/static/js/main.f9f7ede5.chunk.js.map",
     "runtime-main.js": "/SkilFor-Front/static/js/runtime-main.6e4e428a.js",
     "runtime-main.js.map": "/SkilFor-Front/static/js/runtime-main.6e4e428a.js.map",
     "static/css/2.9aaf2cf1.chunk.css": "/SkilFor-Front/static/css/2.9aaf2cf1.chunk.css",
-    "static/js/2.a60ab082.chunk.js": "/SkilFor-Front/static/js/2.a60ab082.chunk.js",
-    "static/js/2.a60ab082.chunk.js.map": "/SkilFor-Front/static/js/2.a60ab082.chunk.js.map",
+    "static/js/2.8d0d4543.chunk.js": "/SkilFor-Front/static/js/2.8d0d4543.chunk.js",
+    "static/js/2.8d0d4543.chunk.js.map": "/SkilFor-Front/static/js/2.8d0d4543.chunk.js.map",
     "index.html": "/SkilFor-Front/index.html",
     "static/css/2.9aaf2cf1.chunk.css.map": "/SkilFor-Front/static/css/2.9aaf2cf1.chunk.css.map",
     "static/css/main.a8a8579f.chunk.css.map": "/SkilFor-Front/static/css/main.a8a8579f.chunk.css.map",
-    "static/js/2.a60ab082.chunk.js.LICENSE.txt": "/SkilFor-Front/static/js/2.a60ab082.chunk.js.LICENSE.txt",
+    "static/js/2.8d0d4543.chunk.js.LICENSE.txt": "/SkilFor-Front/static/js/2.8d0d4543.chunk.js.LICENSE.txt",
     "static/media/banner.6b811370.jpg": "/SkilFor-Front/static/media/banner.6b811370.jpg",
     "static/media/burger-icon.e8db7520.svg": "/SkilFor-Front/static/media/burger-icon.e8db7520.svg",
     "static/media/facebook-icon.033c50dd.svg": "/SkilFor-Front/static/media/facebook-icon.033c50dd.svg",
@@ -22,7 +22,6 @@
     "static/media/question-icon.a547bb3d.svg": "/SkilFor-Front/static/media/question-icon.a547bb3d.svg",
     "static/media/sad.a9554008.png": "/SkilFor-Front/static/media/sad.a9554008.png",
     "static/media/second_step.1f6ee5e3.jpg": "/SkilFor-Front/static/media/second_step.1f6ee5e3.jpg",
-    "static/media/student.e2287f26.jpg": "/SkilFor-Front/static/media/student.e2287f26.jpg",
     "static/media/student1.31679c41.png": "/SkilFor-Front/static/media/student1.31679c41.png",
     "static/media/teacher.b06afb5e.jpeg": "/SkilFor-Front/static/media/teacher.b06afb5e.jpeg",
     "static/media/teacher_step.ea9b206f.jpg": "/SkilFor-Front/static/media/teacher_step.ea9b206f.jpg",
@@ -34,8 +33,8 @@
   "entrypoints": [
     "static/js/runtime-main.6e4e428a.js",
     "static/css/2.9aaf2cf1.chunk.css",
-    "static/js/2.a60ab082.chunk.js",
+    "static/js/2.8d0d4543.chunk.js",
     "static/css/main.a8a8579f.chunk.css",
-    "static/js/main.d8891ac1.chunk.js"
+    "static/js/main.f9f7ede5.chunk.js"
   ]
 }
