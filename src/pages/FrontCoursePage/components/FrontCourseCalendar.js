@@ -8,6 +8,7 @@ import { getFrontCalendarMonthEvents } from "../../../WebAPI";
 import { AuthContext } from "../../../contexts";
 import LoaderSpining from "../../../components/LoaderSpining";
 import { LoadingSquare } from "../../../components/Calendar/TeacherManageCalendar";
+import AlertCard from "../../../components/AlertCard";
 
 const CalendarContainer = styled.div`
   position: relative;
@@ -15,13 +16,14 @@ const CalendarContainer = styled.div`
   justify-content: center;
   margin-top: 20px;
 `;
-function FrontCourseCalendar({ courseId, setApiError }) {
+function FrontCourseCalendar({ courseId }) {
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(false);
   const [currentPage, setCurrentPage] = useState(new Date());
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
   const { user } = useContext(AuthContext);
   //拿課程行事曆資料
   useEffect(() => {
@@ -85,6 +87,10 @@ function FrontCourseCalendar({ courseId, setApiError }) {
   const handlePageChange = (currentMonthPage) => {
     setCurrentPage(currentMonthPage);
   };
+  const handleAlertOkClick = () => {
+    setApiError(false);
+    return;
+  };
 
   return (
     <CalendarContainer>
@@ -93,6 +99,13 @@ function FrontCourseCalendar({ courseId, setApiError }) {
           <LoadingSquare />
           <LoaderSpining />
         </>
+      )}
+      {apiError && (
+        <AlertCard
+          color="#A45D5D"
+          content={apiError}
+          handleAlertOkClick={handleAlertOkClick}
+        />
       )}
       <Calendar
         onSelectEvent={handleEventClick}

@@ -250,6 +250,7 @@ export const getCalendarMonthEvents = async (setApiError, month) => {
 export const addNewCalendarEvent = async (setApiError, newEvent) => {
   let url = `${BASE_URL}/teacher/calendar`;
   const token = getAuthToken();
+  console.log(newEvent);
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -383,7 +384,6 @@ export const addCartItem = async (setApiError, eventId) => {
         scheduleId: eventId,
       }),
     });
-    if (!res.ok) throw new Error("fail to add cart item");
     return await res.json();
   } catch (error) {
     return setApiError("目前無法新增課程至購物車，請稍後再試");
