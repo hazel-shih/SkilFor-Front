@@ -55,27 +55,15 @@ export default function useRegister() {
       return setErrorMessage("密碼不相符");
     }
 
-    register(
-      registerData.username,
-      registerData.identity,
-      registerData.email,
-      registerData.contactEmail,
-      registerData.password,
-      registerData.checkPassword
-    ).then((data) => {
-      if (!data) {
+    register(registerData, setErrorMessage).then((data) => {
+      if (!data || !data.success) {
         setIsLoading(false);
         scrollTop();
         return setErrorMessage("網站更新中請稍後再登入");
       }
-      if (data.success === false) {
-        setIsLoading(false);
-        scrollTop();
-        return setErrorMessage(data.errMessage);
-      }
       setAuthToken(data.token);
       getMyUserData().then((response) => {
-        if (response.success === false) {
+        if (!response || !response.success) {
           setIsLoading(false);
           scrollTop();
           return setErrorMessage(response.errMessage);

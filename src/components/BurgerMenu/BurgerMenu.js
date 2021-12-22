@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
 import Avatar from "../../components/Avatar";
-import studentPic from "../../img/student.jpg";
-import { AuthMenuContext } from "../../contexts";
+import { AuthContext, AuthMenuContext } from "../../contexts";
 import useMenu from "../../components/Menu/useMenu";
+import { getUserInfos } from "../../WebAPI";
 
 const Burger = styled.div`
   position: relative;
@@ -16,7 +17,8 @@ const BurgerBtn = styled.button`
   border: none;
   cursor: pointer;
   background-color: transparent;
-  color: ${(props) => props.theme.colors.grey_dark};
+  color: ${(props) =>
+    props.apiError ? "#AAAAAA" : props.theme.colors.grey_dark};
   opacity: 1;
   &:hover {
     opacity: 0.7;
@@ -57,27 +59,50 @@ const BurgerItem = styled(Link)`
 
 function BurgerMenu() {
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
+  const { user } = useContext(AuthContext);
+  const [apiError, setApiError] = useState(false);
+  const [userInfos, setUserInfos] = useState(null);
+
+  useEffect(() => {
+    const getData = async (setApiError) => {
+      let json = await getUserInfos(setApiError);
+      if (!json || !json.success) {
+        return setApiError("發生了一點錯誤，請稍後再試");
+      }
+      setUserInfos(json.data);
+    };
+    getData(setApiError);
+  }, []);
+
   return (
     <AuthMenuContext.Provider
       value={{ menuRef, menu, setMenu, handleMenuToggle }}
     >
       <Burger ref={menuRef}>
-        <BurgerBtn onClick={handleMenuToggle}>
+        <BurgerBtn apiError={apiError} onClick={handleMenuToggle}>
           <IconDiv>
             <Icons.NavIcons.Burger />
           </IconDiv>
         </BurgerBtn>
-        {menu && (
+        {!apiError && menu && (
           <BurgerContent>
-            <Avatar imgSrc={studentPic} name="Ben" status="上課點數：120" />
-            <BurgerItem to="./cart" onClick={handleMenuToggle}>
-              購物車
-            </BurgerItem>
+            <Avatar
+              imgSrc={userInfos.avatar}
+              name={userInfos.username}
+              status={`上課點數：${userInfos.points}`}
+            />
+            {user && user.identity === "student" && (
+              <>
+                <BurgerItem to="./cart" onClick={handleMenuToggle}>
+                  購物車
+                </BurgerItem>
+                <BurgerItem to="/point" onClick={handleMenuToggle}>
+                  儲值點數
+                </BurgerItem>
+              </>
+            )}
             <BurgerItem to="/calendar" onClick={handleMenuToggle}>
               行事曆
-            </BurgerItem>
-            <BurgerItem to="/point" onClick={handleMenuToggle}>
-              儲值點數
             </BurgerItem>
             <BurgerItem to="/manage" onClick={handleMenuToggle}>
               管理後台
