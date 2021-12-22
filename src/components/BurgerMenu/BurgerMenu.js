@@ -69,7 +69,7 @@ function BurgerMenu() {
       if (!json || !json.success) {
         return setApiError("發生了一點錯誤，請稍後再試");
       }
-      setUserInfos(json.data);
+      return setUserInfos(json.data);
     };
     getData(setApiError);
   }, [userInfos]);
@@ -89,7 +89,7 @@ function BurgerMenu() {
             <Avatar
               imgSrc={userInfos.avatar}
               name={userInfos.username}
-              status={`上課點數：${userInfos.points}`}
+              status={`上課點數：${!userInfos.points ? "0" : userInfos.points}`}
             />
             {user && user.identity === "student" && (
               <>
