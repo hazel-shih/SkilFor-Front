@@ -72,7 +72,7 @@ function BurgerMenu() {
       setUserInfos(json.data);
     };
     getData(setApiError);
-  }, []);
+  }, [userInfos]);
 
   return (
     <AuthMenuContext.Provider
