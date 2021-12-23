@@ -7,7 +7,7 @@ import {
 } from "../../components/constants/breakpoints";
 import CartList from "../CartPage/CartList";
 //import { sleep } from "../../utils";
-//import { CART_LIST } from "./Constant";
+//import { RESERVED_LIST, CART_LIST } from "./Constant";
 import { getCartItems, deleteCartItem, getUserInfos } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
 
@@ -307,16 +307,54 @@ export default function CartPage() {
     getData(setApiError);
   }, [setRemainingPoints]);
 
+  /*const [itemsReservedData, setItemsReservedData] = useState([]);
+  useEffect(() => {
+    async function fetchReservedData() {
+      await sleep(100);
+      setItemsReservedData(RESERVED_LIST);
+    }
+    fetchReservedData();
+  }, []);
+  const checkReserveStatus = () => {
+    const checkedItemArr = cartItems.filter((item) => {
+      if (item.checked) {
+        return item;
+      }
+      return false;
+    });
+    let reservedItemArr = [];
+    for (let i = 0; i < checkedItemArr.length; i++) {
+      itemsReservedData.map((data) => {
+        if (data.scheduleId === checkedItemArr[i].scheduleId) {
+          if (data.reserved !== null) {
+            checkedItemArr[i].checked = !checkedItemArr[i].checked;
+            return reservedItemArr.push(data.scheduleId);
+          }
+        }
+        return false;
+      });
+    }
+    return reservedItemArr;
+  };*/
+
   const navigate = useNavigate();
   const handleConfirmPaymentClick = (e) => {
     e.preventDefault();
-    const checkedItem = cartItems.find((item) => item.checked === true);
+    const checkedItem = cartItems.find((item) => item.checked);
     if (!checkedItem) return alert("尚未選擇要確認購買的課程");
 
     if (remainingPoints < totalPoints) {
       alert("剩餘點數不足，請先去儲值點數喔!");
       return navigate("/point");
     }
+
+    // 加入判斷 此堂課是否已被其他人訂走
+    /*setOverlapTimeItems([]);
+    let result = checkReserveStatus();
+    if (result.length !== 0) {
+      alert("課程時段已被他人搶先一步買下，下次要早點來結帳喔!");
+      return setOverlapTimeItems(result);
+    }*/
 
     const confirmPayment = window.confirm(
       "按下確認購買後，將會於您的帳戶扣除點數"
@@ -328,7 +366,6 @@ export default function CartPage() {
       })
     );
     // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
-    // 加入判斷 此堂課是否已被其他人訂走
     // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");
   };
