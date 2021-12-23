@@ -10,9 +10,6 @@ export const login = async (loginData, setErrorMessage) => {
       },
       body: JSON.stringify(loginData),
     });
-    if (!res.ok) {
-      throw new Error("fail to fetch data");
-    }
     return await res.json();
   } catch (error) {
     return setErrorMessage("發生了一點錯誤，請稍後再試");
@@ -29,9 +26,6 @@ export const getMyUserData = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!res.ok) {
-      throw new Error("fail to fetch data");
-    }
     return await res.json();
   } catch (error) {
     return error.message;
@@ -47,9 +41,6 @@ export const register = async (registerData, setErrorMessage) => {
       },
       body: JSON.stringify(registerData),
     });
-    if (!res.ok) {
-      throw new Error("fail to fetch data");
-    }
     return await res.json();
   } catch (error) {
     return setErrorMessage("發生了一點錯誤，請稍後再試");
