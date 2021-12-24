@@ -241,7 +241,6 @@ export const getCalendarMonthEvents = async (setApiError, month) => {
 export const addNewCalendarEvent = async (setApiError, newEvent) => {
   let url = `${BASE_URL}/teacher/calendar`;
   const token = getAuthToken();
-  console.log(newEvent);
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -300,7 +299,6 @@ export const getStudentCalendarMonthEvents = async (setApiError, month) => {
   }
 };
 export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
-  console.log(scheduleId);
   let url = encodeURI(`${BASE_URL}/student/calendar`);
   const token = getAuthToken();
   try {

@@ -35,8 +35,15 @@ function ReadTaskAlertCard({
   const handleCloseClick = () => {
     setAlertShow(null);
   };
-  const handleDeleteEvent = () => {
-    let confirmAlert = window.confirm("確定刪除此時段的課程嗎？");
+  const handleDeleteEvent = (selectedEvent) => {
+    let confirmAlert;
+    if (selectedEvent.resource.reserved) {
+      confirmAlert = window.confirm(
+        "確定取消此時段的課程嗎？系統將通知預約的學生您已取消這堂課！"
+      );
+    } else {
+      confirmAlert = window.confirm("確定刪除此時段的課程嗎？");
+    }
     if (!confirmAlert) return;
     deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
       if (!json || !json.success) return setApiError("課程時間刪除失敗");
@@ -65,11 +72,12 @@ function ReadTaskAlertCard({
             學生備註：{selectedEvent.resource.studentNotes}
           </WrapContent>
         )}
-        {!selectedEvent.resource.reserved && (
-          <AlertButton color="#75A29E" onClick={handleDeleteEvent}>
-            刪除此時段
-          </AlertButton>
-        )}
+        <AlertButton
+          color="#75A29E"
+          onClick={() => handleDeleteEvent(selectedEvent)}
+        >
+          {selectedEvent.resource.reserved ? "取消此時段" : "刪除此時段"}
+        </AlertButton>
       </ContentContainer>
     </AlertContainer>
   );
