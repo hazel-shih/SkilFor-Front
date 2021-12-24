@@ -38,10 +38,15 @@ export default function useLogin() {
     }
 
     login(loginData, setErrorMessage).then((data) => {
-      if (!data || !data.success) {
+      if (!data) {
         setIsLoading(false);
         scrollTop();
         return setErrorMessage("網站更新中請稍後再登入");
+      }
+      if (data.success === false) {
+        setIsLoading(false);
+        scrollTop();
+        return setErrorMessage(data.errMessage);
       }
       setAuthToken(data.token);
       getMyUserData().then((response) => {
