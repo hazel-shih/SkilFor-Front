@@ -18,6 +18,7 @@ import PointPage from "../../pages/PointPage";
 import StudentCalendarPage from "../../pages/StudentCalendarPage";
 import StudentManagePage from "../../pages/StudentManagePage";
 import QAPage from "../../pages/QAPage";
+import AdminPage from "../../pages/AdminPage";
 
 export const Loading = styled.div`
   position: fixed;
@@ -94,6 +95,7 @@ function App() {
                 }
               />
               <Route path="/point" element={<PointPage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
             <Footer />
           </div>
