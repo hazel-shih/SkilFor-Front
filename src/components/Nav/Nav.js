@@ -100,7 +100,7 @@ function Nav() {
                   登出
                 </NavItem>
               )}
-              <NavItem to="./question_and_answer">
+              <NavItem to="./qa">
                 <IconDiv>
                   <Icons.NavIcons.Question />
                 </IconDiv>

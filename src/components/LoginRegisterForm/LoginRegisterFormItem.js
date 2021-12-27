@@ -62,21 +62,19 @@ const ItemRadioInput = styled(ItemInput)`
 
 export function FormItem({ itemName, id, value, type, name, handleChange }) {
   return (
-    <>
-      <FormItemContainer>
-        <ItemName>
-          {itemName}
-          {id === "password" && <span>(至少需有六碼)</span>}
-        </ItemName>
-        <ItemInput
-          id={id}
-          value={value}
-          type={type}
-          name={name}
-          onChange={handleChange}
-        />
-      </FormItemContainer>
-    </>
+    <FormItemContainer>
+      <ItemName>
+        {itemName}
+        {id === "password" && <span>(至少需有六碼)</span>}
+      </ItemName>
+      <ItemInput
+        id={id}
+        value={value}
+        type={type}
+        name={name}
+        onChange={handleChange}
+      />
+    </FormItemContainer>
   );
 }
 
