@@ -89,7 +89,7 @@ function BurgerMenu() {
             <Avatar
               imgSrc={userInfos.avatar}
               name={userInfos.username}
-              status={`上課點數：${!userInfos.points ? "0" : userInfos.points}`}
+              status={`我的點數：${!userInfos.points ? "0" : userInfos.points}`}
             />
             {user && user.identity === "student" && (
               <>

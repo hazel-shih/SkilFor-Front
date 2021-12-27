@@ -10,6 +10,7 @@ import CartList from "../CartPage/CartList";
 //import { RESERVED_LIST, CART_LIST } from "./Constant";
 import { getCartItems, deleteCartItem, getUserInfos } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
+import { titles } from "./CartTableTitles";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -360,13 +361,32 @@ export default function CartPage() {
       "按下確認購買後，將會於您的帳戶扣除點數"
     );
     if (!confirmPayment) return;
+
+    // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
+    let postData = {
+      scheduleId: [],
+      studentNotes: [],
+      price: [],
+      totalPrice: "",
+    };
+
+    setCartItems(
+      cartItems.map((item) => {
+        if (item.checked === true) {
+          postData.scheduleId.push(item.scheduleId);
+          postData.studentNotes.push(item.note);
+          postData.price.push(item.price);
+          return postData;
+        }
+      })
+    );
+    postData.totalPrice = totalPoints;
+    console.log(postData);
     setCartItems(
       cartItems.filter((item) => {
         return !item.checked;
       })
     );
-    // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
-    // 加入判斷 此時段是否跟學生其他上課時間衝突
     alert("成功扣點 !");
   };
   return (
@@ -391,13 +411,9 @@ export default function CartPage() {
             </colgroup>
             <CartHead>
               <tr>
-                <th>購買</th>
-                <th>刪除</th>
-                <th>課程名稱</th>
-                <th>老師</th>
-                <th>上課時間</th>
-                <th>點數</th>
-                <th>備註</th>
+                {titles.map((title, index) => (
+                  <th key={index}>{title}</th>
+                ))}
               </tr>
             </CartHead>
             <CartBody>
@@ -419,7 +435,7 @@ export default function CartPage() {
             </CartBody>
           </CartTable>
           <WrapDiv>
-            <RemainingPoints>剩餘點數 {remainingPoints} 點</RemainingPoints>
+            <RemainingPoints>我的點數 {remainingPoints} 點</RemainingPoints>
             <NoWrapDiv>
               <TotalPoints>共計 {totalPoints} 點</TotalPoints>
               <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
