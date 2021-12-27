@@ -51,10 +51,7 @@ function StudentManageCalendar() {
   const eventStyleGetter = (event) => {
     var eventColor = event.resource.eventColor;
     let style;
-    if (
-      new Date(event.start).getTime() < new Date().getTime() ||
-      !event.exist
-    ) {
+    if (new Date(event.end).getTime() < new Date().getTime() || !event.exist) {
       style = {
         border: `2px solid #e6e6e6`,
         backgroundColor: "#e6e6e6",
