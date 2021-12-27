@@ -17,6 +17,7 @@ import CartPage from "../../pages/CartPage";
 import PointPage from "../../pages/PointPage";
 import StudentCalendarPage from "../../pages/StudentCalendarPage";
 import StudentManagePage from "../../pages/StudentManagePage";
+import QAPage from "../../pages/QAPage";
 
 export const Loading = styled.div`
   position: fixed;
@@ -64,6 +65,7 @@ function App() {
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/" element={<HomePage />} />
               <Route exact path="/filter" element={<FilterPage />} />
+              <Route exact path="/qa" element={<QAPage />} />
               <Route
                 exact
                 path="/cart"
