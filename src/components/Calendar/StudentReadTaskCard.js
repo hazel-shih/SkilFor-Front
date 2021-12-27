@@ -44,21 +44,31 @@ function StudentReadTaskCard({
         <TimeTitle>結束：{getDisplayDate(selectedEvent.end)}</TimeTitle>
       </TimeContainer>
       <ContentContainer>
-        <AlertContent>
-          <NoneStyleLink to={`/course/${selectedEvent.courseId}`}>
-            瀏覽此課程頁面 ➜
-          </NoneStyleLink>
-        </AlertContent>
-        <AlertContent>
-          課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
-        </AlertContent>
-        {selectedEvent.start.getTime() - new Date().getTime() > 86400000 && (
-          <AlertButton
-            color="#75A29E"
-            onClick={() => handleCancelEvent(selectedEvent.id)}
-          >
-            取消此時段
-          </AlertButton>
+        {selectedEvent.exist && (
+          <>
+            <AlertContent>
+              <NoneStyleLink to={`/course/${selectedEvent.courseId}`}>
+                瀏覽此課程頁面 ➜
+              </NoneStyleLink>
+            </AlertContent>
+            <AlertContent>
+              課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
+            </AlertContent>
+            {selectedEvent.start.getTime() - new Date().getTime() >
+              86400000 && (
+              <AlertButton
+                color="#75A29E"
+                onClick={() => handleCancelEvent(selectedEvent.id)}
+              >
+                取消此時段
+              </AlertButton>
+            )}
+          </>
+        )}
+        {!selectedEvent.exist && (
+          <AlertContent>
+            老師臨時無法上課，因此取消了此堂課程，系統已經自動將點數退還給你囉！
+          </AlertContent>
         )}
       </ContentContainer>
     </AlertContainer>

@@ -4,12 +4,7 @@ import { useNavigate } from "react-router-dom";
 import close from "../../img/close.png";
 import { nanoid } from "nanoid";
 import { TIME_OPTIONS, COLOR_HEX_LIST } from "./constants";
-import {
-  createTimeOptions,
-  getDay,
-  getTimeNumber,
-  checkEventsConflict,
-} from "./utils";
+import { getDay, getTimeNumber, checkEventsConflict } from "./utils";
 import { addNewCalendarEvent } from "../../WebAPI";
 
 //styled component
@@ -100,7 +95,7 @@ function AddTaskAlertCard({
   const [newEvent, setNewEvent] = useState({
     title: courseList.length === 0 ? null : courseList[0].courseName,
     start: "上午0:00",
-    end: "上午0:30",
+    end: "上午1:00",
     resource: {
       reserved: false,
       studentNotes: null,
@@ -124,19 +119,19 @@ function AddTaskAlertCard({
       });
     }
     if (id === "start") {
-      let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 1];
+      let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 2];
       setNewEvent({
         ...newEvent,
         start: value,
         end: endTime,
       });
     }
-    if (id === "end") {
-      setNewEvent({
-        ...newEvent,
-        end: value,
-      });
-    }
+    // if (id === "end") {
+    //   setNewEvent({
+    //     ...newEvent,
+    //     end: value,
+    //   });
+    // }
     if (id === "eventColor") {
       setNewEvent({
         ...newEvent,
@@ -189,7 +184,6 @@ function AddTaskAlertCard({
         timePeriod: `${start} ~ ${end}`,
       },
     };
-    console.log(postData);
     addNewCalendarEvent(setApiError, postData).then((json) => {
       if (!json || !json.success) {
         setAlertShow(null);
@@ -233,7 +227,7 @@ function AddTaskAlertCard({
               onChange={handleNewEventAnswerChange}
               value={newEvent.start}
             >
-              {createTimeOptions("start").map((item) => {
+              {TIME_OPTIONS.slice(0, TIME_OPTIONS.length - 2).map((item) => {
                 return (
                   <SelectOption key={nanoid()} value={item.id}>
                     {item}
@@ -244,7 +238,8 @@ function AddTaskAlertCard({
           </RowContainer>
           <RowContainer>
             <AlertContent>結束時間：</AlertContent>
-            <SelectContainer
+            <AlertContent>{newEvent.end}</AlertContent>
+            {/* <SelectContainer
               id="end"
               onChange={handleNewEventAnswerChange}
               value={newEvent.end}
@@ -252,7 +247,7 @@ function AddTaskAlertCard({
               {createTimeOptions("end", newEvent.start).map((item) => {
                 return <SelectOption key={nanoid()}>{item}</SelectOption>;
               })}
-            </SelectContainer>
+            </SelectContainer> */}
           </RowContainer>
           <RowContainer>
             <AlertContent>設定活動顏色：</AlertContent>

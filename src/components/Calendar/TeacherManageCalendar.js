@@ -78,20 +78,30 @@ function TeacherManageCalendar() {
     var eventColor = event.resource.eventColor;
     var reserved = event.resource.reserved;
     var style;
-    if (!reserved) {
+    if (new Date(event.end).getTime() < new Date().getTime()) {
       style = {
-        border: `2px solid ${eventColor}`,
-        backgroundColor: "white",
-        color: "black",
-        fontSize: "14px",
+        border: `2px solid #e6e6e6`,
+        backgroundColor: "#e6e6e6",
+        color: "#AAAAAA",
+        fontSize: "12px",
       };
     } else {
-      style = {
-        border: `2px solid ${eventColor}`,
-        backgroundColor: eventColor,
-        color: "white",
-        fontSize: "14px",
-      };
+      if (!reserved) {
+        style = {
+          border: `2px solid ${eventColor}`,
+          backgroundColor: "white",
+          color: "black",
+          fontSize: "14px",
+        };
+      }
+      if (reserved) {
+        style = {
+          border: `2px solid ${eventColor}`,
+          backgroundColor: eventColor,
+          color: "white",
+          fontSize: "14px",
+        };
+      }
     }
     return {
       style: style,

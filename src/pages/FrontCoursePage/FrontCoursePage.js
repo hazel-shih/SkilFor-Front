@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { useParams } from "react-router";
 import { AvatarContainer } from "../../components/Avatar/Avatar";
 import FrontCourseCalendar from "./components/FrontCourseCalendar";
-import CommentCard from "./components/CommentCard";
+// import CommentCard from "./components/CommentCard";
 import {
   MEDIA_QUERY_MD,
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
-import { nanoid } from "nanoid";
+// import { nanoid } from "nanoid";
 import AlertCard from "../../components/AlertCard";
 import { getFrontCourseInfos } from "../../WebAPI";
 
@@ -85,17 +85,17 @@ const SectionIntro = styled(ItemContent)`
   font-size: 1.1rem;
   white-space: pre-wrap;
 `;
-const CommentsContainer = styled(ColumnContainer)``;
-const NoStatusText = styled.p`
-  color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1.2rem;
-`;
+// const CommentsContainer = styled(ColumnContainer)``;
+// const NoStatusText = styled.p`
+//   color: ${(props) => props.theme.colors.grey_dark};
+//   font-size: 1.2rem;
+// `;
 
 function FrontCoursePage() {
   window.scroll(0, 0);
   const { courseId } = useParams();
   const [infos, setInfos] = useState(null);
-  const [comments, setComments] = useState(null);
+  // const [comments, setComments] = useState(null);
   const [apiError, setApiError] = useState(null);
   //拿老師與課程資訊資料
   useEffect(() => {
@@ -151,8 +151,8 @@ function FrontCoursePage() {
       <FrontCourseCalendar courseId={courseId} />
       <SectionTitle>課程介紹</SectionTitle>
       {infos && <SectionIntro>{infos.courseDescription}</SectionIntro>}
-      <SectionTitle>課程評價</SectionTitle>
-      <CommentsContainer>
+      {/* <SectionTitle>課程評價</SectionTitle> */}
+      {/* <CommentsContainer>
         {comments && comments.length !== 0 ? (
           comments.map((comment) => (
             <CommentCard
@@ -165,7 +165,7 @@ function FrontCoursePage() {
         ) : (
           <NoStatusText>目前沒有任何評論</NoStatusText>
         )}
-      </CommentsContainer>
+      </CommentsContainer> */}
     </TeacherProfileWrapper>
   );
 }

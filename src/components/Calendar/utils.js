@@ -4,7 +4,7 @@ import { TIME_OPTIONS } from "./constants";
 export const createTimeOptions = (timeType, time) => {
   //沒給定開始時間的結束時間選單
   if (!time && timeType === "end") {
-    let endOptions = TIME_OPTIONS.slice(1, TIME_OPTIONS.length);
+    let endOptions = TIME_OPTIONS.slice(2, TIME_OPTIONS.length);
     return endOptions;
   }
   //給定開始時間的結束時間選單
