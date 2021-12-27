@@ -45,7 +45,7 @@ const QuestionTitle = styled.button`
   }
 `;
 
-const QuestionDescription = styled.p`
+const QuestionDescription = styled.span`
   padding: 10px 15px;
   line-height: 1.8rem;
   display: ${(props) => (props.show ? "block" : "none")};
