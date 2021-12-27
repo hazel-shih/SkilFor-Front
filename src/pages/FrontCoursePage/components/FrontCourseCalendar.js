@@ -38,8 +38,15 @@ function FrontCourseCalendar({ courseId }) {
         setLoading(false);
         return setApiError("發生了一點錯誤，請稍後再試");
       }
-      setAllEvents(json.data);
-      setLoading(false);
+      if (json.data) {
+        let eventsData = json.data.map((event) => {
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
+          return event;
+        });
+        setAllEvents(eventsData);
+        setLoading(false);
+      }
     }
     fetchData();
   }, [courseId, setApiError, currentPage]);
@@ -115,7 +122,7 @@ function FrontCourseCalendar({ courseId }) {
         endAccessor="end"
         style={{ width: "100vw", height: "600px" }}
         events={allEvents}
-        views={["month"]}
+        views={["month", "day", "week"]}
         onNavigate={handlePageChange}
         date={currentPage}
         eventPropGetter={eventStyleGetter}
