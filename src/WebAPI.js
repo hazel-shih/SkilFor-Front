@@ -271,7 +271,6 @@ export const deleteCalendarEvent = async (setApiError, eventId) => {
         scheduleId: eventId,
       }),
     });
-    if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
     setApiError("發生了一點錯誤，請稍後再試");

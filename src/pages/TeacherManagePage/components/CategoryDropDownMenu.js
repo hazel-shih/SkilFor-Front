@@ -3,20 +3,20 @@ import styled from "styled-components";
 import { getAllCategories } from "../../../WebAPI";
 import { CATEGORY_LIST } from "../Constant";
 
-const RowContainer = styled.div`
+export const RowContainer = styled.div`
   display: flex;
 `;
-const SelectContainer = styled(RowContainer)`
+export const SelectContainer = styled(RowContainer)`
   margin-bottom: 20px;
 `;
-const SelectBar = styled.select`
+export const SelectBar = styled.select`
   background: white;
   padding: 5px;
   font-size: 1rem;
   border: 1px solid ${(props) => props.theme.colors.grey_dark};
   color: ${(props) => props.theme.colors.grey_dark};
 `;
-const ChooseCategoryButton = styled.button`
+export const ChooseCategoryButton = styled.button`
   border: 1px solid ${(props) => props.theme.colors.grey_dark};
   padding: 8px;
   font-size: 0.8rem;
