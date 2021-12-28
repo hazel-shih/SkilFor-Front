@@ -8,7 +8,12 @@ import {
 import CartList from "../CartPage/CartList";
 //import { sleep } from "../../utils";
 //import { RESERVED_LIST, CART_LIST } from "./Constant";
-import { getCartItems, deleteCartItem, getUserInfos } from "../../WebAPI";
+import {
+  getCartItems,
+  deleteCartItem,
+  getUserInfos,
+  addOrder,
+} from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
 import { titles } from "./CartTableTitles";
 
@@ -273,7 +278,10 @@ export default function CartPage() {
     e.preventDefault();
     setCartItems(
       cartItems.filter((item, setApiError) => {
-        if (new Date(item.start).getTime() < new Date().getTime()) {
+        if (
+          item.scheduleStatus ||
+          new Date(item.start).getTime() < new Date().getTime()
+        ) {
           deleteUserCartItem(item.scheduleId, setApiError);
           return false;
         }
@@ -308,37 +316,8 @@ export default function CartPage() {
     getData(setApiError);
   }, [setRemainingPoints]);
 
-  /*const [itemsReservedData, setItemsReservedData] = useState([]);
-  useEffect(() => {
-    async function fetchReservedData() {
-      await sleep(100);
-      setItemsReservedData(RESERVED_LIST);
-    }
-    fetchReservedData();
-  }, []);
-  const checkReserveStatus = () => {
-    const checkedItemArr = cartItems.filter((item) => {
-      if (item.checked) {
-        return item;
-      }
-      return false;
-    });
-    let reservedItemArr = [];
-    for (let i = 0; i < checkedItemArr.length; i++) {
-      itemsReservedData.map((data) => {
-        if (data.scheduleId === checkedItemArr[i].scheduleId) {
-          if (data.reserved !== null) {
-            checkedItemArr[i].checked = !checkedItemArr[i].checked;
-            return reservedItemArr.push(data.scheduleId);
-          }
-        }
-        return false;
-      });
-    }
-    return reservedItemArr;
-  };*/
-
   const navigate = useNavigate();
+  const [orderError, setOrderError] = useState([]);
   const handleConfirmPaymentClick = (e) => {
     e.preventDefault();
     const checkedItem = cartItems.find((item) => item.checked);
@@ -349,45 +328,41 @@ export default function CartPage() {
       return navigate("/point");
     }
 
-    // 加入判斷 此堂課是否已被其他人訂走
-    /*setOverlapTimeItems([]);
-    let result = checkReserveStatus();
-    if (result.length !== 0) {
-      alert("課程時段已被他人搶先一步買下，下次要早點來結帳喔!");
-      return setOverlapTimeItems(result);
-    }*/
-
     const confirmPayment = window.confirm(
       "按下確認購買後，將會於您的帳戶扣除點數"
     );
     if (!confirmPayment) return;
 
-    // 打一個 Post API: 紀錄課程已被買走、學生的 note 要傳給老師
-    let postData = {
+    // 確認購買 Post API
+    let orderData = {
       scheduleId: [],
-      studentNotes: [],
-      price: [],
+      studentNote: [],
+      reservedPrice: [],
       totalPrice: "",
     };
-
     setCartItems(
       cartItems.map((item) => {
         if (item.checked === true) {
-          postData.scheduleId.push(item.scheduleId);
-          postData.studentNotes.push(item.note);
-          postData.price.push(item.price);
-          return postData;
+          orderData.scheduleId.push(item.scheduleId);
+          orderData.studentNote.push(item.note);
+          orderData.reservedPrice.push(item.price);
         }
+        return item;
       })
     );
-    postData.totalPrice = totalPoints;
-    console.log(postData);
-    setCartItems(
-      cartItems.filter((item) => {
-        return !item.checked;
-      })
-    );
-    alert("成功扣點 !");
+    orderData.totalPrice = totalPoints;
+
+    addOrder(orderData, setApiError).then((json) => {
+      if (!json) return setApiError("發生了一點錯誤，請稍後再試");
+      if (!json.success) {
+        return setOrderError(json.errMessage);
+      }
+      for (let i = 0; i < orderData.scheduleId.length; i++) {
+        deleteUserCartItem(orderData.scheduleId[i], setApiError);
+      }
+      alert("成功扣點 ! 可在行事曆上看到已購買成功的課程喔");
+      navigate("/calendar");
+    });
   };
   return (
     <CartWrapper>
@@ -397,7 +372,7 @@ export default function CartPage() {
         <CartContainer>
           <WrapDiv>
             <DeleteExpiredItemBtn onClick={handleExpiredItemDelete}>
-              清除過期課程
+              清除失效課程
             </DeleteExpiredItemBtn>
           </WrapDiv>
           <CartTable>
@@ -430,6 +405,7 @@ export default function CartPage() {
                   start={item.start}
                   end={item.end}
                   overlapTimeItems={overlapTimeItems}
+                  orderError={orderError}
                 />
               ))}
             </CartBody>

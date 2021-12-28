@@ -41,7 +41,7 @@ const ErrorTr = styled.tr`
   > td {
     border-bottom: none;
     padding-top: 5px;
-    background-color: #fff59d;
+    background-color: #fafafa;
     ${MEDIA_QUERY_SM} {
       padding: 15px 5px 5px;
       justify-content: center;
@@ -75,6 +75,7 @@ export default function CartList({
   onDeleteItem,
   onChangeNote,
   overlapTimeItems,
+  orderError,
 }) {
   const [expired, setExpired] = useState(false);
   const [errorNotice, setErrorNotice] = useState("");
@@ -84,7 +85,10 @@ export default function CartList({
     function checkError() {
       setErrorNotice("");
       setErrorStyle({});
-      if (new Date(item.start).getTime() < new Date().getTime()) {
+      if (
+        item.scheduleStatus ||
+        new Date(item.start).getTime() < new Date().getTime()
+      ) {
         setExpired(true);
         setErrorStyle({
           backgroundColor: "#fafafa",
@@ -92,7 +96,6 @@ export default function CartList({
         });
       }
 
-      if (overlapTimeItems.length === 0) return;
       if (overlapTimeItems) {
         overlapTimeItems.forEach((element) => {
           if (element === item.scheduleId) {
@@ -102,17 +105,32 @@ export default function CartList({
           }
         });
       }
+
+      if (orderError) {
+        for (const [errorId, errorMessage] of Object.entries(orderError)) {
+          if (errorId === item.scheduleId) {
+            setExpired(true);
+            setErrorStyle({
+              backgroundColor: "#fff59d",
+            });
+            setErrorNotice(errorMessage);
+          }
+        }
+      }
     }
     checkError();
-  }, [item, expired, overlapTimeItems]);
+  }, [item, expired, overlapTimeItems, orderError]);
 
   return (
     <>
-      {/*errorNotice ? (
+      {item.scheduleStatus || errorNotice ? (
         <ErrorTr>
-          <td colSpan="7">{errorNotice}</td>
+          <td colSpan="7">
+            <ExpiredCover show={expired} />
+            {item.scheduleStatus ? item.scheduleStatus : errorNotice}
+          </td>
         </ErrorTr>
-      ) : null*/}
+      ) : null}
       <tr>
         <td data-title="購買" style={errorStyle}>
           <ExpiredCover show={expired} />
