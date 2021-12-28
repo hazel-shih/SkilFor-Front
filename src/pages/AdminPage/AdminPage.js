@@ -11,6 +11,7 @@ import {
   ChooseCategoryButton,
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
 import { sleep } from "../../utils";
+import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 
 const AdminWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -90,21 +91,88 @@ function GridRow({ courseId, courseName, teacher, audit }) {
   );
 }
 
+const ButtonsContainer = styled(RowContainer)`
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+  justify-content: center;
+  ${MEDIA_QUERY_SM} {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const FilterButton = styled.button`
+  border: 2px solid ${(props) => props.theme.colors.grey_dark};
+  padding: 7px 10px;
+  color: ${(props) => props.theme.colors.grey_dark};
+  background: white;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  :not(:last-child) {
+    margin-right: 30px;
+  }
+  ${MEDIA_QUERY_SM} {
+    min-width: 150px;
+    :not(:last-child) {
+      margin-right: 0px;
+      margin-bottom: 10px;
+    }
+  }
+  ${(props) =>
+    props.isClick &&
+    `
+    background: ${props.theme.colors.grey_dark};
+    color: white;
+  `}
+`;
 function AdminPage() {
   const [allCourses, setAllCourses] = useState([]);
+  const [buttonType, setButtonType] = useState("pending");
+  const [showCourses, setShowCourses] = useState([]);
   useEffect(() => {
     async function getData() {
       await sleep(500);
       setAllCourses(courseData);
+      let initData = courseData.filter((course) => course.audit === "pending");
+      setShowCourses(initData);
     }
     getData();
   }, []);
+  const handleButtonClick = (e) => {
+    let buttonId = e.target.id;
+    setButtonType(buttonId);
+    let showData = allCourses.filter((course) => course.audit === buttonId);
+    setShowCourses(showData);
+  };
   return (
     <AdminWrapper>
       <PageTitle>管理員後台</PageTitle>
+      <ButtonsContainer>
+        <FilterButton
+          id="pending"
+          isClick={buttonType === "pending"}
+          onClick={handleButtonClick}
+        >
+          待審核
+        </FilterButton>
+        <FilterButton
+          id="success"
+          isClick={buttonType === "success"}
+          onClick={handleButtonClick}
+        >
+          審核成功
+        </FilterButton>
+        <FilterButton
+          id="fail"
+          isClick={buttonType === "fail"}
+          onClick={handleButtonClick}
+        >
+          審核失敗
+        </FilterButton>
+      </ButtonsContainer>
       <GridContainer>
         <GridHead />
-        {allCourses.map((course) => (
+        {showCourses.map((course) => (
           <GridRow
             key={nanoid()}
             courseId={course.courseId}
