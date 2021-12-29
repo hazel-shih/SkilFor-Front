@@ -300,7 +300,6 @@ export const getStudentCalendarMonthEvents = async (setApiError, month) => {
 export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
   let url = encodeURI(`${BASE_URL}/student/calendar`);
   const token = getAuthToken();
-  console.log(scheduleId);
   try {
     const res = await fetch(url, {
       method: "PUT",
@@ -312,7 +311,6 @@ export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
         scheduleId: scheduleId,
       }),
     });
-    console.log(await res.json());
     if (!res.ok) throw new Error("fail to cancel event");
     return await res.json();
   } catch (error) {
