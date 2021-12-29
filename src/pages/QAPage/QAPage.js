@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { useState } from "react";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const Container = styled.div`
   padding: 150px 150px 160px 150px;
@@ -8,10 +9,7 @@ const Container = styled.div`
     padding: 135px 20px 180px 20px;
   }
 `;
-const PageTitle = styled.h1`
-  color: ${(props) => props.theme.colors.grey_dark};
-  font-size: 1.8rem;
-  margin-bottom: 30px;
+const Title = styled(PageTitle)`
   ${MEDIA_QUERY_SM} {
     font-size: 1.5rem;
     margin-bottom: 15px;
@@ -83,7 +81,7 @@ function QAPage() {
 
   return (
     <Container>
-      <PageTitle>常見問題 Q & A</PageTitle>
+      <Title>常見問題 Q & A</Title>
       <QuestionBlocks onClick={handleClick}>
         <QuestionBlock>
           <QuestionTitle name="Q1">Q1 : 如何取消課程？</QuestionTitle>

@@ -416,3 +416,21 @@ export const deleteCartItem = async (scheduleId, setApiError) => {
     return setApiError("發生了一點錯誤，請稍後再試");
   }
 };
+
+export const addOrder = async (orderData, setApiError) => {
+  let url = `${BASE_URL}/order`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(orderData),
+    });
+    return await res.json();
+  } catch (error) {
+    return setApiError("目前無法確認購買課程，請稍後再試");
+  }
+};

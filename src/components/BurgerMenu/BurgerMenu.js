@@ -61,7 +61,7 @@ function BurgerMenu() {
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const { user } = useContext(AuthContext);
   const [apiError, setApiError] = useState(false);
-  const [userInfos, setUserInfos] = useState(null);
+  const [userInfos, setUserInfos] = useState({});
 
   useEffect(() => {
     const getData = async (setApiError) => {
@@ -72,7 +72,7 @@ function BurgerMenu() {
       return setUserInfos(json.data);
     };
     getData(setApiError);
-  }, [userInfos]);
+  }, [userInfos, setApiError]);
 
   return (
     <AuthMenuContext.Provider
