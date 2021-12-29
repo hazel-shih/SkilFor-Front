@@ -7,6 +7,7 @@ import AlertCard from "../AlertCard";
 import {
   getStudentCalendarMonthEvents,
   cancelStudentCalendarEvent,
+  deleteStudentCalendarEvent,
 } from "../../WebAPI";
 import LoaderSpining from "../../components/LoaderSpining";
 import { CalendarContainer, LoadingSquare } from "./TeacherManageCalendar";
@@ -83,6 +84,18 @@ function StudentManageCalendar() {
       alert("課程取消成功！我們已經將此堂課的課程點數退還給你囉！");
     });
   };
+  const handleDeleteEvent = (eventId) => {
+    let confirm = window.confirm("確認要刪除這筆課程紀錄嗎？");
+    if (!confirm) return;
+    deleteStudentCalendarEvent(setApiError, eventId).then((json) => {
+      if (!json || !json.success) {
+        setLoading(false);
+        return setApiError("目前無法刪除這筆課程紀錄，請稍後再試");
+      }
+      setAlertShow(false);
+      setAllEvents(allEvents.filter((event) => event.id !== eventId));
+    });
+  };
   return (
     <CalendarContainer>
       {loading && (
@@ -117,6 +130,7 @@ function StudentManageCalendar() {
           setAlertShow={setAlertShow}
           selectedEvent={selectedEvent}
           handleCancelEvent={handleCancelEvent}
+          handleDeleteEvent={handleDeleteEvent}
         />
       )}
     </CalendarContainer>

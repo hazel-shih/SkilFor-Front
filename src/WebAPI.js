@@ -300,9 +300,33 @@ export const getStudentCalendarMonthEvents = async (setApiError, month) => {
 export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
   let url = encodeURI(`${BASE_URL}/student/calendar`);
   const token = getAuthToken();
+  console.log(scheduleId);
   try {
     const res = await fetch(url, {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scheduleId: scheduleId,
+      }),
+    });
+    console.log(await res.json());
+    if (!res.ok) throw new Error("fail to cancel event");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+
+export const deleteStudentCalendarEvent = async (setApiError, scheduleId) => {
+  let url = encodeURI(`${BASE_URL}/student/calendar`);
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
