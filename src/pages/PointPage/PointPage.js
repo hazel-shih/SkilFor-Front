@@ -2,7 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
-import { createMerchantTradeNo, generateCheckMacValue } from "./utils";
+import {
+  createMerchantTradeNo,
+  generateCheckMacValue,
+  getCurrentTime,
+} from "./utils";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -105,10 +109,7 @@ function PointPage() {
   const [orderData, setOrderData] = useState({
     MerchantID: "2000132",
     MerchantTradeNo: createMerchantTradeNo(),
-    MerchantTradeDate: new Date()
-      .toLocaleString()
-      .replace("上午", "")
-      .replace("下午", ""),
+    MerchantTradeDate: "",
     PaymentType: "aio",
     TotalAmount: 0,
     TradeDesc: "SkilFor課程點數儲值",
@@ -128,8 +129,23 @@ function PointPage() {
     if (confirm) {
       let newPointOrder = {
         ...orderData,
+        MerchantTradeDate: getCurrentTime(),
         TotalAmount: value,
         ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
+      };
+      setOrderData(newPointOrder);
+    }
+  };
+  const handleChooseClick = (title, price, points) => {
+    let confirm = window.confirm(
+      `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
+    );
+    if (confirm) {
+      let newPointOrder = {
+        ...orderData,
+        MerchantTradeDate: getCurrentTime(),
+        TotalAmount: price,
+        ItemName: `${title}${points}點 ${price} 元 X1`,
       };
       setOrderData(newPointOrder);
     }
@@ -138,19 +154,6 @@ function PointPage() {
     if (!orderData || orderData.ItemName === "") return;
     checkout.current.submit();
   }, [orderData]);
-  const handleChooseClick = (title, price, points) => {
-    let confirm = window.confirm(
-      `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
-    );
-    if (confirm) {
-      let newPointOrder = {
-        ...orderData,
-        TotalAmount: price,
-        ItemName: `${title}${points}點 ${price} 元 X1`,
-      };
-      setOrderData(newPointOrder);
-    }
-  };
   return (
     <PointPageWrapper>
       <PageTitle>點數儲值</PageTitle>
@@ -270,7 +273,6 @@ function PointPage() {
             id="CheckMacValue"
             value={generateCheckMacValue(orderData)}
           />
-          {/* <input type="submit" /> */}
         </form>
       )}
     </PointPageWrapper>

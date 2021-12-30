@@ -35,3 +35,9 @@ export const createMerchantTradeNo = () => {
   str = "SkilFor" + str;
   return str;
 };
+
+export const getCurrentTime = () => {
+  let dateDataArr = new Date().toLocaleString().split(" ");
+  let timeDataArr = new Date().toTimeString().split(" ");
+  return dateDataArr[0] + " " + timeDataArr[0];
+};
