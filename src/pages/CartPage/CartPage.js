@@ -359,9 +359,6 @@ export default function CartPage() {
       if (!json.success) {
         return setOrderError(json.errMessage);
       }
-      for (let i = 0; i < orderData.scheduleId.length; i++) {
-        deleteUserCartItem(orderData.scheduleId[i], setApiError);
-      }
       alert("成功扣點 ! 可在行事曆上看到已購買成功的課程喔");
       navigate("/calendar");
     });
