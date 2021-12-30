@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
-import close from "../../img/close.png";
+import deleteBtn from "../../img/close.png";
 
 const CheckBox = styled.input`
   width: 18px;
@@ -52,7 +52,6 @@ const ErrorTr = styled.tr`
   }
 `;
 const ExpiredCover = styled.div`
-  display: ${(props) => (props.show ? "block" : "none")};
   position: absolute;
   border-bottom: 1px solid #e6e6e6;
   background-color: rgba(0, 0, 0, 0.1);
@@ -77,10 +76,9 @@ export default function CartList({
   overlapTimeItems,
   orderError,
 }) {
-  const [expired, setExpired] = useState(false);
   const [errorNotice, setErrorNotice] = useState("");
   const [errorStyle, setErrorStyle] = useState({});
-
+  const [disabled, setDisable] = useState(false);
   useEffect(() => {
     function checkError() {
       setErrorNotice("");
@@ -89,7 +87,7 @@ export default function CartList({
         item.scheduleStatus ||
         new Date(item.start).getTime() < new Date().getTime()
       ) {
-        setExpired(true);
+        setDisable(true);
         setErrorStyle({
           backgroundColor: "#fafafa",
           color: "#AAAAAA",
@@ -105,11 +103,10 @@ export default function CartList({
           }
         });
       }
-
       if (orderError) {
         for (const [errorId, errorMessage] of Object.entries(orderError)) {
           if (errorId === item.scheduleId) {
-            setExpired(true);
+            setDisable(true);
             setErrorStyle({
               backgroundColor: "#fff59d",
             });
@@ -119,21 +116,21 @@ export default function CartList({
       }
     }
     checkError();
-  }, [item, expired, overlapTimeItems, orderError]);
+  }, [item, disabled, overlapTimeItems, orderError]);
 
   return (
     <>
       {item.scheduleStatus || errorNotice ? (
         <ErrorTr>
           <td colSpan="7">
-            <ExpiredCover show={expired} />
+            {item.scheduleStatus && <ExpiredCover />}
             {item.scheduleStatus ? item.scheduleStatus : errorNotice}
           </td>
         </ErrorTr>
       ) : null}
       <tr>
         <td data-title="購買" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           <label>
             <CheckBox
               type="checkbox"
@@ -141,45 +138,45 @@ export default function CartList({
               onClick={onClickCheck}
               checked={!!item.checked}
               id={item.scheduleId}
-              disabled={expired}
+              disabled={disabled}
             />
           </label>
         </td>
         <td data-title="刪除" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           <DeleteButton
-            src={close}
+            src={deleteBtn}
             onClick={onDeleteItem}
             id={item.scheduleId}
           />
         </td>
         <td data-title="課程名稱" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           {item.courseName}
         </td>
         <td data-title="老師" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           {item.teacherName}
         </td>
         <td data-title="上課時間" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           {getDisplayDate(new Date(item.start))}
           <br />
           {item.timePeriod}
         </td>
         <td data-title="點數" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           {item.price} 點
         </td>
         <td data-title="備註" style={errorStyle}>
-          <ExpiredCover show={expired} />
+          {item.scheduleStatus && <ExpiredCover />}
           <label>
             <NoteTextArea
               placeholder="我想對老師說..."
               onChange={onChangeNote}
               id={item.scheduleId}
               value={item.note || ""}
-              disabled={expired}
+              disabled={disabled}
             />
           </label>
         </td>
