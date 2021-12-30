@@ -7,6 +7,7 @@ import thirdStep from "../../img/third_step.jpg";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Typed from "typed.js";
 import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
@@ -154,7 +155,7 @@ const TeacherStep = styled(Banner)`
   }
 `;
 
-const Btn = styled.button`
+const Btn = styled(Link)`
   border-radius: 40px;
   border: none;
   cursor: pointer;
@@ -168,6 +169,8 @@ const Btn = styled.button`
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   align-self: flex-end;
   font-size: 1.2rem;
+  text-decoration: none;
+  text-align: center;
   ${MEDIA_QUERY_SM} {
     padding: 10px;
     min-width: 120px;
@@ -239,14 +242,14 @@ function HomePage() {
               上課前會收到線上課程會議室連結，到了上課時間點選連結進入會議室，就可以開始享受與老師的上課啦！
             </StepDescription>
             <BtnDiv>
-              <FindATeacherBtn>開始找老師</FindATeacherBtn>
+              <FindATeacherBtn to="./filter">開始找老師</FindATeacherBtn>
             </BtnDiv>
           </StepContent>
         </StepDiv>
       </StudentStep>
       <TeacherStep src={teacherStep}>
         <p>上架你的才華，將熱情與技能分享給全世界</p>
-        <Btn>成為老師</Btn>
+        <Btn to="./register">成為老師</Btn>
       </TeacherStep>
     </Container>
   );
