@@ -116,7 +116,7 @@ const CreditCardInfo = styled.p`
 function PointPage() {
   const [orderData, setOrderData] = useState({
     MerchantID: "2000132",
-    MerchantTradeNo: createMerchantTradeNo(),
+    MerchantTradeNo: "",
     MerchantTradeDate: "",
     PaymentType: "aio",
     TotalAmount: 0,
@@ -138,6 +138,7 @@ function PointPage() {
     if (confirm) {
       let newPointOrder = {
         ...orderData,
+        MerchantTradeNo: createMerchantTradeNo(),
         MerchantTradeDate: getCurrentTime(),
         TotalAmount: value,
         ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
@@ -152,6 +153,7 @@ function PointPage() {
     if (confirm) {
       let newPointOrder = {
         ...orderData,
+        MerchantTradeNo: createMerchantTradeNo(),
         MerchantTradeDate: getCurrentTime(),
         TotalAmount: price,
         ItemName: `${title}${points}點 ${price} 元 X1`,
@@ -171,8 +173,8 @@ function PointPage() {
         🌚 注意！結帳時請使用下方測試信用卡資料，請勿輸入您真實的信用卡號 🌚
       </CreditCardInfo>
       <CreditCardInfo>信用卡測試卡號：4311-9522-2222-2222</CreditCardInfo>
-      <CreditCardInfo>信用卡測試安全碼：222</CreditCardInfo>
       <CreditCardInfo>信用卡測試有效月/年：12/25</CreditCardInfo>
+      <CreditCardInfo>信用卡測試安全碼：222</CreditCardInfo>
       <SectionTitle>優惠方案</SectionTitle>
       <PriceCardContainer>
         <PriceCard
