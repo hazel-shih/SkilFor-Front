@@ -76,6 +76,7 @@ export default function useRegister() {
         setUser(response.user);
         setIsLoading(false);
         navigate("/");
+        alert("恭喜成為新會員，您將獲得免費的上課點數 1000 點 !! ");
       });
     });
   };

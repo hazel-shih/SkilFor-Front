@@ -65,7 +65,7 @@ export function FormItem({ itemName, id, value, type, name, handleChange }) {
     <FormItemContainer>
       <ItemName>
         {itemName}
-        {id === "password" && <span>(至少需有六碼)</span>}
+        {id === "password" && <span> (至少需有六碼)</span>}
       </ItemName>
       <ItemInput
         id={id}
