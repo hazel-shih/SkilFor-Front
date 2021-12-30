@@ -16,11 +16,7 @@ import {
 } from "./PageStyle";
 import PublishedRadiosContainer from "./PublishedRadiosContainer";
 import useEdit from "../hooks/useEdit";
-import {
-  registerNewCourse,
-  updateCourseInfos,
-  deleteCourse,
-} from "../../../WebAPI";
+import { updateCourseInfos, deleteCourse } from "../../../WebAPI";
 import { CATEGORY_LIST } from "../Constant";
 import { getKeyByValue } from "../../../utils";
 
@@ -183,11 +179,10 @@ function CoursePage({ apiError, setApiError }) {
         category: getKeyByValue(CATEGORY_LIST, editContent.category),
         audit: "pending",
       };
-      makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
     } else {
       updatedCourseInfos = editContent;
-      makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     }
+    makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
     updatedCourseInfos.category = CATEGORY_LIST[updatedCourseInfos.category];
     setCourseInfos(
       courseInfos.map((course) => {

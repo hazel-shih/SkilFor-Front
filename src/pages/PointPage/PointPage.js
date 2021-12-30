@@ -1,7 +1,8 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
+import { createMerchantTradeNo, generateCheckMacValue } from "./utils";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -101,16 +102,47 @@ const StorePointContainer = styled.div`
 `;
 
 function PointPage() {
+  const [orderData, setOrderData] = useState({
+    MerchantTradeNo: createMerchantTradeNo(),
+    PaymentType: "aio",
+    TotalAmount: "",
+    TradeDesc: "SkilFor課程點數儲值",
+    EncryptType: 1,
+    MerchantTradeDate: new Date()
+      .toLocaleString()
+      .replace("上午", "")
+      .replace("下午", ""),
+    MerchantID: "2000132",
+    ItemName: "",
+    ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
+    ChoosePayment: "Credit",
+  });
   const pointInput = useRef(null);
   const handleStorePointClick = () => {
     let value = Number(pointInput.current.value);
     if (value === "" || !(value > 0)) return;
-    //將儲值金額發 API 給後端
-    console.log(value);
+    let newPointOrder = {
+      ...orderData,
+      TotalAmount: value,
+      ItemName: `自選儲值額度 ${value} 元 X1`,
+    };
+    newPointOrder = {
+      ...newPointOrder,
+      CheckMacValue: generateCheckMacValue(newPointOrder),
+    };
+    setOrderData(newPointOrder);
   };
-  const handleChooseClick = (price, points) => {
-    //將儲值金額發 API 給後端
-    console.log(price, points);
+  const handleChooseClick = (title, price, points) => {
+    let newPointOrder = {
+      ...orderData,
+      TotalAmount: price,
+      ItemName: `${title}${points}點 ${price} 元 X1`,
+    };
+    newPointOrder = {
+      ...newPointOrder,
+      CheckMacValue: generateCheckMacValue(newPointOrder),
+    };
+    setOrderData(newPointOrder);
   };
   return (
     <PointPageWrapper>
@@ -122,28 +154,28 @@ function PointPage() {
           price={250}
           points={300}
           courseCount="1"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("初體驗方案", 250, 300)}
         />
         <PriceCard
           title="小資族"
           price={3000}
           points={3500}
           courseCount="10"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("小資族方案", 3000, 3500)}
         />
         <PriceCard
           title="好划算"
           price={6000}
           points={7000}
           courseCount="20"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("好划算方案", 6000, 7000)}
         />
         <PriceCard
           title="超優惠"
           price={10000}
           points={12000}
           courseCount="35"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("超優惠方案", 10000, 12000)}
         />
       </PriceCardContainer>
       <SectionTitle>自行選擇儲值金額 (一元兌換 1 point)</SectionTitle>
