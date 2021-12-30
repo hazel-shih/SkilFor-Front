@@ -69,7 +69,6 @@ export default function useLogin() {
       });
     });
   };
-  console.log(loginData);
   const scrollTop = () => {
     window.scrollTo({
       top: 0,

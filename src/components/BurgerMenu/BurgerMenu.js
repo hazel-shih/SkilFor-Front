@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import Icons from "../Icon/Icons";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
@@ -63,23 +63,26 @@ function BurgerMenu() {
   const [apiError, setApiError] = useState(false);
   const [userInfos, setUserInfos] = useState({});
 
-  useEffect(() => {
-    const getData = async (setApiError) => {
-      let json = await getUserInfos(setApiError);
-      if (!json || !json.success) {
-        return setApiError("發生了一點錯誤，請稍後再試");
-      }
-      return setUserInfos(json.data);
-    };
-    getData(setApiError);
-  }, [userInfos, setApiError]);
+  const handleBurgerClick = () => {
+    setMenu(!menu);
+    if (!menu) {
+      const getData = async (setApiError) => {
+        let json = await getUserInfos(setApiError);
+        if (!json || !json.success) {
+          return setApiError("發生了一點錯誤，請稍後再試");
+        }
+        setUserInfos(json.data);
+      };
+      getData(setApiError);
+    }
+  };
 
   return (
     <AuthMenuContext.Provider
       value={{ menuRef, menu, setMenu, handleMenuToggle }}
     >
       <Burger ref={menuRef}>
-        <BurgerBtn apiError={apiError} onClick={handleMenuToggle}>
+        <BurgerBtn apiError={apiError} onClick={handleBurgerClick}>
           <IconDiv>
             <Icons.NavIcons.Burger />
           </IconDiv>
@@ -101,12 +104,21 @@ function BurgerMenu() {
                 </BurgerItem>
               </>
             )}
-            <BurgerItem to="/calendar" onClick={handleMenuToggle}>
-              行事曆
-            </BurgerItem>
-            <BurgerItem to="/manage" onClick={handleMenuToggle}>
-              管理後台
-            </BurgerItem>
+            {user && user.identity !== "administrator" && (
+              <>
+                <BurgerItem to="/calendar" onClick={handleMenuToggle}>
+                  行事曆
+                </BurgerItem>
+                <BurgerItem to="/manage" onClick={handleMenuToggle}>
+                  管理後台
+                </BurgerItem>
+              </>
+            )}
+            {user && user.identity === "administrator" && (
+              <BurgerItem to="/admin" onClick={handleMenuToggle}>
+                審核頁面
+              </BurgerItem>
+            )}
           </BurgerContent>
         )}
       </Burger>
