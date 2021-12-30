@@ -7,8 +7,10 @@ import thirdStep from "../../img/third_step.jpg";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Typed from "typed.js";
 import { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { scrollTop } from "../../utils";
+import { Link, useNavigate } from "react-router-dom";
+import { scrollTop, setAuthToken } from "../../utils";
+import { AuthContext } from "../../contexts";
+import { useContext } from "react";
 
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
@@ -211,6 +213,19 @@ function HomePage() {
     typed.current = new Typed(newTyped.current, typedSetting);
   }, []);
 
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleBtnClick = (e) => {
+    e.preventDefault();
+    if (!user || user.identity === "student") {
+      setAuthToken("");
+      setUser(null);
+      navigate("/register");
+    }
+    if (user && user.identity === "teacher") {
+      navigate("/manage");
+    }
+  };
   return (
     <Container>
       <Banner src={banner}>
@@ -251,7 +266,9 @@ function HomePage() {
       </StudentStep>
       <TeacherStep src={teacherStep}>
         <p>上架你的才華，將熱情與技能分享給全世界</p>
-        <Btn to="./register">成為老師</Btn>
+        <Btn to="./register" onClick={handleBtnClick}>
+          成為老師
+        </Btn>
       </TeacherStep>
     </Container>
   );
