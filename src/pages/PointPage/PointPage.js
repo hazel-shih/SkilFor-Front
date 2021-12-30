@@ -117,6 +117,7 @@ function PointPage() {
     ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
     ChoosePayment: "Credit",
     EncryptType: "1",
+    ClientBackURL: "http://localhost:3000/SkilFor-Front/manage",
   });
   const pointInput = useRef(null);
   const checkout = useRef(null);
@@ -266,6 +267,12 @@ function PointPage() {
             name="PaymentType"
             id="PaymentType"
             value={orderData.PaymentType}
+          />
+          <input
+            type="hidden"
+            name="ClientBackURL"
+            id="ClientBackURL"
+            value="http://localhost:3000/SkilFor-Front/manage"
           />
           <input
             type="hidden"
