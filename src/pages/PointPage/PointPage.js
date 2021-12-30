@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
@@ -103,46 +103,53 @@ const StorePointContainer = styled.div`
 
 function PointPage() {
   const [orderData, setOrderData] = useState({
+    MerchantID: "2000132",
     MerchantTradeNo: createMerchantTradeNo(),
-    PaymentType: "aio",
-    TotalAmount: "",
-    TradeDesc: "SkilFor課程點數儲值",
-    EncryptType: 1,
     MerchantTradeDate: new Date()
       .toLocaleString()
       .replace("上午", "")
       .replace("下午", ""),
-    MerchantID: "2000132",
+    PaymentType: "aio",
+    TotalAmount: 0,
+    TradeDesc: "SkilFor課程點數儲值",
     ItemName: "",
     ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
     ChoosePayment: "Credit",
+    EncryptType: "1",
   });
   const pointInput = useRef(null);
+  const checkout = useRef(null);
   const handleStorePointClick = () => {
     let value = Number(pointInput.current.value);
     if (value === "" || !(value > 0)) return;
-    let newPointOrder = {
-      ...orderData,
-      TotalAmount: value,
-      ItemName: `自選儲值額度 ${value} 元 X1`,
-    };
-    newPointOrder = {
-      ...newPointOrder,
-      CheckMacValue: generateCheckMacValue(newPointOrder),
-    };
-    setOrderData(newPointOrder);
+    let confirm = window.confirm(
+      `這是你的選購資訊：自選儲值額度${value}點，需支付${value} 元，若確認無誤將導向刷卡頁面`
+    );
+    if (confirm) {
+      let newPointOrder = {
+        ...orderData,
+        TotalAmount: value,
+        ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
+      };
+      setOrderData(newPointOrder);
+    }
   };
+  useEffect(() => {
+    if (!orderData || orderData.ItemName === "") return;
+    checkout.current.submit();
+  }, [orderData]);
   const handleChooseClick = (title, price, points) => {
-    let newPointOrder = {
-      ...orderData,
-      TotalAmount: price,
-      ItemName: `${title}${points}點 ${price} 元 X1`,
-    };
-    newPointOrder = {
-      ...newPointOrder,
-      CheckMacValue: generateCheckMacValue(newPointOrder),
-    };
-    setOrderData(newPointOrder);
+    let confirm = window.confirm(
+      `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
+    );
+    if (confirm) {
+      let newPointOrder = {
+        ...orderData,
+        TotalAmount: price,
+        ItemName: `${title}${points}點 ${price} 元 X1`,
+      };
+      setOrderData(newPointOrder);
+    }
   };
   return (
     <PointPageWrapper>
@@ -190,6 +197,82 @@ function PointPage() {
           儲值
         </StorePointButton>
       </StorePointContainer>
+      {orderData && (
+        <form
+          ref={checkout}
+          id="_form_aiochk"
+          action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"
+          method="post"
+        >
+          <input
+            type="hidden"
+            name="MerchantTradeDate"
+            id="MerchantTradeDate"
+            value={orderData.MerchantTradeDate}
+          />
+          <input
+            type="hidden"
+            name="TotalAmount"
+            id="TotalAmount"
+            value={orderData.TotalAmount}
+          />
+          <input
+            type="hidden"
+            name="TradeDesc"
+            id="TradeDesc"
+            value={orderData.TradeDesc}
+          />
+          <input
+            type="hidden"
+            name="ItemName"
+            id="ItemName"
+            value={orderData.ItemName}
+          />
+          <input
+            type="hidden"
+            name="ReturnURL"
+            id="ReturnURL"
+            value={orderData.ReturnURL}
+          />
+          <input
+            type="hidden"
+            name="ChoosePayment"
+            id="ChoosePayment"
+            value={orderData.ChoosePayment}
+          />
+          <input
+            type="hidden"
+            name="MerchantTradeNo"
+            id="MerchantTradeNo"
+            value={orderData.MerchantTradeNo}
+          />
+          <input
+            type="hidden"
+            name="MerchantID"
+            id="MerchantID"
+            value={orderData.MerchantID}
+          />
+          <input
+            type="hidden"
+            name="EncryptType"
+            id="EncryptType"
+            value={orderData.EncryptType}
+          />
+          <input
+            type="hidden"
+            name="PaymentType"
+            id="PaymentType"
+            value={orderData.PaymentType}
+          />
+          <input
+            type="hidden"
+            name="CheckMacValue"
+            id="CheckMacValue"
+            value={generateCheckMacValue(orderData)}
+          />
+          {/* <input type="submit" /> */}
+        </form>
+      )}
     </PointPageWrapper>
   );
 }

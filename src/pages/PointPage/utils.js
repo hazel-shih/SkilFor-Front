@@ -9,7 +9,7 @@ export const generateCheckMacValue = (data) => {
   for (const key of keys) {
     checkValue += `${key}=${data[key]}&`;
   }
-  checkValue = `HashKey=${TEST_HASH_KEY}&${checkValue}HashIV=${TEST_HASH_IV}`; // There is already an & in the end of checkValue
+  checkValue = `HashKey=${TEST_HASH_KEY}&${checkValue}HashIV=${TEST_HASH_IV}`;
   checkValue = encodeURIComponent(checkValue).toLowerCase();
   checkValue = checkValue
     .replace(/%20/g, "+")
@@ -29,7 +29,7 @@ export const generateCheckMacValue = (data) => {
 
 export const createMerchantTradeNo = () => {
   let str = "";
-  for (let i = 0; i < 11; i++) {
+  for (let i = 0; i < 6; i++) {
     str += Math.ceil(Math.random() * 10);
   }
   str = "SkilFor" + str;
