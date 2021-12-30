@@ -8,6 +8,7 @@ import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Typed from "typed.js";
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { scrollTop } from "../../utils";
 
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
@@ -193,6 +194,7 @@ const FindATeacherBtn = styled(Btn)`
 `;
 
 function HomePage() {
+  scrollTop();
   const newTyped = useRef(null);
   const typed = useRef(null);
 

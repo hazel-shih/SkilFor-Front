@@ -23,3 +23,10 @@ export const validateEmail = (email) => {
 export const getKeyByValue = (object, value) => {
   return Object.keys(object).find((key) => object[key] === value);
 };
+
+export const scrollTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};

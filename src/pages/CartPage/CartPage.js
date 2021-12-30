@@ -16,6 +16,7 @@ import {
 } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
 import { titles } from "./CartTableTitles";
+import { scrollTop } from "../../utils";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -187,6 +188,7 @@ const RemainingPoints = styled(TotalPoints)`
 `;
 
 export default function CartPage() {
+  scrollTop();
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);

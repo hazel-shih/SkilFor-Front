@@ -4,6 +4,7 @@ import { register } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
 import { getMyUserData } from "../../WebAPI";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
+import { scrollTop } from "../../utils";
 
 export default function useRegister() {
   const { setUser } = useContext(AuthContext);
@@ -78,13 +79,6 @@ export default function useRegister() {
         navigate("/");
         alert("恭喜成為新會員，您將獲得免費的上課點數 1000 點 !! ");
       });
-    });
-  };
-
-  const scrollTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
     });
   };
 

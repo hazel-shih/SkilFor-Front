@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login, getMyUserData } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
+import { scrollTop } from "../../utils";
 
 export default function useLogin() {
   const { setUser } = useContext(AuthContext);
@@ -67,12 +68,6 @@ export default function useLogin() {
         setIsLoading(false);
         navigate("/");
       });
-    });
-  };
-  const scrollTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
     });
   };
 

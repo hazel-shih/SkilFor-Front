@@ -12,6 +12,7 @@ import {
 } from "../../WebAPI";
 import { AuthMenuContext } from "../../contexts";
 import useMenu from "../../components/Menu/useMenu";
+import { scrollTop } from "../../utils";
 
 const Container = styled.div`
   padding: 125px 100px 160px 100px;
@@ -160,6 +161,7 @@ const ErrorBtn = styled.button`
 `;
 
 function FilterPage() {
+  scrollTop();
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
