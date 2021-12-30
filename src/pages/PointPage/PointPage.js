@@ -7,6 +7,7 @@ import {
   generateCheckMacValue,
   getCurrentTime,
 } from "./utils";
+import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -21,11 +22,14 @@ const PriceContainer = styled.div`
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};
   margin-right: 50px;
-  margin-top: 35px;
+  margin-top: 15px;
   padding: 20px 0 0 0;
   :hover {
     transform: translate(10px, -10px);
     transition: all 0.1s;
+  }
+  ${MEDIA_QUERY_SM} {
+    margin-right: 10px;
   }
 `;
 const PriceTitle = styled.h1`
@@ -104,6 +108,10 @@ const StorePointContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+const CreditCardInfo = styled.p`
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin-top: 10px;
+`;
 
 function PointPage() {
   const [orderData, setOrderData] = useState({
@@ -123,7 +131,7 @@ function PointPage() {
   const checkout = useRef(null);
   const handleStorePointClick = () => {
     let value = Number(pointInput.current.value);
-    if (value === "" || !(value > 0)) return;
+    if (value === "" || !(value >= 100)) return;
     let confirm = window.confirm(
       `這是你的選購資訊：自選儲值額度${value}點，需支付${value} 元，若確認無誤將導向刷卡頁面`
     );
@@ -158,7 +166,14 @@ function PointPage() {
   return (
     <PointPageWrapper>
       <PageTitle>點數儲值</PageTitle>
-      <SectionTitle className="first">優惠方案</SectionTitle>
+      <SectionTitle className="first">請用此測試信用卡號結帳</SectionTitle>
+      <CreditCardInfo>
+        🌚 注意！結帳時請使用下方測試信用卡資料，請勿輸入您真實的信用卡號 🌚
+      </CreditCardInfo>
+      <CreditCardInfo>信用卡測試卡號：4311-9522-2222-2222</CreditCardInfo>
+      <CreditCardInfo>信用卡測試安全碼：222</CreditCardInfo>
+      <CreditCardInfo>信用卡測試有效月/年：12/25</CreditCardInfo>
+      <SectionTitle>優惠方案</SectionTitle>
       <PriceCardContainer>
         <PriceCard
           title="初體驗"
@@ -189,12 +204,14 @@ function PointPage() {
           handleClick={() => handleChooseClick("超優惠方案", 10000, 12000)}
         />
       </PriceCardContainer>
-      <SectionTitle>自行選擇儲值金額 (一元兌換 1 point)</SectionTitle>
+      <SectionTitle>
+        自行選擇儲值金額 (一元兌換 1 point，儲值額度不得低於 100)
+      </SectionTitle>
       <StorePointContainer>
         <StorePointInput
           type="number"
           placeholder="請輸入儲值金額"
-          min="1"
+          min="100"
           ref={pointInput}
         />
         <StorePointButton onClick={handleStorePointClick}>
@@ -203,6 +220,7 @@ function PointPage() {
       </StorePointContainer>
       {orderData && (
         <form
+          target="_blank"
           ref={checkout}
           id="_form_aiochk"
           action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"
