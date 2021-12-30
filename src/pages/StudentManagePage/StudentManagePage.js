@@ -36,7 +36,7 @@ function StudentManagePage() {
     };
     getData(setApiError);
   }, []);
-
+  console.log(studentInfos);
   const handleAlertOkClick = () => {
     setApiError(false);
     if (apiError === "請先登入才能使用後台功能") {
@@ -60,7 +60,13 @@ function StudentManagePage() {
         )}
         <UserInfoContainer>
           {studentInfos && (
-            <Avatar imgSrc={student} name={studentInfos.username} />
+            <Avatar
+              imgSrc={student}
+              name={studentInfos.username}
+              status={`我的點數：${
+                !studentInfos.points ? 0 : studentInfos.points
+              }`}
+            />
           )}
           <PageBtnsContainer>
             <PageBtn isClick={true}>個人資訊</PageBtn>
