@@ -37,6 +37,13 @@ export default function useLogin() {
       }
     }
 
+    if (loginData.email === "skilforAdmin@gmail.com") {
+      setLoginData({
+        ...loginData,
+        identity: "administrator",
+      });
+    }
+
     login(loginData, setErrorMessage).then((data) => {
       if (!data) {
         setIsLoading(false);
@@ -62,7 +69,7 @@ export default function useLogin() {
       });
     });
   };
-
+  console.log(loginData);
   const scrollTop = () => {
     window.scrollTo({
       top: 0,

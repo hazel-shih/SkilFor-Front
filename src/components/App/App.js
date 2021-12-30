@@ -95,7 +95,12 @@ function App() {
                 }
               />
               <Route path="/point" element={<PointPage />} />
-              <Route path="/admin" element={<AdminPage />} />
+              <Route
+                path="/admin"
+                element={
+                  user && user.identity === "administrator" && <AdminPage />
+                }
+              />
             </Routes>
             <Footer />
           </div>
