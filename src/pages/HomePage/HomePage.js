@@ -218,12 +218,16 @@ function HomePage() {
   const handleBtnClick = (e) => {
     e.preventDefault();
     if (!user || user.identity === "student") {
+      const confirmNavigate = window.confirm(
+        "註冊一個老師身分的帳號，即可成為老師囉 ! 按下確定將帶您前往註冊頁面。"
+      );
+      if (!confirmNavigate) return;
       setAuthToken("");
       setUser(null);
       navigate("/register");
     }
     if (user && user.identity === "teacher") {
-      navigate("/manage");
+      alert("您已成功成為老師囉 !");
     }
   };
   return (
