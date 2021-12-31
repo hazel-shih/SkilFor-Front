@@ -31,6 +31,7 @@ function StudentReadTaskCard({
   setAlertShow,
   selectedEvent,
   handleCancelEvent,
+  handleDeleteEvent,
 }) {
   const handleCloseClick = () => {
     setAlertShow(null);
@@ -61,6 +62,14 @@ function StudentReadTaskCard({
                 onClick={() => handleCancelEvent(selectedEvent.id)}
               >
                 取消此時段
+              </AlertButton>
+            )}
+            {selectedEvent.end.getTime() < new Date().getTime() && (
+              <AlertButton
+                color="#75A29E"
+                onClick={() => handleDeleteEvent(selectedEvent.id)}
+              >
+                刪除此筆課程紀錄
               </AlertButton>
             )}
           </>

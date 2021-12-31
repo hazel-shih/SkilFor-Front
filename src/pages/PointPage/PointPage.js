@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
+import { generateCheckMacValue, getCurrentTime } from "./utils";
+import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
+import { getOrderId } from "../../WebAPI";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -16,11 +19,14 @@ const PriceContainer = styled.div`
   text-align: center;
   color: ${(props) => props.theme.colors.grey_dark};
   margin-right: 50px;
-  margin-top: 35px;
+  margin-top: 15px;
   padding: 20px 0 0 0;
   :hover {
     transform: translate(10px, -10px);
     transition: all 0.1s;
+  }
+  ${MEDIA_QUERY_SM} {
+    margin-right: 10px;
   }
 `;
 const PriceTitle = styled.h1`
@@ -99,67 +105,214 @@ const StorePointContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+const CreditCardInfo = styled.p`
+  color: ${(props) => props.theme.colors.grey_dark};
+  margin-top: 10px;
+`;
 
-function PointPage() {
+export default function PointPage() {
+  const [orderData, setOrderData] = useState({
+    MerchantID: "2000132",
+    MerchantTradeNo: "",
+    MerchantTradeDate: "",
+    PaymentType: "aio",
+    TotalAmount: 0,
+    TradeDesc: "SkilFor課程點數儲值",
+    ItemName: "",
+    ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
+    ChoosePayment: "Credit",
+    EncryptType: "1",
+    ClientBackURL: "http://localhost:3000/SkilFor-Front/manage",
+  });
   const pointInput = useRef(null);
+  const checkout = useRef(null);
+
   const handleStorePointClick = () => {
     let value = Number(pointInput.current.value);
-    if (value === "" || !(value > 0)) return;
-    //將儲值金額發 API 給後端
-    console.log(value);
+    if (value === "" || !(value >= 100)) return;
+    let confirm = window.confirm(
+      `這是你的選購資訊：自選儲值額度${value}點，需支付${value} 元，若確認無誤將導向刷卡頁面`
+    );
+    if (confirm) {
+      let itemName = `自選儲值額度${value}點`;
+      let orderId;
+      let newPointOrder;
+      getOrderId(itemName, value, value).then((json) => {
+        orderId = json.data.serial;
+        newPointOrder = {
+          ...orderData,
+          MerchantTradeNo: orderId,
+          MerchantTradeDate: getCurrentTime(),
+          TotalAmount: value,
+          ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
+        };
+        setOrderData(newPointOrder);
+      });
+    }
   };
-  const handleChooseClick = (price, points) => {
-    //將儲值金額發 API 給後端
-    console.log(price, points);
+  const handleChooseClick = (title, price, points) => {
+    let confirm = window.confirm(
+      `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
+    );
+    if (confirm) {
+      let itemName = `${title}${points}點`;
+      let orderId;
+      let newPointOrder;
+      getOrderId(itemName, price, points).then((json) => {
+        orderId = json.data.serial;
+        newPointOrder = {
+          ...orderData,
+          MerchantTradeNo: orderId,
+          MerchantTradeDate: getCurrentTime(),
+          TotalAmount: price,
+          ItemName: `${itemName} ${price} 元 X1`,
+        };
+        setOrderData(newPointOrder);
+      });
+    }
   };
+  useEffect(() => {
+    if (!orderData || orderData.ItemName === "") return;
+    checkout.current.submit();
+  }, [orderData]);
+
   return (
     <PointPageWrapper>
       <PageTitle>點數儲值</PageTitle>
-      <SectionTitle className="first">優惠方案</SectionTitle>
+      <SectionTitle className="first">請用此測試信用卡號結帳</SectionTitle>
+      <CreditCardInfo>
+        🌚 注意！結帳時請使用下方測試信用卡資料，請勿輸入您真實的信用卡號 🌚
+      </CreditCardInfo>
+      <CreditCardInfo>信用卡測試卡號：4311-9522-2222-2222</CreditCardInfo>
+      <CreditCardInfo>信用卡測試有效月/年：12/25</CreditCardInfo>
+      <CreditCardInfo>信用卡測試安全碼：222</CreditCardInfo>
+      <SectionTitle>優惠方案</SectionTitle>
       <PriceCardContainer>
         <PriceCard
           title="初體驗"
           price={250}
           points={300}
           courseCount="1"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("初體驗方案", 250, 300)}
         />
         <PriceCard
           title="小資族"
           price={3000}
           points={3500}
           courseCount="10"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("小資族方案", 3000, 3500)}
         />
         <PriceCard
           title="好划算"
           price={6000}
           points={7000}
           courseCount="20"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("好划算方案", 6000, 7000)}
         />
         <PriceCard
           title="超優惠"
           price={10000}
           points={12000}
           courseCount="35"
-          handleClick={handleChooseClick}
+          handleClick={() => handleChooseClick("超優惠方案", 10000, 12000)}
         />
       </PriceCardContainer>
-      <SectionTitle>自行選擇儲值金額 (一元兌換 1 point)</SectionTitle>
+      <SectionTitle>
+        自行選擇儲值金額 (一元兌換 1 point，儲值額度不得低於 100)
+      </SectionTitle>
       <StorePointContainer>
         <StorePointInput
           type="number"
           placeholder="請輸入儲值金額"
-          min="1"
+          min="100"
           ref={pointInput}
         />
         <StorePointButton onClick={handleStorePointClick}>
           儲值
         </StorePointButton>
       </StorePointContainer>
+      {orderData && (
+        <form
+          target="_blank"
+          ref={checkout}
+          id="_form_aiochk"
+          action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5"
+          method="post"
+        >
+          <input
+            type="hidden"
+            name="MerchantTradeDate"
+            id="MerchantTradeDate"
+            value={orderData.MerchantTradeDate}
+          />
+          <input
+            type="hidden"
+            name="TotalAmount"
+            id="TotalAmount"
+            value={orderData.TotalAmount}
+          />
+          <input
+            type="hidden"
+            name="TradeDesc"
+            id="TradeDesc"
+            value={orderData.TradeDesc}
+          />
+          <input
+            type="hidden"
+            name="ItemName"
+            id="ItemName"
+            value={orderData.ItemName}
+          />
+          <input
+            type="hidden"
+            name="ReturnURL"
+            id="ReturnURL"
+            value={orderData.ReturnURL}
+          />
+          <input
+            type="hidden"
+            name="ChoosePayment"
+            id="ChoosePayment"
+            value={orderData.ChoosePayment}
+          />
+          <input
+            type="hidden"
+            name="MerchantTradeNo"
+            id="MerchantTradeNo"
+            value={orderData.MerchantTradeNo}
+          />
+          <input
+            type="hidden"
+            name="MerchantID"
+            id="MerchantID"
+            value={orderData.MerchantID}
+          />
+          <input
+            type="hidden"
+            name="EncryptType"
+            id="EncryptType"
+            value={orderData.EncryptType}
+          />
+          <input
+            type="hidden"
+            name="PaymentType"
+            id="PaymentType"
+            value={orderData.PaymentType}
+          />
+          <input
+            type="hidden"
+            name="ClientBackURL"
+            id="ClientBackURL"
+            value="http://localhost:3000/SkilFor-Front/manage"
+          />
+          <input
+            type="hidden"
+            name="CheckMacValue"
+            id="CheckMacValue"
+            value={generateCheckMacValue(orderData)}
+          />
+        </form>
+      )}
     </PointPageWrapper>
   );
 }
-
-export default PointPage;

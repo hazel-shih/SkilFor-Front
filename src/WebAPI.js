@@ -319,6 +319,28 @@ export const cancelStudentCalendarEvent = async (setApiError, scheduleId) => {
   }
 };
 
+export const deleteStudentCalendarEvent = async (setApiError, scheduleId) => {
+  let url = encodeURI(`${BASE_URL}/student/calendar`);
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scheduleId: scheduleId,
+      }),
+    });
+    if (!res.ok) throw new Error("fail to cancel event");
+    return await res.json();
+  } catch (error) {
+    setApiError("發生了一點錯誤，請稍後再試");
+    return;
+  }
+};
+
 //課程前台頁面
 export const getFrontCourseInfos = async (courseId, setApiError) => {
   let url = encodeURI(`${BASE_URL}/front-course/${courseId}`);
@@ -432,5 +454,27 @@ export const addOrder = async (orderData, setApiError) => {
     return await res.json();
   } catch (error) {
     return setApiError("目前無法確認購買課程，請稍後再試");
+  }
+};
+//點數儲值
+export const getOrderId = async (itemName, price, point) => {
+  let url = `${BASE_URL}/point`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ItemName: itemName,
+        TotalAmount: price,
+        TotalPoint: point,
+      }),
+    });
+    return await res.json();
+  } catch (error) {
+    return error;
   }
 };
