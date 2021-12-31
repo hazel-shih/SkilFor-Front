@@ -456,3 +456,25 @@ export const addOrder = async (orderData, setApiError) => {
     return setApiError("目前無法確認購買課程，請稍後再試");
   }
 };
+//點數儲值
+export const getOrderId = async (itemName, price, point) => {
+  let url = `${BASE_URL}/point`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ItemName: itemName,
+        TotalAmount: price,
+        TotalPoint: point,
+      }),
+    });
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};

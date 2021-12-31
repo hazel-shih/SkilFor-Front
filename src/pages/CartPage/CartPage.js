@@ -260,7 +260,7 @@ export default function CartPage() {
   }, [cartItems]);
 
   const deleteUserCartItem = async (scheduleId, setApiError) => {
-    let json = deleteCartItem(scheduleId, setApiError);
+    let json = await deleteCartItem(scheduleId, setApiError);
     if (!json && !json.success)
       return setApiError("發生了一點錯誤，請稍後再試");
   };

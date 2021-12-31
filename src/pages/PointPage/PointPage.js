@@ -2,12 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import PageTitle from "../../components/PageTitle";
 import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
-import {
-  createMerchantTradeNo,
-  generateCheckMacValue,
-  getCurrentTime,
-} from "./utils";
+import { generateCheckMacValue, getCurrentTime } from "./utils";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
+import { getOrderId } from "../../WebAPI";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -113,7 +110,7 @@ const CreditCardInfo = styled.p`
   margin-top: 10px;
 `;
 
-function PointPage() {
+export default function PointPage() {
   const [orderData, setOrderData] = useState({
     MerchantID: "2000132",
     MerchantTradeNo: "",
@@ -129,6 +126,7 @@ function PointPage() {
   });
   const pointInput = useRef(null);
   const checkout = useRef(null);
+
   const handleStorePointClick = () => {
     let value = Number(pointInput.current.value);
     if (value === "" || !(value >= 100)) return;
@@ -136,14 +134,20 @@ function PointPage() {
       `這是你的選購資訊：自選儲值額度${value}點，需支付${value} 元，若確認無誤將導向刷卡頁面`
     );
     if (confirm) {
-      let newPointOrder = {
-        ...orderData,
-        MerchantTradeNo: createMerchantTradeNo(),
-        MerchantTradeDate: getCurrentTime(),
-        TotalAmount: value,
-        ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
-      };
-      setOrderData(newPointOrder);
+      let itemName = `自選儲值額度${value}點`;
+      let orderId;
+      let newPointOrder;
+      getOrderId(itemName, value, value).then((json) => {
+        orderId = json.data.serial;
+        newPointOrder = {
+          ...orderData,
+          MerchantTradeNo: orderId,
+          MerchantTradeDate: getCurrentTime(),
+          TotalAmount: value,
+          ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
+        };
+        setOrderData(newPointOrder);
+      });
     }
   };
   const handleChooseClick = (title, price, points) => {
@@ -151,20 +155,27 @@ function PointPage() {
       `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
     );
     if (confirm) {
-      let newPointOrder = {
-        ...orderData,
-        MerchantTradeNo: createMerchantTradeNo(),
-        MerchantTradeDate: getCurrentTime(),
-        TotalAmount: price,
-        ItemName: `${title}${points}點 ${price} 元 X1`,
-      };
-      setOrderData(newPointOrder);
+      let itemName = `${title}${points}點`;
+      let orderId;
+      let newPointOrder;
+      getOrderId(itemName, price, points).then((json) => {
+        orderId = json.data.serial;
+        newPointOrder = {
+          ...orderData,
+          MerchantTradeNo: orderId,
+          MerchantTradeDate: getCurrentTime(),
+          TotalAmount: price,
+          ItemName: `${itemName} ${price} 元 X1`,
+        };
+        setOrderData(newPointOrder);
+      });
     }
   };
   useEffect(() => {
     if (!orderData || orderData.ItemName === "") return;
     checkout.current.submit();
   }, [orderData]);
+
   return (
     <PointPageWrapper>
       <PageTitle>點數儲值</PageTitle>
@@ -305,5 +316,3 @@ function PointPage() {
     </PointPageWrapper>
   );
 }
-
-export default PointPage;
