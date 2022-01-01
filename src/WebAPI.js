@@ -495,3 +495,24 @@ export const getAdminCourses = async (audit) => {
     return error;
   }
 };
+
+export const changeCourseAudit = async (courseId, newAudit) => {
+  let url = `${BASE_URL}/administrator/course`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        courseId: courseId,
+        changeStatus: newAudit,
+      }),
+    });
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};

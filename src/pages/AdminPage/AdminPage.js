@@ -9,7 +9,7 @@ import {
   SelectBar,
   ChooseCategoryButton,
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
-import { getAdminCourses } from "../../WebAPI";
+import { getAdminCourses, changeCourseAudit } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 
 const AdminWrapper = styled.section`
@@ -41,31 +41,24 @@ const GridHeadItem = styled(GridItem)`
   font-weight: bold;
 `;
 
-const handleAuditSubmit = (selectBar, courseId, audit) => {
-  let value = selectBar.current.value;
-  if (value !== audit) {
-    //將新 audit 狀態送到後端
-    console.log(courseId, value);
-  }
-};
-
 const SelectAuditContainer = styled(SelectContainer)`
   margin-bottom: 0px;
 `;
 const ChooseAuditButton = styled(ChooseCategoryButton)``;
 
-const AuditDropDownMenu = ({ courseId, audit }) => {
+const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
   const selectBar = useRef(null);
   return (
     <SelectAuditContainer>
       <RowContainer>
-        {audit === "pending" ? (
+        {audit === "pending" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
             <option value="pending">審核中</option>
             <option value="success">審核成功</option>
             <option value="fail">審核失敗</option>
           </SelectBar>
-        ) : (
+        )}
+        {audit === "success" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
             <option value="success">審核成功</option>
             <option value="fail">審核失敗</option>
@@ -91,14 +84,22 @@ const GridHead = () => {
     </>
   );
 };
-function GridRow({ course }) {
+function GridRow({ course, handleAuditSubmit }) {
   return (
     <>
       <GridItem>{course.courseName}</GridItem>
       <GridItem>{course.courseDescription}</GridItem>
       <GridItem>{course.price}</GridItem>
       <GridItem>
-        <AuditDropDownMenu courseId={course.id} audit={course.audit} />
+        {course.audit === "fail" ? (
+          <div>審核失敗</div>
+        ) : (
+          <AuditDropDownMenu
+            courseId={course.id}
+            audit={course.audit}
+            handleAuditSubmit={handleAuditSubmit}
+          />
+        )}
       </GridItem>
     </>
   );
@@ -157,6 +158,20 @@ function AdminPage() {
     setButtonType(buttonId);
   };
 
+  const handleAuditSubmit = (selectBar, courseId, audit) => {
+    let value = selectBar.current.value;
+    if (value !== audit) {
+      changeCourseAudit(courseId, value).then((json) => {
+        if (json.success) {
+          let newShowCourses = showCourses.filter(
+            (course) => course.id !== courseId
+          );
+          setShowCourses(newShowCourses);
+        }
+      });
+    }
+  };
+
   return (
     <AdminWrapper>
       <PageTitle>管理員後台</PageTitle>
@@ -186,7 +201,11 @@ function AdminPage() {
       <GridContainer>
         <GridHead />
         {showCourses.map((course) => (
-          <GridRow key={nanoid()} course={course} />
+          <GridRow
+            key={nanoid()}
+            course={course}
+            handleAuditSubmit={handleAuditSubmit}
+          />
         ))}
       </GridContainer>
     </AdminWrapper>
