@@ -13,8 +13,10 @@ import {
   ErrorMessage,
 } from "../../components/LoginRegisterForm/LoginRegisterFormWrapperStyle";
 import useLogin from "../../components/LoginRegisterForm/useLogin";
+import { scrollTop } from "../../utils";
 
 function LoginPage() {
+  scrollTop();
   const { handleLoginSubmit, loginData, handleLoginDataChange, errorMessage } =
     useLogin();
 

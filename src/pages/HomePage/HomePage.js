@@ -7,6 +7,10 @@ import thirdStep from "../../img/third_step.jpg";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Typed from "typed.js";
 import { useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { scrollTop, setAuthToken } from "../../utils";
+import { AuthContext } from "../../contexts";
+import { useContext } from "react";
 
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
@@ -154,7 +158,7 @@ const TeacherStep = styled(Banner)`
   }
 `;
 
-const Btn = styled.button`
+const Btn = styled(Link)`
   border-radius: 40px;
   border: none;
   cursor: pointer;
@@ -168,6 +172,8 @@ const Btn = styled.button`
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1);
   align-self: flex-end;
   font-size: 1.2rem;
+  text-decoration: none;
+  text-align: center;
   ${MEDIA_QUERY_SM} {
     padding: 10px;
     min-width: 120px;
@@ -190,6 +196,7 @@ const FindATeacherBtn = styled(Btn)`
 `;
 
 function HomePage() {
+  scrollTop();
   const newTyped = useRef(null);
   const typed = useRef(null);
 
@@ -206,6 +213,23 @@ function HomePage() {
     typed.current = new Typed(newTyped.current, typedSetting);
   }, []);
 
+  const { user, setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleBtnClick = (e) => {
+    e.preventDefault();
+    if (!user || user.identity === "student") {
+      const confirmNavigate = window.confirm(
+        "註冊一個老師身分的帳號，即可成為老師囉 ! 按下確定將帶您前往註冊頁面。"
+      );
+      if (!confirmNavigate) return;
+      setAuthToken("");
+      setUser(null);
+      navigate("/register");
+    }
+    if (user && user.identity === "teacher") {
+      alert("您已成功成為老師囉 !");
+    }
+  };
   return (
     <Container>
       <Banner src={banner}>
@@ -239,14 +263,16 @@ function HomePage() {
               上課前會收到線上課程會議室連結，到了上課時間點選連結進入會議室，就可以開始享受與老師的上課啦！
             </StepDescription>
             <BtnDiv>
-              <FindATeacherBtn>開始找老師</FindATeacherBtn>
+              <FindATeacherBtn to="./filter">開始找老師</FindATeacherBtn>
             </BtnDiv>
           </StepContent>
         </StepDiv>
       </StudentStep>
       <TeacherStep src={teacherStep}>
         <p>上架你的才華，將熱情與技能分享給全世界</p>
-        <Btn>成為老師</Btn>
+        <Btn to="./register" onClick={handleBtnClick}>
+          成為老師
+        </Btn>
       </TeacherStep>
     </Container>
   );

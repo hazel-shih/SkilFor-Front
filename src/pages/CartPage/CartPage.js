@@ -7,7 +7,7 @@ import {
 } from "../../components/constants/breakpoints";
 import CartList from "../CartPage/CartList";
 //import { sleep } from "../../utils";
-//import { RESERVED_LIST, CART_LIST } from "./Constant";
+//import { CART_LIST } from "./Constant";
 import {
   getCartItems,
   deleteCartItem,
@@ -16,6 +16,7 @@ import {
 } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
 import { titles } from "./CartTableTitles";
+import { scrollTop } from "../../utils";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -187,6 +188,7 @@ const RemainingPoints = styled(TotalPoints)`
 `;
 
 export default function CartPage() {
+  scrollTop();
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
@@ -261,8 +263,9 @@ export default function CartPage() {
 
   const deleteUserCartItem = async (scheduleId, setApiError) => {
     let json = await deleteCartItem(scheduleId, setApiError);
-    if (!json && !json.success)
+    if (!json || !json.success) {
       return setApiError("發生了一點錯誤，請稍後再試");
+    }
   };
 
   const handleItemDelete = (e) => {
@@ -320,6 +323,7 @@ export default function CartPage() {
   const [orderError, setOrderError] = useState([]);
   const handleConfirmPaymentClick = (e) => {
     e.preventDefault();
+    if (orderError.length !== 0) return;
     const checkedItem = cartItems.find((item) => item.checked);
     if (!checkedItem) return alert("尚未選擇要確認購買的課程");
 
@@ -356,9 +360,6 @@ export default function CartPage() {
       if (!json) return setApiError("發生了一點錯誤，請稍後再試");
       if (!json.success) {
         return setOrderError(json.errMessage);
-      }
-      for (let i = 0; i < orderData.scheduleId.length; i++) {
-        deleteUserCartItem(orderData.scheduleId[i], setApiError);
       }
       alert("成功扣點 ! 可在行事曆上看到已購買成功的課程喔");
       navigate("/calendar");
