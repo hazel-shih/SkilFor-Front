@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 import PageTitle from "../../components/PageTitle";
-import { courseData } from "./constant";
 import { nanoid } from "nanoid";
 import {
   RowContainer,
@@ -22,7 +21,7 @@ const AdminWrapper = styled.section`
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   text-align: center;
 `;
 
@@ -50,42 +49,56 @@ const handleAuditSubmit = (selectBar, courseId, audit) => {
   }
 };
 
+const SelectAuditContainer = styled(SelectContainer)`
+  margin-bottom: 0px;
+`;
+const ChooseAuditButton = styled(ChooseCategoryButton)``;
+
 const AuditDropDownMenu = ({ courseId, audit }) => {
   const selectBar = useRef(null);
   return (
-    <SelectContainer>
+    <SelectAuditContainer>
       <RowContainer>
-        <SelectBar ref={selectBar} defaultValue={audit}>
-          <option value="pending">審核中</option>
-          <option value="success">審核成功</option>
-          <option value="fail">審核失敗</option>
-        </SelectBar>
-        <ChooseCategoryButton
+        {audit === "pending" ? (
+          <SelectBar ref={selectBar} defaultValue={audit}>
+            <option value="pending">審核中</option>
+            <option value="success">審核成功</option>
+            <option value="fail">審核失敗</option>
+          </SelectBar>
+        ) : (
+          <SelectBar ref={selectBar} defaultValue={audit}>
+            <option value="success">審核成功</option>
+            <option value="fail">審核失敗</option>
+          </SelectBar>
+        )}
+        <ChooseAuditButton
           onClick={() => handleAuditSubmit(selectBar, courseId, audit)}
         >
           送出
-        </ChooseCategoryButton>
+        </ChooseAuditButton>
       </RowContainer>
-    </SelectContainer>
+    </SelectAuditContainer>
   );
 };
 
 const GridHead = () => {
   return (
     <>
-      <GridHeadItem>Course Name</GridHeadItem>
-      <GridHeadItem>Teacher</GridHeadItem>
+      <GridHeadItem>課程名稱</GridHeadItem>
+      <GridHeadItem>課程介紹</GridHeadItem>
+      <GridHeadItem>課程點數</GridHeadItem>
       <GridHeadItem>審核狀態</GridHeadItem>
     </>
   );
 };
-function GridRow({ courseId, courseName, teacher, audit }) {
+function GridRow({ course }) {
   return (
     <>
-      <GridItem>{courseName}</GridItem>
-      <GridItem>{teacher}</GridItem>
+      <GridItem>{course.courseName}</GridItem>
+      <GridItem>{course.courseDescription}</GridItem>
+      <GridItem>{course.price}</GridItem>
       <GridItem>
-        <AuditDropDownMenu courseId={courseId} audit={audit} />
+        <AuditDropDownMenu courseId={course.id} audit={course.audit} />
       </GridItem>
     </>
   );
@@ -126,28 +139,24 @@ const FilterButton = styled.button`
   `}
 `;
 function AdminPage() {
-  const [allCourses, setAllCourses] = useState([]);
   const [buttonType, setButtonType] = useState("pending");
   const [showCourses, setShowCourses] = useState([]);
+
   useEffect(() => {
     async function getData() {
-      // getAdminCourses("pending").then((json) => {
-      //   if(json && json.success){
-
-      //   }
-      // });
-      setAllCourses(courseData);
-      let initData = courseData.filter((course) => course.audit === "pending");
-      setShowCourses(initData);
+      getAdminCourses(buttonType).then((json) => {
+        if (json && json.success) {
+          setShowCourses(json.data);
+        }
+      });
     }
     getData();
-  }, []);
+  }, [buttonType]);
   const handleButtonClick = (e) => {
     let buttonId = e.target.id;
     setButtonType(buttonId);
-    let showData = allCourses.filter((course) => course.audit === buttonId);
-    setShowCourses(showData);
   };
+
   return (
     <AdminWrapper>
       <PageTitle>管理員後台</PageTitle>
@@ -177,13 +186,7 @@ function AdminPage() {
       <GridContainer>
         <GridHead />
         {showCourses.map((course) => (
-          <GridRow
-            key={nanoid()}
-            courseId={course.courseId}
-            courseName={course.courseName}
-            teacher={course.teacher}
-            audit={course.audit}
-          />
+          <GridRow key={nanoid()} course={course} />
         ))}
       </GridContainer>
     </AdminWrapper>
