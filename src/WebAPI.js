@@ -477,3 +477,21 @@ export const getOrderId = async (itemName, price, point) => {
     return error;
   }
 };
+//管理員後台
+export const getAdminCourses = async (audit) => {
+  let url = `${BASE_URL}/administrator/course?audit=${audit}`;
+  const token = getAuthToken();
+  try {
+    const res = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) throw new Error("fail to fetch data");
+    return await res.json();
+  } catch (error) {
+    return error;
+  }
+};

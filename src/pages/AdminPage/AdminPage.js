@@ -10,7 +10,7 @@ import {
   SelectBar,
   ChooseCategoryButton,
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
-import { sleep } from "../../utils";
+import { getAdminCourses } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 
 const AdminWrapper = styled.section`
@@ -131,7 +131,11 @@ function AdminPage() {
   const [showCourses, setShowCourses] = useState([]);
   useEffect(() => {
     async function getData() {
-      await sleep(500);
+      // getAdminCourses("pending").then((json) => {
+      //   if(json && json.success){
+
+      //   }
+      // });
       setAllCourses(courseData);
       let initData = courseData.filter((course) => course.audit === "pending");
       setShowCourses(initData);
