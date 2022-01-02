@@ -59,9 +59,14 @@ function ReadTaskAlertCard({
       </TimeContainer>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (
-          <AlertContent>
-            預約學生：{selectedEvent.resource.reserved}
-          </AlertContent>
+          <>
+            <AlertContent>
+              預約學生：{selectedEvent.resource.reserved}
+            </AlertContent>
+            <AlertContent>
+              課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
+            </AlertContent>
+          </>
         ) : (
           <AlertContent>預約狀態：尚無人預約</AlertContent>
         )}
