@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/SkilFor-Front/static/css/main.a8a8579f.chunk.css",
-    "main.js": "/SkilFor-Front/static/js/main.c262b6f1.chunk.js",
-    "main.js.map": "/SkilFor-Front/static/js/main.c262b6f1.chunk.js.map",
+    "main.js": "/SkilFor-Front/static/js/main.4edd373a.chunk.js",
+    "main.js.map": "/SkilFor-Front/static/js/main.4edd373a.chunk.js.map",
     "runtime-main.js": "/SkilFor-Front/static/js/runtime-main.6e4e428a.js",
     "runtime-main.js.map": "/SkilFor-Front/static/js/runtime-main.6e4e428a.js.map",
     "static/css/2.9aaf2cf1.chunk.css": "/SkilFor-Front/static/css/2.9aaf2cf1.chunk.css",
@@ -35,6 +35,6 @@
     "static/css/2.9aaf2cf1.chunk.css",
     "static/js/2.0a975ff6.chunk.js",
     "static/css/main.a8a8579f.chunk.css",
-    "static/js/main.c262b6f1.chunk.js"
+    "static/js/main.4edd373a.chunk.js"
   ]
 }
