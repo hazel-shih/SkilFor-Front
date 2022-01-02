@@ -5,7 +5,6 @@ import Avatar from "../../components/Avatar";
 import PageTitle from "../../components/PageTitle";
 import SelfPage from "../TeacherManagePage/components/SelfPage";
 import useCheckToken from "../TeacherManagePage/hooks/useCheckToken";
-import student from "../../img/student1.png";
 import { getUserInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
 import {
@@ -36,7 +35,6 @@ function StudentManagePage() {
     };
     getData(setApiError);
   }, []);
-  console.log(studentInfos);
   const handleAlertOkClick = () => {
     setApiError(false);
     if (apiError === "請先登入才能使用後台功能") {
@@ -61,7 +59,7 @@ function StudentManagePage() {
         <UserInfoContainer>
           {studentInfos && (
             <Avatar
-              imgSrc={student}
+              imgSrc="https://i.imgur.com/f9bnLUM.png"
               name={studentInfos.username}
               status={`我的點數：${
                 !studentInfos.points ? 0 : studentInfos.points

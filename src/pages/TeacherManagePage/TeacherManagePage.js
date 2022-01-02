@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import Avatar from "../../components/Avatar";
-import teacherPic from "../../img/teacher.jpeg";
 import PageTitle from "../../components/PageTitle";
 import CoursePage from "./components/CoursePage";
 import SelfPage from "./components/SelfPage";
@@ -132,7 +131,10 @@ function TeacherManagePage() {
         )}
         <UserInfoContainer>
           {teacherInfos && (
-            <Avatar imgSrc={teacherPic} name={teacherInfos.username} />
+            <Avatar
+              imgSrc="https://i.imgur.com/7AGhwxo.png"
+              name={teacherInfos.username}
+            />
           )}
           <PageBtnsContainer>
             <PageBtn

@@ -110,7 +110,7 @@ function SelfPage({ infos, setInfos, setApiError }) {
           </ItemBottom>
         )}
       </FormItemContainer>
-      <FormItemContainer show={!isEditing}>
+      {/* <FormItemContainer show={!isEditing}>
         <ItemTop>
           <ItemName>Avatar</ItemName>
         </ItemTop>
@@ -127,7 +127,7 @@ function SelfPage({ infos, setInfos, setApiError }) {
             )}
           </ItemBottom>
         )}
-      </FormItemContainer>
+      </FormItemContainer> */}
       <FormItemContainer show={!isEditing}>
         <ItemTop>
           <ItemName>Contact Email</ItemName>
