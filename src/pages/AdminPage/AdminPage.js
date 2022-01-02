@@ -31,6 +31,7 @@ const GridItem = styled.div`
   align-items: center;
   border-bottom: 2px solid ${(props) => props.theme.colors.grey_bg};
   padding: 10px;
+  white-space: pre-wrap;
   color: ${(props) => props.theme.colors.grey_dark};
 `;
 
