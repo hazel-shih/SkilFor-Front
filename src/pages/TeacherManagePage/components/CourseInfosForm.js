@@ -26,6 +26,7 @@ export const ItemName = styled.p`
 export const ItemValue = styled(ItemName)`
   overflow-wrap: break-word;
   margin-bottom: 0px;
+  white-space: pre-wrap;
   display: ${(props) => (props.show ? "block" : "none")};
 `;
 export const EditInput = styled.input`
