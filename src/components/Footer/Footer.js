@@ -39,7 +39,7 @@ const FooterList = styled.ul`
   }
 `;
 
-const IconLink = styled.div`
+const IconLink = styled.li`
   text-decoration: none;
   color: ${(props) => props.theme.colors.white_pure};
   border-bottom: 3px solid transparent;
@@ -53,45 +53,33 @@ const IconLink = styled.div`
 function Footer() {
   return (
     <Container>
-      <div>
-        <FooterList>
-          <li>
-            <IconLink>
-              <IconDiv>
-                <Icons.SocialMediaIcons.Twitter />
-              </IconDiv>
-            </IconLink>
-          </li>
-          <li>
-            <IconLink>
-              <IconDiv>
-                <Icons.SocialMediaIcons.Youtube />
-              </IconDiv>
-            </IconLink>
-          </li>
-          <li>
-            <IconLink>
-              <IconDiv>
-                <Icons.SocialMediaIcons.Telegram />
-              </IconDiv>
-            </IconLink>
-          </li>
-          <li>
-            <IconLink>
-              <IconDiv>
-                <Icons.SocialMediaIcons.Instagram />
-              </IconDiv>
-            </IconLink>
-          </li>
-          <li>
-            <IconLink>
-              <IconDiv>
-                <Icons.SocialMediaIcons.Facebook />
-              </IconDiv>
-            </IconLink>
-          </li>
-        </FooterList>
-      </div>
+      <FooterList>
+        <IconLink>
+          <IconDiv>
+            <Icons.SocialMediaIcons.Twitter />
+          </IconDiv>
+        </IconLink>
+        <IconLink>
+          <IconDiv>
+            <Icons.SocialMediaIcons.Youtube />
+          </IconDiv>
+        </IconLink>
+        <IconLink>
+          <IconDiv>
+            <Icons.SocialMediaIcons.Telegram />
+          </IconDiv>
+        </IconLink>
+        <IconLink>
+          <IconDiv>
+            <Icons.SocialMediaIcons.Instagram />
+          </IconDiv>
+        </IconLink>
+        <IconLink>
+          <IconDiv>
+            <Icons.SocialMediaIcons.Facebook />
+          </IconDiv>
+        </IconLink>
+      </FooterList>
       <p>Copyright © {new Date().getFullYear()} SkilFor All Rights Reserved.</p>
     </Container>
   );
