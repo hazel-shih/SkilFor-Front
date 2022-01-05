@@ -161,7 +161,6 @@ const ErrorBtn = styled.button`
 `;
 
 function FilterPage() {
-  scrollTop();
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
@@ -172,6 +171,7 @@ function FilterPage() {
   });
 
   useEffect(() => {
+    scrollTop();
     const getCategoryOptions = async (setFilterError) => {
       let json = await getAllCategories(setFilterError);
       if (!json || !json.success)
@@ -181,7 +181,7 @@ function FilterPage() {
       setDropdownContent(json.data);
     };
     getCategoryOptions(setFilterError);
-  }, [setFilterError, setMenu]);
+  }, [setFilterError, setMenu, setDropdownContent]);
 
   useEffect(() => {
     const getAllCourseResults = async (setFilterError) => {
@@ -202,6 +202,7 @@ function FilterPage() {
       setFilterError
     ) => {
       setCourseResults([]);
+      scrollTop();
       let json = await getSpecificCourse(currentCategory.name, setFilterError);
       if (!json || !json.success)
         return setFilterError("發生了一點錯誤，請稍後再試");

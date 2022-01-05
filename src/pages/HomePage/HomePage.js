@@ -196,11 +196,11 @@ const FindATeacherBtn = styled(Btn)`
 `;
 
 function HomePage() {
-  scrollTop();
   const newTyped = useRef(null);
   const typed = useRef(null);
 
   useEffect(() => {
+    scrollTop();
     const typedSetting = {
       strings: [
         "最酷的技能學習平台<br/>從寫程式到 B-box 你都可以在這裡教與學！<br/>A platform for learning and teaching skill.",
