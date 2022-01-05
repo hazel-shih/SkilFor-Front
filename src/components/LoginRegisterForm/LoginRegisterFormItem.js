@@ -94,6 +94,7 @@ export function RadioFormItem({
         type={type}
         name={name}
         onChange={handleChange}
+        defaultChecked={id === "administrator" ? true : false}
       />
       {radioItemName}
     </ItemLabel>
