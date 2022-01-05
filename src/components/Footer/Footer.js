@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { IconDiv } from "../Icon/IconDiv";
 import Icons from "../Icon/Icons";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
-import { Link } from "react-router-dom";
 
 const Container = styled.div`
   border-bottom: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -40,7 +39,7 @@ const FooterList = styled.ul`
   }
 `;
 
-const IconLink = styled(Link)`
+const IconLink = styled.div`
   text-decoration: none;
   color: ${(props) => props.theme.colors.white_pure};
   border-bottom: 3px solid transparent;
@@ -57,35 +56,35 @@ function Footer() {
       <div>
         <FooterList>
           <li>
-            <IconLink to="./twitter">
+            <IconLink>
               <IconDiv>
                 <Icons.SocialMediaIcons.Twitter />
               </IconDiv>
             </IconLink>
           </li>
           <li>
-            <IconLink to="./youtube">
+            <IconLink>
               <IconDiv>
                 <Icons.SocialMediaIcons.Youtube />
               </IconDiv>
             </IconLink>
           </li>
           <li>
-            <IconLink to="./telegram">
+            <IconLink>
               <IconDiv>
                 <Icons.SocialMediaIcons.Telegram />
               </IconDiv>
             </IconLink>
           </li>
           <li>
-            <IconLink to="./instagram">
+            <IconLink>
               <IconDiv>
                 <Icons.SocialMediaIcons.Instagram />
               </IconDiv>
             </IconLink>
           </li>
           <li>
-            <IconLink to="./facebook">
+            <IconLink>
               <IconDiv>
                 <Icons.SocialMediaIcons.Facebook />
               </IconDiv>
