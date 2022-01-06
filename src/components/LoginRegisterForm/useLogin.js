@@ -38,13 +38,6 @@ export default function useLogin() {
       }
     }
 
-    if (loginData.email === "skilforAdmin@gmail.com") {
-      setLoginData({
-        ...loginData,
-        identity: "administrator",
-      });
-    }
-
     login(loginData, setErrorMessage).then((data) => {
       if (!data) {
         setIsLoading(false);
@@ -74,6 +67,7 @@ export default function useLogin() {
   const handleLoginDataChange = (e) => {
     setErrorMessage("");
     const { name: inputName, value } = e.target;
+    console.log(value);
     setLoginData({
       ...loginData,
       [inputName]: value,
@@ -82,6 +76,7 @@ export default function useLogin() {
 
   return {
     handleLoginSubmit,
+    setLoginData,
     loginData,
     handleLoginDataChange,
     errorMessage,

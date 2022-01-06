@@ -19,6 +19,7 @@ import StudentCalendarPage from "../../pages/StudentCalendarPage";
 import StudentManagePage from "../../pages/StudentManagePage";
 import QAPage from "../../pages/QAPage";
 import AdminPage from "../../pages/AdminPage";
+import AdminLoginPage from "../../pages/AdminLoginPage";
 
 export const Loading = styled.div`
   position: fixed;
@@ -63,6 +64,7 @@ function App() {
             <Nav />
             <Routes>
               <Route exact path="/login" element={<LoginPage />} />
+              <Route path="/login/admin" element={<AdminLoginPage />} />
               <Route exact path="/register" element={<RegisterPage />} />
               <Route exact path="/" element={<HomePage />} />
               <Route exact path="/filter" element={<FilterPage />} />

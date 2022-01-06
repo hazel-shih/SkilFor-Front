@@ -6,8 +6,6 @@ import {
   MEDIA_QUERY_SM,
 } from "../../components/constants/breakpoints";
 import CartList from "../CartPage/CartList";
-//import { sleep } from "../../utils";
-//import { CART_LIST } from "./Constant";
 import {
   getCartItems,
   deleteCartItem,
@@ -188,11 +186,11 @@ const RemainingPoints = styled(TotalPoints)`
 `;
 
 export default function CartPage() {
-  scrollTop();
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
+    scrollTop();
     const getUserCartItems = async (setApiError) => {
       let json = await getCartItems(setApiError);
       if (!json || !json.success)
@@ -203,12 +201,7 @@ export default function CartPage() {
       setCartItems(json.data);
     };
     getUserCartItems(setApiError);
-    /*async function fetchData() {
-      await sleep(100);
-      setCartItems(CART_LIST);
-    }
-    fetchData();*/
-  }, []);
+  }, [setCartItems]);
 
   const handleItemCheckChange = (e) => {
     const { id } = e.target;
