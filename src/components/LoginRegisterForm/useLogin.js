@@ -67,7 +67,6 @@ export default function useLogin() {
   const handleLoginDataChange = (e) => {
     setErrorMessage("");
     const { name: inputName, value } = e.target;
-    console.log(value);
     setLoginData({
       ...loginData,
       [inputName]: value,

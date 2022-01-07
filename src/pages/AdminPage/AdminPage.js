@@ -11,6 +11,7 @@ import {
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
 import { getAdminCourses, changeCourseAudit } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
+import AlertCard from "../../components/AlertCard/AlertCard";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -151,12 +152,16 @@ const FilterButton = styled.button`
 function AdminPage() {
   const [buttonType, setButtonType] = useState("pending");
   const [showCourses, setShowCourses] = useState([]);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     async function getData() {
-      getAdminCourses(buttonType).then((json) => {
+      getAdminCourses(buttonType, setApiError).then((json) => {
         if (json && json.success) {
           setShowCourses(json.data);
+        }
+        if (json && json.errorMessage) {
+          setApiError(json.errorMessage);
         }
       });
     }
@@ -170,15 +175,22 @@ function AdminPage() {
   const handleAuditSubmit = (selectBar, courseId, audit) => {
     let value = selectBar.current.value;
     if (value !== audit) {
-      changeCourseAudit(courseId, value).then((json) => {
-        if (json.success) {
+      changeCourseAudit(courseId, value, setApiError).then((json) => {
+        if (json && json.success) {
           let newShowCourses = showCourses.filter(
             (course) => course.id !== courseId
           );
           setShowCourses(newShowCourses);
         }
+        if (json && json.errorMessage) {
+          setApiError(json.errorMessage);
+        }
       });
     }
+  };
+
+  const handleAlertOkClick = () => {
+    return setApiError(false);
   };
 
   return (
@@ -208,6 +220,14 @@ function AdminPage() {
         </FilterButton>
       </ButtonsContainer>
       <GridContainer>
+        {apiError && (
+          <AlertCard
+            color="#A45D5D"
+            title="錯誤"
+            content={apiError}
+            handleAlertOkClick={handleAlertOkClick}
+          />
+        )}
         <GridHead />
         {showCourses.map((course) => (
           <GridRow
