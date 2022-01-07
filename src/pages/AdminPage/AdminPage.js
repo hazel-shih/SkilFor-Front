@@ -12,6 +12,11 @@ import {
 import { getAdminCourses, changeCourseAudit } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 
+const ColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const AdminWrapper = styled.section`
   padding: 156px 80px 232px 80px;
   ${MEDIA_QUERY_MD} {
@@ -45,13 +50,16 @@ const GridHeadItem = styled(GridItem)`
 const SelectAuditContainer = styled(SelectContainer)`
   margin-bottom: 0px;
 `;
-const ChooseAuditButton = styled(ChooseCategoryButton)``;
+const ChooseAuditButton = styled(ChooseCategoryButton)`
+  margin: 10px auto 0 auto;
+  width: fit-content;
+`;
 
 const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
   const selectBar = useRef(null);
   return (
     <SelectAuditContainer>
-      <RowContainer>
+      <ColumnContainer>
         {audit === "pending" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
             <option value="pending">審核中</option>
@@ -70,7 +78,7 @@ const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
         >
           送出
         </ChooseAuditButton>
-      </RowContainer>
+      </ColumnContainer>
     </SelectAuditContainer>
   );
 };
