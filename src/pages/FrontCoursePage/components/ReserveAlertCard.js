@@ -8,7 +8,7 @@ import {
 } from "../../../components/Calendar/AddTaskAlertCard";
 import close from "../../../img/close.png";
 import { addCartItem } from "../../../WebAPI";
-
+import { useTranslation } from "next-i18next";
 const AddToCartButton = styled(AlertButton)`
   min-width: 100px;
 `;
@@ -33,6 +33,7 @@ const getDisplayDate = (dateObj) => {
 };
 
 function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
+  const { t } = useTranslation();
   const handleCloseClick = () => {
     setAlertShow(null);
   };
@@ -41,27 +42,29 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
       if (json && !json.success && json.errMessage) {
         return setApiError(json.errMessage[0]);
       }
-      if (json && json.success) alert("加入成功！請至購物車結帳吧！");
+      if (json && json.success) alert(`${t("加入成功！請至購物車結帳吧！")}`);
     });
     setAlertShow(false);
   };
   return (
     <AlertContainer color="#75A29E">
       <CloseButton src={close} onClick={handleCloseClick} />
-      <AlertTitle>將這堂課加入購物車</AlertTitle>
+      <AlertTitle>{t("將這堂課加入購物車")}</AlertTitle>
       <TimeContainer>
         <TimeTitle>
-          開始：{getDisplayDate(new Date(selectedEvent.start))}
+          {t("開始")}：{getDisplayDate(new Date(selectedEvent.start))}
         </TimeTitle>
         <TimeTitle>
-          結束：{getDisplayDate(new Date(selectedEvent.end))}
+          {t("結束")}：{getDisplayDate(new Date(selectedEvent.end))}
         </TimeTitle>
       </TimeContainer>
       <WrapContent>
-        溫馨提醒：加入購物車不代表預約成功，請至購物車完成扣點手續，我們才能幫你保留這堂課程喔！
+        {t(
+          "溫馨提醒：加入購物車不代表預約成功，請至購物車完成扣點手續，我們才能幫你保留這堂課程喔！"
+        )}
       </WrapContent>
       <AddToCartButton color="#75A29E" onClick={handleReserveEvent}>
-        加入購物車
+        {t("加入購物車")}
       </AddToCartButton>
     </AlertContainer>
   );

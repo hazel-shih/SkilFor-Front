@@ -4,6 +4,7 @@ import { login, getMyUserData } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 export default function useLogin() {
   const { setUser } = useContext(AuthContext);
@@ -15,6 +16,7 @@ export default function useLogin() {
     identity: "",
     password: "",
   });
+  const { t } = useTranslation();
 
   const handleLoginSubmit = (e) => {
     setIsLoading(true);
@@ -24,13 +26,13 @@ export default function useLogin() {
     for (const [inputName, value] of Object.entries(loginData)) {
       if (value.trim().length === 0) {
         if (inputName === "email") {
-          setErrorMessage("請輸入登入用 Email");
+          setErrorMessage(`${t("請輸入登入用 email")}`);
         }
         if (inputName === "password") {
-          setErrorMessage("請輸入密碼");
+          setErrorMessage(`${t("請輸入密碼")}`);
         }
         if (inputName === "identity") {
-          setErrorMessage("請選擇身分");
+          setErrorMessage(`${t("請選擇身分")}`);
         }
         setIsLoading(false);
         scrollTop();
@@ -42,7 +44,7 @@ export default function useLogin() {
       if (!data) {
         setIsLoading(false);
         scrollTop();
-        return setErrorMessage("網站更新中請稍後再登入");
+        return setErrorMessage(`${t("網站更新中請稍後再登入")}`);
       }
       if (data.success === false) {
         setIsLoading(false);
@@ -67,7 +69,6 @@ export default function useLogin() {
   const handleLoginDataChange = (e) => {
     setErrorMessage("");
     const { name: inputName, value } = e.target;
-    console.log(value);
     setLoginData({
       ...loginData,
       [inputName]: value,

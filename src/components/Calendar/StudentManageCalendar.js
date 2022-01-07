@@ -11,8 +11,10 @@ import {
 } from "../../WebAPI";
 import LoaderSpining from "../../components/LoaderSpining";
 import { CalendarContainer, LoadingSquare } from "./TeacherManageCalendar";
+import { useTranslation } from "react-i18next";
 
 function StudentManageCalendar() {
+  const { t } = useTranslation();
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
@@ -27,7 +29,7 @@ function StudentManageCalendar() {
       (json) => {
         if (!json || !json.success) {
           setLoading(false);
-          return setApiError("發生了一點錯誤，請稍後再試");
+          return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
         }
         let data = json.data.map((event) => {
           event.start = new Date(event.start);
@@ -38,7 +40,7 @@ function StudentManageCalendar() {
         setLoading(false);
       }
     );
-  }, [currentPage]);
+  }, [currentPage, t]);
   const handleEventClick = (e) => {
     setAlertShow("read");
     setSelectedEvent(e);
@@ -72,25 +74,25 @@ function StudentManageCalendar() {
     };
   };
   const handleCancelEvent = (eventId) => {
-    let confirm = window.confirm("確認要取消這堂課嗎？");
+    let confirm = window.confirm(`${t("確認要取消這堂課嗎？")}`);
     if (!confirm) return;
     cancelStudentCalendarEvent(setApiError, eventId).then((json) => {
       if (!json || !json.success) {
         setLoading(false);
-        return setApiError("目前無法取消課程，請稍後再試");
+        return setApiError(`${t("目前無法取消課程，請稍後再試")}`);
       }
       setAlertShow(false);
       setAllEvents(allEvents.filter((event) => event.id !== eventId));
-      alert("課程取消成功！我們已經將此堂課的課程點數退還給你囉！");
+      alert(`${t("課程取消成功！我們已經將此堂課的課程點數退還給你囉！")}`);
     });
   };
   const handleDeleteEvent = (eventId) => {
-    let confirm = window.confirm("確認要刪除這筆課程紀錄嗎？");
+    let confirm = window.confirm(`${t("確認要刪除這筆課程紀錄嗎？")}`);
     if (!confirm) return;
     deleteStudentCalendarEvent(setApiError, eventId).then((json) => {
       if (!json || !json.success) {
         setLoading(false);
-        return setApiError("目前無法刪除這筆課程紀錄，請稍後再試");
+        return setApiError(`${t("目前無法刪除這筆課程紀錄，請稍後再試")}`);
       }
       setAlertShow(false);
       setAllEvents(allEvents.filter((event) => event.id !== eventId));

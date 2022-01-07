@@ -9,6 +9,7 @@ import { MEDIA_QUERY_MD } from "../../components/constants/breakpoints";
 import useCheckToken from "./hooks/useCheckToken";
 import { getUserInfos } from "../../WebAPI.js";
 import AlertCard from "../../components/AlertCard/AlertCard";
+import { useTranslation } from "react-i18next";
 
 //styled component
 export const TeacherManageWrapper = styled.section`
@@ -86,6 +87,7 @@ export const SubmitButton = styled(EditButton)`
 `;
 
 function TeacherManagePage() {
+  const { t } = useTranslation();
   useCheckToken();
   const navigate = useNavigate();
   //個人資料或課程資料頁面
@@ -97,12 +99,12 @@ function TeacherManagePage() {
     const getData = async (setApiError) => {
       let json = await getUserInfos(setApiError);
       if (!json || !json.success) {
-        return setApiError("請先登入才能使用後台功能");
+        return setApiError(`${t("請先登入才能使用後台功能")}`);
       }
       setTeacherInfos(json.data);
     };
     getData(setApiError);
-  }, []);
+  }, [t]);
   //當個人資訊與課程資訊按鈕被按時
   const handlePageBtnClick = (e) => {
     const { id: currentPage } = e.target;
@@ -119,7 +121,7 @@ function TeacherManagePage() {
   };
   return (
     <TeacherManageWrapper>
-      <PageTitle>後台管理</PageTitle>
+      <PageTitle>{t("管理後台")}</PageTitle>
       <TeacherManageContainer>
         {apiError && (
           <AlertCard
@@ -142,14 +144,14 @@ function TeacherManagePage() {
               onClick={handlePageBtnClick}
               isClick={page === "self"}
             >
-              個人資訊
+              {t("個人資訊")}
             </PageBtn>
             <PageBtn
               id="course"
               onClick={handlePageBtnClick}
               isClick={page === "course"}
             >
-              課程資料
+              {t("課程資訊")}
             </PageBtn>
           </PageBtnsContainer>
         </UserInfoContainer>

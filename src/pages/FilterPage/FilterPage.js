@@ -13,6 +13,7 @@ import {
 import { AuthMenuContext } from "../../contexts";
 import useMenu from "../../components/Menu/useMenu";
 import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   padding: 125px 100px 160px 100px;
@@ -161,40 +162,48 @@ const ErrorBtn = styled.button`
 `;
 
 function FilterPage() {
+  const { t } = useTranslation();
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
   const [courseResults, setCourseResults] = useState([]);
   const [currentCategory, setCurrentCategory] = useState({
     name: "",
-    displayName: "請選擇領域",
+    displayName: `${t("請選擇領域")}`,
   });
+
+  useEffect(() => {
+    setCurrentCategory({
+      name: "",
+      displayName: `${t("請選擇領域")}`,
+    });
+  }, [setCurrentCategory, t]);
 
   useEffect(() => {
     scrollTop();
     const getCategoryOptions = async (setFilterError) => {
       let json = await getAllCategories(setFilterError);
       if (!json || !json.success)
-        return setFilterError("發生了一點錯誤，請稍後再試");
+        return setFilterError(`${t("發生了一點錯誤，請稍後再試")}`);
       if (json.data.length === 0)
-        return setFilterError("目前尚未有領域開放查詢，請稍後再試");
+        return setFilterError(`${t("目前尚未有領域開放查詢，請稍後再試")}`);
       setDropdownContent(json.data);
     };
     getCategoryOptions(setFilterError);
-  }, [setFilterError, setMenu, setDropdownContent]);
+  }, [setFilterError, setMenu, setDropdownContent, t]);
 
   useEffect(() => {
     const getAllCourseResults = async (setFilterError) => {
       let json = await getAllCourses(setFilterError);
       if (!json || !json.success)
-        return setFilterError("發生了一點錯誤，請稍後再試");
+        return setFilterError(`${t("發生了一點錯誤，請稍後再試")}`);
       if (json.data.length === 0) {
-        return setFilterError("目前尚未有課程上架，請稍後再試");
+        return setFilterError(`${t("目前尚未有課程上架，請稍後再試")}`);
       }
       setCourseResults(json.data);
     };
     getAllCourseResults(setFilterError);
-  }, [setFilterError, setCourseResults]);
+  }, [setFilterError, setCourseResults, t]);
 
   useEffect(() => {
     const getSpecificCourseResults = async (
@@ -205,16 +214,16 @@ function FilterPage() {
       scrollTop();
       let json = await getSpecificCourse(currentCategory.name, setFilterError);
       if (!json || !json.success)
-        return setFilterError("發生了一點錯誤，請稍後再試");
+        return setFilterError(`${t("發生了一點錯誤，請稍後再試")}`);
       if (json.data.length === 0) {
         return setFilterError(
-          "oops ! 目前此領域課程尚未上架，先逛逛其他領域吧 ~"
+          `${t("Oops！目前此領域課程尚未上架，先逛逛其他領域吧 ~")}`
         );
       }
       setCourseResults(json.data);
     };
     getSpecificCourseResults(currentCategory, setFilterError);
-  }, [setFilterError, currentCategory, setCourseResults]);
+  }, [setFilterError, currentCategory, setCourseResults, t]);
 
   const handleCategoryClick = (e) => {
     const { id: name, value: displayName } = e.target;
@@ -228,7 +237,7 @@ function FilterPage() {
 
   const handleOkClick = () => {
     setFilterError(false);
-    setCurrentCategory({ name: "", displayName: "請選擇領域" });
+    setCurrentCategory({ name: "", displayName: `${t("請選擇領域")}` });
     return;
   };
 
@@ -237,7 +246,7 @@ function FilterPage() {
       value={{ menuRef, menu, setMenu, handleMenuToggle }}
     >
       <Container>
-        <Title>搜尋老師</Title>
+        <Title>{t("搜尋課程")}</Title>
         <DropdownLabel ref={menuRef}>
           <DropdownBtn onClick={handleMenuToggle}>
             {currentCategory.displayName}

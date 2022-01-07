@@ -5,6 +5,7 @@ import { TeacherManageWrapper } from "../TeacherManagePage/TeacherManagePage";
 import { generateCheckMacValue, getCurrentTime } from "./utils";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import { getOrderId } from "../../WebAPI";
+import { useTranslation } from "react-i18next";
 
 const PointPageWrapper = styled(TeacherManageWrapper)``;
 const PriceCardContainer = styled.div`
@@ -63,14 +64,17 @@ const ChooseButton = styled.button`
   }
 `;
 const PriceCard = ({ title, price, points, courseCount, handleClick }) => {
+  const { t } = useTranslation();
   return (
     <PriceContainer>
       <PriceTitle>{title}</PriceTitle>
       <PriceBar>${price}</PriceBar>
       <PriceIntro>{points} points</PriceIntro>
-      <PriceIntro>此方案大概可以上 {courseCount} 堂課</PriceIntro>
+      <PriceIntro>
+        {t("此方案大概可以上")} {courseCount} {t("堂課")}
+      </PriceIntro>
       <ChooseButton onClick={() => handleClick(price, points)}>
-        選擇此方案
+        {t("選擇此方案")}
       </ChooseButton>
     </PriceContainer>
   );
@@ -111,13 +115,14 @@ const CreditCardInfo = styled.p`
 `;
 
 export default function PointPage() {
+  const { t } = useTranslation();
   const [orderData, setOrderData] = useState({
     MerchantID: "2000132",
     MerchantTradeNo: "",
     MerchantTradeDate: "",
     PaymentType: "aio",
     TotalAmount: 0,
-    TradeDesc: "SkilFor課程點數儲值",
+    TradeDesc: `${t("SkilFor課程點數儲值")}`,
     ItemName: "",
     ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
     ChoosePayment: "Credit",
@@ -178,39 +183,44 @@ export default function PointPage() {
 
   return (
     <PointPageWrapper>
-      <PageTitle>點數儲值</PageTitle>
-      <SectionTitle className="first">請用此測試信用卡號結帳</SectionTitle>
+      <PageTitle>{t("點數儲值")}</PageTitle>
+      <SectionTitle className="first">
+        {t("請用此測試信用卡號結帳")}
+      </SectionTitle>
       <CreditCardInfo>
-        🌚 注意！結帳時請使用下方測試信用卡資料，請勿輸入您真實的信用卡號 🌚
+        🌚 {t("注意！結帳時請使用下方測試信用卡資料，請勿輸入您真實的信用卡號")}{" "}
+        🌚
       </CreditCardInfo>
-      <CreditCardInfo>信用卡測試卡號：4311-9522-2222-2222</CreditCardInfo>
-      <CreditCardInfo>信用卡測試有效月/年：12/25</CreditCardInfo>
-      <CreditCardInfo>信用卡測試安全碼：222</CreditCardInfo>
-      <SectionTitle>優惠方案</SectionTitle>
+      <CreditCardInfo>
+        {t("信用卡測試卡號")}：4311-9522-2222-2222
+      </CreditCardInfo>
+      <CreditCardInfo>{t("信用卡測試有效月/年")}：12/25</CreditCardInfo>
+      <CreditCardInfo>{t("信用卡測試安全碼")}：222</CreditCardInfo>
+      <SectionTitle>{t("優惠方案")}</SectionTitle>
       <PriceCardContainer>
         <PriceCard
-          title="初體驗"
+          title={t("初體驗")}
           price={250}
           points={300}
           courseCount="1"
           handleClick={() => handleChooseClick("初體驗方案", 250, 300)}
         />
         <PriceCard
-          title="小資族"
+          title={t("小資族")}
           price={3000}
           points={3500}
           courseCount="10"
           handleClick={() => handleChooseClick("小資族方案", 3000, 3500)}
         />
         <PriceCard
-          title="好划算"
+          title={t("好划算")}
           price={6000}
           points={7000}
           courseCount="20"
           handleClick={() => handleChooseClick("好划算方案", 6000, 7000)}
         />
         <PriceCard
-          title="超優惠"
+          title={t("超優惠")}
           price={10000}
           points={12000}
           courseCount="35"
@@ -218,17 +228,17 @@ export default function PointPage() {
         />
       </PriceCardContainer>
       <SectionTitle>
-        自行選擇儲值金額 (一元兌換 1 point，儲值額度不得低於 100)
+        {t("自行選擇儲值金額")} ({t("一元兌換 1 point，儲值額度不得低於 100")})
       </SectionTitle>
       <StorePointContainer>
         <StorePointInput
           type="number"
-          placeholder="請輸入儲值金額"
+          placeholder={t("請輸入儲值金額")}
           min="100"
           ref={pointInput}
         />
         <StorePointButton onClick={handleStorePointClick}>
-          儲值
+          {t("儲值")}
         </StorePointButton>
       </StorePointContainer>
       {orderData && (

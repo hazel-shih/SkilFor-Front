@@ -8,6 +8,7 @@ import { MEDIA_QUERY_SM, MEDIA_QUERY_MD } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { setAuthToken } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   border-top: 20px solid ${(props) => props.theme.colors.green_dark};
@@ -78,6 +79,16 @@ function Nav() {
     setAuthToken("");
     setUser(null);
   };
+  const { t, i18n } = useTranslation();
+
+  const handleSelectLanguage = (e) => {
+    const { value } = e.target;
+    if (value === "en") {
+      i18n.changeLanguage("en");
+    } else {
+      i18n.changeLanguage("zh");
+    }
+  };
   return (
     <Container>
       <Navbar>
@@ -87,17 +98,16 @@ function Nav() {
         <div>
           {!isLoading && (
             <NavbarList>
-              <NavItem to="./filter">找老師</NavItem>
-
+              <NavItem to="./filter">{t("搜尋課程")}</NavItem>
               {!user && (
                 <>
-                  <NavItem to="./login">登入</NavItem>
-                  <NavItem to="./register">註冊</NavItem>
+                  <NavItem to="./login">{t("登入")}</NavItem>
+                  <NavItem to="./register">{t("註冊")}</NavItem>
                 </>
               )}
               {user && (
                 <NavItem to="./" onClick={handleLogout}>
-                  登出
+                  {t("登出")}
                 </NavItem>
               )}
               <NavItem to="./qa">
@@ -106,6 +116,13 @@ function Nav() {
                 </IconDiv>
               </NavItem>
               {user && <BurgerMenu />}
+              <select
+                onChange={handleSelectLanguage}
+                defaultValue={i18n.language}
+              >
+                <option value="zh">Mandarin</option>
+                <option value="en">English</option>
+              </select>
             </NavbarList>
           )}
         </div>

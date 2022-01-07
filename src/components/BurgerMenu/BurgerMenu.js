@@ -8,6 +8,7 @@ import Avatar from "../../components/Avatar";
 import { AuthContext, AuthMenuContext } from "../../contexts";
 import useMenu from "../../components/Menu/useMenu";
 import { getUserInfos } from "../../WebAPI";
+import { useTranslation } from "react-i18next";
 
 const Burger = styled.div`
   position: relative;
@@ -62,14 +63,14 @@ function BurgerMenu() {
   const { user } = useContext(AuthContext);
   const [apiError, setApiError] = useState(false);
   const [userInfos, setUserInfos] = useState({});
-
+  const { t } = useTranslation();
   const handleBurgerClick = () => {
     setMenu(!menu);
     if (!menu) {
       const getData = async (setApiError) => {
         let json = await getUserInfos(setApiError);
         if (!json || !json.success) {
-          return setApiError("發生了一點錯誤，請稍後再試");
+          return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
         }
         setUserInfos(json.data);
       };
@@ -92,31 +93,33 @@ function BurgerMenu() {
             <Avatar
               imgSrc={userInfos.avatar}
               name={userInfos.username}
-              status={`我的點數：${!userInfos.points ? "0" : userInfos.points}`}
+              status={`${t("點數")}：${
+                !userInfos.points ? "0" : userInfos.points
+              }`}
             />
             {user && user.identity === "student" && (
               <>
                 <BurgerItem to="./cart" onClick={handleMenuToggle}>
-                  購物車
+                  {t("購物車")}
                 </BurgerItem>
                 <BurgerItem to="/point" onClick={handleMenuToggle}>
-                  儲值點數
+                  {t("點數儲值")}
                 </BurgerItem>
               </>
             )}
             {user && user.identity !== "administrator" && (
               <>
                 <BurgerItem to="/calendar" onClick={handleMenuToggle}>
-                  行事曆
+                  {t("行事曆")}
                 </BurgerItem>
                 <BurgerItem to="/manage" onClick={handleMenuToggle}>
-                  管理後台
+                  {t("管理後台")}
                 </BurgerItem>
               </>
             )}
             {user && user.identity === "administrator" && (
               <BurgerItem to="/admin" onClick={handleMenuToggle}>
-                審核頁面
+                {t("管理員後台")}
               </BurgerItem>
             )}
           </BurgerContent>

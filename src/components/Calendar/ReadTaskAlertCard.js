@@ -12,6 +12,7 @@ import {
   TimeTitle,
   TimeContainer,
 } from "../../pages/FrontCoursePage/components/ReserveAlertCard";
+import { useTranslation } from "react-i18next";
 
 const ContentContainer = styled.div``;
 
@@ -30,6 +31,7 @@ function ReadTaskAlertCard({
   selectedEvent,
   setApiError,
 }) {
+  const { t } = useTranslation();
   const handleCloseClick = () => {
     setAlertShow(null);
   };
@@ -37,10 +39,10 @@ function ReadTaskAlertCard({
     let confirmAlert;
     if (selectedEvent.resource.reserved) {
       confirmAlert = window.confirm(
-        "確定取消此時段的課程嗎？系統將通知預約的學生您已取消這堂課！"
+        `${t("確定取消此時段的課程嗎？系統將通知預約的學生您已取消這堂課！")}`
       );
     } else {
-      confirmAlert = window.confirm("確定刪除此時段的課程嗎？");
+      confirmAlert = window.confirm(`${t("確定刪除此時段的課程嗎？")}`);
     }
     if (!confirmAlert) return;
     deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
@@ -54,32 +56,39 @@ function ReadTaskAlertCard({
       <CloseButton src={close} onClick={handleCloseClick} />
       <AlertTitle>{selectedEvent.title}</AlertTitle>
       <TimeContainer>
-        <TimeTitle>開始：{getDisplayDate(selectedEvent.start)}</TimeTitle>
-        <TimeTitle>結束：{getDisplayDate(selectedEvent.end)}</TimeTitle>
+        <TimeTitle>
+          {t("開始")}：{getDisplayDate(selectedEvent.start)}
+        </TimeTitle>
+        <TimeTitle>
+          {t("結束")}：{getDisplayDate(selectedEvent.end)}
+        </TimeTitle>
       </TimeContainer>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (
           <>
             <AlertContent>
-              預約學生：{selectedEvent.resource.reserved}
+              {t("預約學生")}：{selectedEvent.resource.reserved}
             </AlertContent>
             <AlertContent>
-              課程視訊連結：https://explore.zoom.us/zh-tw/products/meetings/
+              {t("課程視訊連結")}
+              ：https://explore.zoom.us/zh-tw/products/meetings/
             </AlertContent>
           </>
         ) : (
-          <AlertContent>預約狀態：尚無人預約</AlertContent>
+          <AlertContent>
+            {t("預約狀態")}：{t("尚無人預約")}
+          </AlertContent>
         )}
         {selectedEvent.resource.studentNotes && (
           <WrapContent>
-            學生備註：{selectedEvent.resource.studentNotes}
+            {t("學生備註")}：{selectedEvent.resource.studentNotes}
           </WrapContent>
         )}
         <AlertButton
           color="#75A29E"
           onClick={() => handleDeleteEvent(selectedEvent)}
         >
-          {selectedEvent.resource.reserved ? "取消此時段" : "刪除此時段"}
+          {selectedEvent.resource.reserved ? t("取消此時段") : t("刪除此時段")}
         </AlertButton>
       </ContentContainer>
     </AlertContainer>

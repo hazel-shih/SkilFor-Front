@@ -11,7 +11,7 @@ import {
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
 import { getAdminCourses, changeCourseAudit } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
-
+import { useTranslation } from "next-i18next";
 const AdminWrapper = styled.section`
   padding: 156px 80px 232px 80px;
   ${MEDIA_QUERY_MD} {
@@ -49,26 +49,27 @@ const ChooseAuditButton = styled(ChooseCategoryButton)``;
 
 const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
   const selectBar = useRef(null);
+  const { t } = useTranslation();
   return (
     <SelectAuditContainer>
       <RowContainer>
         {audit === "pending" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
-            <option value="pending">審核中</option>
-            <option value="success">審核成功</option>
-            <option value="fail">審核失敗</option>
+            <option value="pending">{t("審核中")}</option>
+            <option value="success">{t("審核成功")}</option>
+            <option value="fail">{t("審核失敗")}</option>
           </SelectBar>
         )}
         {audit === "success" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
-            <option value="success">審核成功</option>
-            <option value="fail">審核失敗</option>
+            <option value="success">{t("審核成功")}</option>
+            <option value="fail">{t("審核失敗")}</option>
           </SelectBar>
         )}
         <ChooseAuditButton
           onClick={() => handleAuditSubmit(selectBar, courseId, audit)}
         >
-          送出
+          {t("送出")}
         </ChooseAuditButton>
       </RowContainer>
     </SelectAuditContainer>
@@ -76,16 +77,18 @@ const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
 };
 
 const GridHead = () => {
+  const { t } = useTranslation();
   return (
     <>
-      <GridHeadItem>課程名稱</GridHeadItem>
-      <GridHeadItem>課程介紹</GridHeadItem>
-      <GridHeadItem>課程點數</GridHeadItem>
-      <GridHeadItem>審核狀態</GridHeadItem>
+      <GridHeadItem>{t("課程名稱")}</GridHeadItem>
+      <GridHeadItem>{t("課程介紹")}</GridHeadItem>
+      <GridHeadItem>{t("課程點數")}</GridHeadItem>
+      <GridHeadItem>{t("審核狀態")}</GridHeadItem>
     </>
   );
 };
 function GridRow({ course, handleAuditSubmit }) {
+  const { t } = useTranslation();
   return (
     <>
       <GridItem>{course.courseName}</GridItem>
@@ -93,7 +96,7 @@ function GridRow({ course, handleAuditSubmit }) {
       <GridItem>{course.price}</GridItem>
       <GridItem>
         {course.audit === "fail" ? (
-          <div>審核失敗</div>
+          <div>{t("審核失敗")}</div>
         ) : (
           <AuditDropDownMenu
             courseId={course.id}
@@ -141,6 +144,7 @@ const FilterButton = styled.button`
   `}
 `;
 function AdminPage() {
+  const { t } = useTranslation();
   const [buttonType, setButtonType] = useState("pending");
   const [showCourses, setShowCourses] = useState([]);
 
@@ -175,28 +179,28 @@ function AdminPage() {
 
   return (
     <AdminWrapper>
-      <PageTitle>管理員後台</PageTitle>
+      <PageTitle>{t("管理員後台")}</PageTitle>
       <ButtonsContainer>
         <FilterButton
           id="pending"
           isClick={buttonType === "pending"}
           onClick={handleButtonClick}
         >
-          待審核
+          {t("待審核")}
         </FilterButton>
         <FilterButton
           id="success"
           isClick={buttonType === "success"}
           onClick={handleButtonClick}
         >
-          審核成功
+          {t("審核成功")}
         </FilterButton>
         <FilterButton
           id="fail"
           isClick={buttonType === "fail"}
           onClick={handleButtonClick}
         >
-          審核失敗
+          {t("審核失敗")}
         </FilterButton>
       </ButtonsContainer>
       <GridContainer>

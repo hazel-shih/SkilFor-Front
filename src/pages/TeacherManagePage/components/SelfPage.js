@@ -17,6 +17,7 @@ import {
 import useEdit from "../hooks/useEdit";
 import { updateUserInfos } from "../../../WebAPI";
 import { validateEmail } from "../../../utils";
+import { useTranslation } from "react-i18next";
 
 const formDataVerify = (formData) => {
   let errorArr = [];
@@ -35,6 +36,7 @@ const postTeacherInfos = async (setApiError, editContent) => {
   }
 };
 function SelfPage({ infos, setInfos, setApiError }) {
+  const { t } = useTranslation();
   const [error, setError] = useState([]);
   const {
     isEditing,
@@ -70,24 +72,24 @@ function SelfPage({ infos, setInfos, setApiError }) {
     setError(errorArr);
     if (errorArr.includes("invalid email")) {
       if (errorArr.length > 1) {
-        return alert("尚有欄位未填寫，且 Contact Email 格式錯誤！");
+        return alert(`${t("尚有欄位未填寫，且 Contact Email 格式錯誤！")}`);
       } else {
-        return alert("Contact Email 格式錯誤！");
+        return alert(`${t("Contact Email 格式錯誤！")}`);
       }
     }
-    return alert("尚有欄位未填寫！");
+    return alert(`${t("尚有欄位未填寫！")}`);
   };
   return (
     <>
       <EditContainer>
-        <SectionText>個人資訊</SectionText>
+        <SectionText>{t("個人資訊")}</SectionText>
         <RowContainer>
           <EditButton onClick={handleEditClick}>
-            {isEditing ? "取消編輯" : "編輯個人資訊"}
+            {isEditing ? t("取消編輯") : t("編輯個人資訊")}
           </EditButton>
           {isEditing && (
             <SubmitButton onClick={handleSelfSubmitClick}>
-              編輯完成
+              {t("編輯完成")}
             </SubmitButton>
           )}
         </RowContainer>

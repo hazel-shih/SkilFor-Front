@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import Avatar from "../../components/Avatar";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FilterResultBlock = styled.div`
   display: inline-flex;
@@ -106,6 +107,7 @@ const Btn = styled(Link)`
 `;
 
 function FilterResult({ result }) {
+  const { t } = useTranslation();
   return (
     <>
       <FilterResultBlock>
@@ -116,8 +118,10 @@ function FilterResult({ result }) {
             <CourseDescription>{result.courseDescription}</CourseDescription>
           </CourseIntro>
           <BtnDiv>
-            <CoursePoint>點數：{result.price}</CoursePoint>
-            <Btn to={`/course/${result.courseId}`}>更多資訊</Btn>
+            <CoursePoint>
+              {t("點數")}：{result.price}
+            </CoursePoint>
+            <Btn to={`/course/${result.courseId}`}>{t("更多資訊")}</Btn>
           </BtnDiv>
         </CourseBlock>
       </FilterResultBlock>
