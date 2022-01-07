@@ -44,6 +44,7 @@ function ReadTaskAlertCard({
     }
     if (!confirmAlert) return;
     deleteCalendarEvent(setApiError, selectedEvent.id).then((json) => {
+      if (!json) return setApiError("目前無法刪除課程時段，請稍後再試");
       if (json && !json.success) return setApiError(json.errMessage[0]);
       setAllEvents(allEvents.filter((event) => event.id !== selectedEvent.id));
     });

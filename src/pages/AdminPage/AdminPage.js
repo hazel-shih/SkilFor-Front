@@ -11,6 +11,12 @@ import {
 } from "../TeacherManagePage/components/CategoryDropDownMenu";
 import { getAdminCourses, changeCourseAudit } from "../../WebAPI";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
+import AlertCard from "../../components/AlertCard/AlertCard";
+
+const ColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const AdminWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -45,13 +51,16 @@ const GridHeadItem = styled(GridItem)`
 const SelectAuditContainer = styled(SelectContainer)`
   margin-bottom: 0px;
 `;
-const ChooseAuditButton = styled(ChooseCategoryButton)``;
+const ChooseAuditButton = styled(ChooseCategoryButton)`
+  margin: 10px auto 0 auto;
+  width: fit-content;
+`;
 
 const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
   const selectBar = useRef(null);
   return (
     <SelectAuditContainer>
-      <RowContainer>
+      <ColumnContainer>
         {audit === "pending" && (
           <SelectBar ref={selectBar} defaultValue={audit}>
             <option value="pending">審核中</option>
@@ -70,7 +79,7 @@ const AuditDropDownMenu = ({ courseId, audit, handleAuditSubmit }) => {
         >
           送出
         </ChooseAuditButton>
-      </RowContainer>
+      </ColumnContainer>
     </SelectAuditContainer>
   );
 };
@@ -143,12 +152,16 @@ const FilterButton = styled.button`
 function AdminPage() {
   const [buttonType, setButtonType] = useState("pending");
   const [showCourses, setShowCourses] = useState([]);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     async function getData() {
-      getAdminCourses(buttonType).then((json) => {
+      getAdminCourses(buttonType, setApiError).then((json) => {
         if (json && json.success) {
           setShowCourses(json.data);
+        }
+        if (json && json.errorMessage) {
+          setApiError(json.errorMessage);
         }
       });
     }
@@ -162,15 +175,22 @@ function AdminPage() {
   const handleAuditSubmit = (selectBar, courseId, audit) => {
     let value = selectBar.current.value;
     if (value !== audit) {
-      changeCourseAudit(courseId, value).then((json) => {
-        if (json.success) {
+      changeCourseAudit(courseId, value, setApiError).then((json) => {
+        if (json && json.success) {
           let newShowCourses = showCourses.filter(
             (course) => course.id !== courseId
           );
           setShowCourses(newShowCourses);
         }
+        if (json && json.errorMessage) {
+          setApiError(json.errorMessage);
+        }
       });
     }
+  };
+
+  const handleAlertOkClick = () => {
+    return setApiError(false);
   };
 
   return (
@@ -200,6 +220,14 @@ function AdminPage() {
         </FilterButton>
       </ButtonsContainer>
       <GridContainer>
+        {apiError && (
+          <AlertCard
+            color="#A45D5D"
+            title="錯誤"
+            content={apiError}
+            handleAlertOkClick={handleAlertOkClick}
+          />
+        )}
         <GridHead />
         {showCourses.map((course) => (
           <GridRow

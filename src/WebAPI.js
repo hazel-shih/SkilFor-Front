@@ -478,7 +478,7 @@ export const getOrderId = async (itemName, price, point) => {
   }
 };
 //管理員後台
-export const getAdminCourses = async (audit) => {
+export const getAdminCourses = async (audit, setApiError) => {
   let url = `${BASE_URL}/administrator/course?audit=${audit}`;
   const token = getAuthToken();
   try {
@@ -489,14 +489,13 @@ export const getAdminCourses = async (audit) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (!res.ok) throw new Error("fail to fetch data");
     return await res.json();
   } catch (error) {
-    return error;
+    return setApiError("伺服器或網路錯誤");
   }
 };
 
-export const changeCourseAudit = async (courseId, newAudit) => {
+export const changeCourseAudit = async (courseId, newAudit, setApiError) => {
   let url = `${BASE_URL}/administrator/course`;
   const token = getAuthToken();
   try {
@@ -513,6 +512,6 @@ export const changeCourseAudit = async (courseId, newAudit) => {
     });
     return await res.json();
   } catch (error) {
-    return error;
+    return setApiError("伺服器或網路錯誤");
   }
 };
