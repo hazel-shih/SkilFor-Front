@@ -261,7 +261,7 @@ export default function CartPage() {
       return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
     }
   };
-
+  const [orderError, setOrderError] = useState([]);
   const handleItemDelete = (e) => {
     e.preventDefault();
     const confirmDelete = window.confirm(`${t("確認從購物車刪除此課程嗎？")}`);
@@ -269,10 +269,15 @@ export default function CartPage() {
     const { id } = e.target;
     deleteUserCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
+    setOrderError([]);
   };
 
   const handleExpiredItemDelete = (e) => {
     e.preventDefault();
+    const confirmDelete = window.confirm(
+      `${t("確認從購物車刪除失效課程嗎？")}`
+    );
+    if (!confirmDelete) return;
     setCartItems(
       cartItems.filter((item, setApiError) => {
         if (
@@ -314,7 +319,7 @@ export default function CartPage() {
   }, [setRemainingPoints, t]);
 
   const navigate = useNavigate();
-  const [orderError, setOrderError] = useState([]);
+
   const handleConfirmPaymentClick = (e) => {
     e.preventDefault();
     if (orderError.length !== 0) return;

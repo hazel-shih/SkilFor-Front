@@ -61,6 +61,7 @@
   "目前未有課程加入購物車...": "No courses in shopping cart yet.",
   "課程時段重複了，請擇一購買喔！": "Time overlapped, please choose one of the courses.",
   "確認從購物車刪除此課程嗎？": "Do you want to delete the course?",
+  "確認從購物車刪除失效課程嗎？": "Do you want to delete invalid course(s)?",
   "尚未選擇要確認購買的課程": "No course to confirm the payment",
   "剩餘點數不足，請先去儲值點數喔！": "Your are out of the points, please charge account before you confirm the payment.",
   "按下確認購買後，將會於您的帳戶扣除點數": "After click the confirm button, the points will be deducted from your account.",
