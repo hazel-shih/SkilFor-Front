@@ -65,7 +65,8 @@ const ExpiredCover = styled.div`
 
 const getDisplayDate = (dateObj) => {
   let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 10);
+  console.log(dateStr);
+  return dateStr.slice(0, dateStr.length - 13);
 };
 
 export default function CartList({
