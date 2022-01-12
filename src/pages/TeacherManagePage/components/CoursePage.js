@@ -179,18 +179,32 @@ function CoursePage({ apiError, setApiError }) {
       return alert(`${t("尚有欄位未填答，請填寫完後再送出資料")}`);
     }
     let updatedCourseInfos;
-    if (editContent.audit === "fail" || !editContent.audit) {
-      updatedCourseInfos = {
-        ...editContent,
-        category: getKeyByValue(CATEGORY_LIST, editContent.category),
-        audit: "pending",
-      };
-      makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
-    } else {
-      updatedCourseInfos = editContent;
-      makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
+    let audit = editContent.audit;
+    switch (audit) {
+      case "success":
+        updatedCourseInfos = editContent;
+        makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
+        break;
+      case "fail":
+        updatedCourseInfos = {
+          ...editContent,
+          audit: "pending",
+          category: getKeyByValue(CATEGORY_LIST, editContent.category),
+        };
+        makeUpdateCourseApi(updateCourseInfos, setApiError, updatedCourseInfos);
+        updatedCourseInfos.category =
+          CATEGORY_LIST[updatedCourseInfos.category];
+        break;
+      default:
+        updatedCourseInfos = {
+          ...editContent,
+          audit: "pending",
+          category: getKeyByValue(CATEGORY_LIST, editContent.category),
+        };
+        makeUpdateCourseApi(registerNewCourse, setApiError, updatedCourseInfos);
+        updatedCourseInfos.category =
+          CATEGORY_LIST[updatedCourseInfos.category];
     }
-    updatedCourseInfos.category = CATEGORY_LIST[updatedCourseInfos.category];
     setCourseInfos(
       courseInfos.map((course) => {
         if (course.category !== editContent.category) {
