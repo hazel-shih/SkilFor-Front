@@ -122,7 +122,7 @@ export default function PointPage() {
     ReturnURL: "https://skilforapi.bocyun.tw/ecpay/callback",
     ChoosePayment: "Credit",
     EncryptType: "1",
-    ClientBackURL: "http://localhost:3000/SkilFor-Front/manage",
+    ClientBackURL: "https://skilfor.netlify.app",
   });
   const pointInput = useRef(null);
   const checkout = useRef(null);
@@ -303,7 +303,7 @@ export default function PointPage() {
             type="hidden"
             name="ClientBackURL"
             id="ClientBackURL"
-            value="http://localhost:3000/SkilFor-Front/manage"
+            value="https://skilfor.netlify.app"
           />
           <input
             type="hidden"

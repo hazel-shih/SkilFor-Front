@@ -22,7 +22,7 @@
     "typed.js": "^2.0.12",
     "web-vitals": "^1.0.1"
   },
-  "homepage": "https://hazel-shih.github.io/SkilFor-Front",
+  "homepage": "https://frosty-bose-10506c.netlify.app/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
