@@ -22,10 +22,23 @@ export const createTimeOptions = (timeType, time) => {
 };
 
 //處理星期格式
-let dayArr = ["日", "一", "二", "三", "四", "五", "六"];
-export const getDay = (dayNum) => {
-  return dayArr[dayNum];
+let dayArr = {
+  CH: ["日", "一", "二", "三", "四", "五", "六"],
+  EN: [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ],
 };
+export const getDay = (lan, dayNum) => {
+  if (lan === "en") return dayArr.EN[dayNum];
+  else return dayArr.CH[dayNum];
+};
+
 //處理文字時間轉數字時間格式
 export const getTimeNumber = (timeStr) => {
   let timeNoon = timeStr.slice(0, 2);

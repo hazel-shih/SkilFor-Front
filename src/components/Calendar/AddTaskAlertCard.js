@@ -90,13 +90,19 @@ function AddTaskAlertCard({
   setApiError,
   courseList,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  let timeArray;
+  if (i18n.language === "en") {
+    timeArray = TIME_OPTIONS.EN;
+  } else {
+    timeArray = TIME_OPTIONS.CH;
+  }
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
     title: courseList.length === 0 ? null : courseList[0].courseName,
-    start: "上午0:00",
-    end: "上午1:00",
+    start: timeArray[0],
+    end: timeArray[2],
     resource: {
       reserved: false,
       studentNotes: null,
@@ -120,7 +126,7 @@ function AddTaskAlertCard({
       });
     }
     if (id === "start") {
-      let endTime = TIME_OPTIONS[TIME_OPTIONS.indexOf(value) + 2];
+      let endTime = timeArray[timeArray.indexOf(value) + 2];
       setNewEvent({
         ...newEvent,
         start: value,
@@ -204,9 +210,12 @@ function AddTaskAlertCard({
       {courseList.length !== 0 ? (
         <>
           <AlertTitle>{t("新增一個上課時段")}</AlertTitle>
-          <AlertTitle>{`${selectedDate.month + 1}月${
+          <AlertTitle>{`${selectedDate.month + 1}${t("月")}${
             selectedDate.date
-          }日 星期${getDay(selectedDate.day)}`}</AlertTitle>
+          }${t("日")} ${t("星期")}${getDay(
+            i18n.language,
+            selectedDate.day
+          )}`}</AlertTitle>
           <RowContainer>
             <AlertContent>{t("課程名稱：")}</AlertContent>
             <SelectContainer
@@ -228,7 +237,7 @@ function AddTaskAlertCard({
               onChange={handleNewEventAnswerChange}
               value={newEvent.start}
             >
-              {TIME_OPTIONS.slice(0, TIME_OPTIONS.length - 2).map((item) => {
+              {timeArray.slice(0, timeArray.length - 2).map((item) => {
                 return (
                   <SelectOption key={nanoid()} value={item.id}>
                     {item}
@@ -260,7 +269,7 @@ function AddTaskAlertCard({
               {COLOR_HEX_LIST.map((color) => {
                 return (
                   <SelectOption key={nanoid()} value={color.value}>
-                    {color.displayName}
+                    {i18n.language === "en" ? color.name : color.displayName}
                   </SelectOption>
                 );
               })}
