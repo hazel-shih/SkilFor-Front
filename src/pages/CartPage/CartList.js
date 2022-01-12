@@ -63,12 +63,6 @@ const ExpiredCover = styled.div`
   opacity: 0.5;
 `;
 
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  console.log(dateStr);
-  return dateStr.slice(0, dateStr.length - 13);
-};
-
 export default function CartList({
   item,
   onChangeCheck,
@@ -163,7 +157,7 @@ export default function CartList({
         </td>
         <td data-title={t("上課時間")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
-          {getDisplayDate(new Date(item.start))}
+          {new Date(item.start).toLocaleDateString()}
           <br />
           {item.timePeriod}
         </td>

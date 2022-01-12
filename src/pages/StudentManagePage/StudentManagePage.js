@@ -23,7 +23,7 @@ function StudentManagePage() {
   const { t } = useTranslation();
   useCheckToken();
   const navigate = useNavigate();
-  //老師個人資訊
+  //學生個人資訊
   const [studentInfos, setStudentInfos] = useState(null);
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
@@ -52,7 +52,7 @@ function StudentManagePage() {
         {apiError && (
           <AlertCard
             color="#A45D5D"
-            title="錯誤"
+            title={t("錯誤")}
             content={apiError}
             handleAlertOkClick={handleAlertOkClick}
           />

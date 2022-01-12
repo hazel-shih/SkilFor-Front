@@ -231,7 +231,7 @@ export default function CartPage() {
       new Date(end)
     );
     if (overlapItemResult !== false) {
-      alert(`${t("課程時段重複了，請擇一購買喔 !")}`);
+      alert(`${t("課程時段重複了，請擇一購買喔！")}`);
       setOverlapTimeItems([
         overlapItemResult[1].scheduleId,
         targetItem.scheduleId,

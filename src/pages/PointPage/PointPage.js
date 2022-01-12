@@ -136,9 +136,9 @@ export default function PointPage() {
     let value = Number(pointInput.current.value);
     if (value === "" || !(value >= 100)) return;
     let confirm = window.confirm(
-      `${t("這是你的選購資訊：")}${t("自選儲值額度")}${value}${t(
-        "點，需支付"
-      )}${value}${t("元，若確認無誤將導向刷卡頁面")}`
+      `${t("這是你的選購資訊：")}${t("自選儲值額度")} ${value} ${t(
+        "點，需支付 "
+      )}${value}${t(" 元，若確認無誤將導向刷卡頁面")}`
     );
     if (confirm) {
       let itemName = `${t("自選儲值額度")} ${value} ${t("點 ")}`;
@@ -161,9 +161,9 @@ export default function PointPage() {
   };
   const handleChooseClick = (title, price, points) => {
     let confirm = window.confirm(
-      `${t("這是你的選購資訊：")}${title}${points}${t("點，需支付")}${price}${t(
-        "元，若確認無誤將導向刷卡頁面"
-      )}`
+      `${t("這是你的選購資訊：")}${title} ${points} ${t(
+        "點，需支付 "
+      )}${price}${t(" 元，若確認無誤將導向刷卡頁面")}`
     );
     if (confirm) {
       let itemName = `${title} ${points} ${t("點 ")}`;
