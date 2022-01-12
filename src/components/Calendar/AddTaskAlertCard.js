@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { TIME_OPTIONS, COLOR_HEX_LIST } from "./constants";
 import { getDay, getTimeNumber, checkEventsConflict } from "./utils";
 import { addNewCalendarEvent } from "../../WebAPI";
-
+import { useTranslation } from "react-i18next";
 //styled component
 export const RowContainer = styled.div`
   position: relative;
@@ -90,6 +90,7 @@ function AddTaskAlertCard({
   setApiError,
   courseList,
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [newEvent, setNewEvent] = useState({
@@ -166,13 +167,13 @@ function AddTaskAlertCard({
       endTimeNumArr[1]
     );
     if (formatedStartTime.getTime() < new Date().getTime()) {
-      return setError("無法新增過去時間的課程");
+      return setError(`${t("無法新增過去時間的課程")}`);
     }
     if (
       checkEventsConflict(allEvents, formatedStartTime, formatedEndTime) !==
       false
     ) {
-      return setError("此時段與當天其他時段重疊！");
+      return setError(`${t("此時段與當天其他時段重疊！")}`);
     }
     let postData = {
       ...newEvent,
@@ -187,7 +188,7 @@ function AddTaskAlertCard({
     addNewCalendarEvent(setApiError, postData).then((json) => {
       if (!json || !json.success) {
         setAlertShow(null);
-        setApiError("課程時間新增失敗");
+        setApiError(`${t("課程時間新增失敗")}`);
         return;
       }
       setAllEvents([...allEvents, postData]);
@@ -202,12 +203,12 @@ function AddTaskAlertCard({
       <CloseButton src={close} onClick={handleCloseClick} />
       {courseList.length !== 0 ? (
         <>
-          <AlertTitle>新增一個上課時段</AlertTitle>
+          <AlertTitle>{t("新增一個上課時段")}</AlertTitle>
           <AlertTitle>{`${selectedDate.month + 1}月${
             selectedDate.date
           }日 星期${getDay(selectedDate.day)}`}</AlertTitle>
           <RowContainer>
-            <AlertContent>課程名稱：</AlertContent>
+            <AlertContent>{t("課程名稱：")}</AlertContent>
             <SelectContainer
               onChange={handleNewEventAnswerChange}
               id="title"
@@ -221,7 +222,7 @@ function AddTaskAlertCard({
             </SelectContainer>
           </RowContainer>
           <RowContainer>
-            <AlertContent>開始時間：</AlertContent>
+            <AlertContent>{t("開始時間：")}</AlertContent>
             <SelectContainer
               id="start"
               onChange={handleNewEventAnswerChange}
@@ -237,7 +238,7 @@ function AddTaskAlertCard({
             </SelectContainer>
           </RowContainer>
           <RowContainer>
-            <AlertContent>結束時間：</AlertContent>
+            <AlertContent>{t("結束時間：")}</AlertContent>
             <AlertContent>{newEvent.end}</AlertContent>
             {/* <SelectContainer
               id="end"
@@ -250,7 +251,7 @@ function AddTaskAlertCard({
             </SelectContainer> */}
           </RowContainer>
           <RowContainer>
-            <AlertContent>設定活動顏色：</AlertContent>
+            <AlertContent>{t("設定活動顏色：")}</AlertContent>
             <SelectContainer
               id="eventColor"
               onChange={handleNewEventAnswerChange}
@@ -267,17 +268,17 @@ function AddTaskAlertCard({
           </RowContainer>
           {error && <ErrorMessage>{error}</ErrorMessage>}
           <AlertButton onClick={handleAddNewEvent} color="#75A29E">
-            確定新增
+            {t("確定新增")}
           </AlertButton>
         </>
       ) : (
         <>
-          <AlertTitle>目前沒有新增課程的權限</AlertTitle>
+          <AlertTitle>{t("目前沒有新增課程的權限")}</AlertTitle>
           <AlertContent>
-            請先到後台新增課程，等待資料審核通過後就可以開課囉！
+            {t("請先到後台新增課程，等待資料審核通過後就可以開課囉！")}
           </AlertContent>
           <AlertButton onClick={handleGoToBack} color="#75A29E">
-            我知道了
+            {t("我知道了")}
           </AlertButton>
         </>
       )}

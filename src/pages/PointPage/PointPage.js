@@ -136,10 +136,12 @@ export default function PointPage() {
     let value = Number(pointInput.current.value);
     if (value === "" || !(value >= 100)) return;
     let confirm = window.confirm(
-      `這是你的選購資訊：自選儲值額度${value}點，需支付${value} 元，若確認無誤將導向刷卡頁面`
+      `${t("這是你的選購資訊：")}${t("自選儲值額度")}${value}${t(
+        "點，需支付"
+      )}${value}${t("元，若確認無誤將導向刷卡頁面")}`
     );
     if (confirm) {
-      let itemName = `自選儲值額度${value}點`;
+      let itemName = `${t("自選儲值額度")} ${value} ${t("點 ")}`;
       let orderId;
       let newPointOrder;
       getOrderId(itemName, value, value).then((json) => {
@@ -149,7 +151,9 @@ export default function PointPage() {
           MerchantTradeNo: orderId,
           MerchantTradeDate: getCurrentTime(),
           TotalAmount: value,
-          ItemName: `自選儲值額度${value}點 ${value} 元 X1`,
+          ItemName: `${t("自選儲值額度")} ${value} ${t("點 ")} ${value} ${t(
+            "元"
+          )} X1`,
         };
         setOrderData(newPointOrder);
       });
@@ -157,10 +161,12 @@ export default function PointPage() {
   };
   const handleChooseClick = (title, price, points) => {
     let confirm = window.confirm(
-      `這是你的選購資訊：${title}${points}點，需支付${price} 元，若確認無誤將導向刷卡頁面`
+      `${t("這是你的選購資訊：")}${title}${points}${t("點，需支付")}${price}${t(
+        "元，若確認無誤將導向刷卡頁面"
+      )}`
     );
     if (confirm) {
-      let itemName = `${title}${points}點`;
+      let itemName = `${title} ${points} ${t("點 ")}`;
       let orderId;
       let newPointOrder;
       getOrderId(itemName, price, points).then((json) => {
@@ -170,7 +176,7 @@ export default function PointPage() {
           MerchantTradeNo: orderId,
           MerchantTradeDate: getCurrentTime(),
           TotalAmount: price,
-          ItemName: `${itemName} ${price} 元 X1`,
+          ItemName: `${itemName} ${price} ${t("元")} X1`,
         };
         setOrderData(newPointOrder);
       });
@@ -192,10 +198,10 @@ export default function PointPage() {
         🌚
       </CreditCardInfo>
       <CreditCardInfo>
-        {t("信用卡測試卡號")}：4311-9522-2222-2222
+        {t("信用卡測試卡號：")}4311-9522-2222-2222
       </CreditCardInfo>
-      <CreditCardInfo>{t("信用卡測試有效月/年")}：12/25</CreditCardInfo>
-      <CreditCardInfo>{t("信用卡測試安全碼")}：222</CreditCardInfo>
+      <CreditCardInfo>{t("信用卡測試有效月/年：")}12/25</CreditCardInfo>
+      <CreditCardInfo>{t("信用卡測試安全碼：")}222</CreditCardInfo>
       <SectionTitle>{t("優惠方案")}</SectionTitle>
       <PriceCardContainer>
         <PriceCard
@@ -203,28 +209,28 @@ export default function PointPage() {
           price={250}
           points={300}
           courseCount="1"
-          handleClick={() => handleChooseClick("初體驗方案", 250, 300)}
+          handleClick={() => handleChooseClick(t("初體驗方案"), 250, 300)}
         />
         <PriceCard
           title={t("小資族")}
           price={3000}
           points={3500}
           courseCount="10"
-          handleClick={() => handleChooseClick("小資族方案", 3000, 3500)}
+          handleClick={() => handleChooseClick(t("小資族方案"), 3000, 3500)}
         />
         <PriceCard
           title={t("好划算")}
           price={6000}
           points={7000}
           courseCount="20"
-          handleClick={() => handleChooseClick("好划算方案", 6000, 7000)}
+          handleClick={() => handleChooseClick(t("好划算方案"), 6000, 7000)}
         />
         <PriceCard
           title={t("超優惠")}
           price={10000}
           points={12000}
           courseCount="35"
-          handleClick={() => handleChooseClick("超優惠方案", 10000, 12000)}
+          handleClick={() => handleChooseClick(t("超優惠方案"), 10000, 12000)}
         />
       </PriceCardContainer>
       <SectionTitle>

@@ -48,7 +48,7 @@ function CategoryDropDownMenu({
   setApiError,
   setIsEditing,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectOptions, setSelectOptions] = useState(null);
   useEffect(() => {
     async function getCategoryOptions(setApiError) {
@@ -86,14 +86,18 @@ function CategoryDropDownMenu({
                 makeSelectOptions(selectOptions, courseInfos).map(
                   (category) => (
                     <option key={category.name} value={category.name}>
-                      {category.displayName}
+                      {i18n.language === "en"
+                        ? category.name
+                        : category.displayName}
                     </option>
                   )
                 )}
               {courseInfos.length === 0 &&
                 selectOptions.map((category) => (
                   <option key={category.name} value={category.name}>
-                    {category.displayName}
+                    {i18n.language === "en"
+                      ? category.name
+                      : category.displayName}
                   </option>
                 ))}
             </>

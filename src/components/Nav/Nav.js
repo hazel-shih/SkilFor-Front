@@ -80,7 +80,6 @@ function Nav() {
     setUser(null);
   };
   const { t, i18n } = useTranslation();
-
   const handleSelectLanguage = (e) => {
     const { value } = e.target;
     if (value === "en") {

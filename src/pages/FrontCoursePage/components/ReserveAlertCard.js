@@ -52,10 +52,12 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
       <AlertTitle>{t("將這堂課加入購物車")}</AlertTitle>
       <TimeContainer>
         <TimeTitle>
-          {t("開始")}：{getDisplayDate(new Date(selectedEvent.start))}
+          {t("開始：")}
+          {getDisplayDate(new Date(selectedEvent.start))}
         </TimeTitle>
         <TimeTitle>
-          {t("結束")}：{getDisplayDate(new Date(selectedEvent.end))}
+          {t("結束：")}
+          {getDisplayDate(new Date(selectedEvent.end))}
         </TimeTitle>
       </TimeContainer>
       <WrapContent>

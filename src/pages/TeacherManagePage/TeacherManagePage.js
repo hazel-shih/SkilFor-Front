@@ -126,7 +126,7 @@ function TeacherManagePage() {
         {apiError && (
           <AlertCard
             color="#A45D5D"
-            title="錯誤"
+            title={t("錯誤")}
             content={apiError}
             handleAlertOkClick={handleAlertOkClick}
           />

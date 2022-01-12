@@ -57,31 +57,36 @@ function ReadTaskAlertCard({
       <AlertTitle>{selectedEvent.title}</AlertTitle>
       <TimeContainer>
         <TimeTitle>
-          {t("開始")}：{getDisplayDate(selectedEvent.start)}
+          {t("開始：")}
+          {getDisplayDate(selectedEvent.start)}
         </TimeTitle>
         <TimeTitle>
-          {t("結束")}：{getDisplayDate(selectedEvent.end)}
+          {t("結束：")}
+          {getDisplayDate(selectedEvent.end)}
         </TimeTitle>
       </TimeContainer>
       <ContentContainer>
         {selectedEvent.resource.reserved ? (
           <>
             <AlertContent>
-              {t("預約學生")}：{selectedEvent.resource.reserved}
+              {t("預約學生：")}
+              {selectedEvent.resource.reserved}
             </AlertContent>
             <AlertContent>
-              {t("課程視訊連結")}
-              ：https://explore.zoom.us/zh-tw/products/meetings/
+              {t("課程視訊連結：")}
+              https://explore.zoom.us/zh-tw/products/meetings/
             </AlertContent>
           </>
         ) : (
           <AlertContent>
-            {t("預約狀態")}：{t("尚無人預約")}
+            {t("預約狀態：")}
+            {t("尚無人預約")}
           </AlertContent>
         )}
         {selectedEvent.resource.studentNotes && (
           <WrapContent>
-            {t("學生備註")}：{selectedEvent.resource.studentNotes}
+            {t("學生備註：")}
+            {selectedEvent.resource.studentNotes}
           </WrapContent>
         )}
         <AlertButton

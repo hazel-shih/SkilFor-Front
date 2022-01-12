@@ -45,7 +45,7 @@ function TeacherManageCalendar() {
       (json) => {
         if (!json || !json.success) {
           setLoading(false);
-          return setApiError("發生了一點錯誤，請稍後再試");
+          return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
         }
         let data = json.data.map((event) => {
           event.start = new Date(event.start);
@@ -56,11 +56,11 @@ function TeacherManageCalendar() {
         setLoading(false);
       }
     );
-  }, [currentPage]);
+  }, [currentPage, t]);
   const handleDateClick = (e) => {
     let dateDataObj = e.slots[0];
     if (dateDataObj.getTime() < new Date().setHours(0, 0, 0, 0)) {
-      alert("無法新增今日以前的課程！");
+      alert(`${t("無法新增今日以前的課程！")}`);
       return;
     }
     setAlertShow("add");

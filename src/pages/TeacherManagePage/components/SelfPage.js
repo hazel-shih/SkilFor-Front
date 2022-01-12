@@ -29,12 +29,6 @@ const formDataVerify = (formData) => {
   }
   return errorArr;
 };
-const postTeacherInfos = async (setApiError, editContent) => {
-  let json = await updateUserInfos(setApiError, editContent);
-  if (json.errMessage) {
-    return setApiError("請先登入才能使用後台功能");
-  }
-};
 function SelfPage({ infos, setInfos, setApiError }) {
   const { t } = useTranslation();
   const [error, setError] = useState([]);
@@ -56,6 +50,12 @@ function SelfPage({ infos, setInfos, setApiError }) {
       ...editContent,
       [inputName]: value,
     });
+  };
+  const postTeacherInfos = async (setApiError, editContent) => {
+    let json = await updateUserInfos(setApiError, editContent);
+    if (!json || json.errMessage) {
+      return setApiError(`${t("請先登入才能使用後台功能")}`);
+    }
   };
   //完成編輯個人資訊按鈕被按時
   const handleSelfSubmitClick = () => {

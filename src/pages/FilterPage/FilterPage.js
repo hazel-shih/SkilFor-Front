@@ -162,7 +162,7 @@ const ErrorBtn = styled.button`
 `;
 
 function FilterPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { menuRef, menu, setMenu, handleMenuToggle } = useMenu();
   const [filterError, setFilterError] = useState(false);
   const [dropdownContent, setDropdownContent] = useState([]);
@@ -259,7 +259,9 @@ function FilterPage() {
                   key={categories.id}
                   id={categories.name}
                 >
-                  {categories.displayName}
+                  {i18n.language === "en"
+                    ? categories.name
+                    : categories.displayName}
                 </DropdownContent>
               ))}
             </DropdownMenu>

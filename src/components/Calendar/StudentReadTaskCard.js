@@ -44,10 +44,12 @@ function StudentReadTaskCard({
       <AlertTitle>{selectedEvent.title}</AlertTitle>
       <TimeContainer>
         <TimeTitle>
-          {t("開始")}：{getDisplayDate(selectedEvent.start)}
+          {t("開始：")}
+          {getDisplayDate(selectedEvent.start)}
         </TimeTitle>
         <TimeTitle>
-          {t("結束")}：{getDisplayDate(selectedEvent.end)}
+          {t("結束：")}
+          {getDisplayDate(selectedEvent.end)}
         </TimeTitle>
       </TimeContainer>
       <ContentContainer>
@@ -59,8 +61,8 @@ function StudentReadTaskCard({
               </NoneStyleLink>
             </AlertContent>
             <AlertContent>
-              {t("課程視訊連結")}
-              ：https://explore.zoom.us/zh-tw/products/meetings/
+              {t("課程視訊連結：")}
+              https://explore.zoom.us/zh-tw/products/meetings/
             </AlertContent>
             {selectedEvent.start.getTime() - new Date().getTime() >
               86400000 && (
