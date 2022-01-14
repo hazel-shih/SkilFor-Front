@@ -215,6 +215,9 @@ function HomePage() {
       showCursor: false,
     };
     typed.current = new Typed(newTyped.current, typedSetting);
+    return () => {
+      typed.current.destroy();
+    };
   }, [t]);
 
   const { user, setUser } = useContext(AuthContext);

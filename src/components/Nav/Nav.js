@@ -119,7 +119,7 @@ function Nav() {
                 onChange={handleSelectLanguage}
                 defaultValue={i18n.language}
               >
-                <option value="zh">Mandarin</option>
+                <option value="zh">繁體中文</option>
                 <option value="en">English</option>
               </select>
             </NavbarList>
