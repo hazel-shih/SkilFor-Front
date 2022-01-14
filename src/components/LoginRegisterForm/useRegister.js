@@ -5,6 +5,7 @@ import { setAuthToken } from "../../utils";
 import { getMyUserData } from "../../WebAPI";
 import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 export default function useRegister() {
   const { setUser } = useContext(AuthContext);
@@ -19,7 +20,7 @@ export default function useRegister() {
     password: "",
     checkPassword: "",
   });
-
+  const { t } = useTranslation();
   const handleRegisterSubmit = (e) => {
     setIsLoading(true);
     setErrorMessage("");
@@ -28,22 +29,22 @@ export default function useRegister() {
     for (const [inputName, value] of Object.entries(registerData)) {
       if (value.trim().length === 0) {
         if (inputName === "username") {
-          setErrorMessage("請輸入使用者名稱");
+          setErrorMessage(`${t("請輸入使用者名稱")}`);
         }
         if (inputName === "identity") {
-          setErrorMessage("請選擇註冊身分");
+          setErrorMessage(`${t("請選擇身分")}`);
         }
         if (inputName === "email") {
-          setErrorMessage("請輸入登入用Email");
+          setErrorMessage(`${t("請輸入登入用 email")}`);
         }
         if (inputName === "contactEmail") {
-          setErrorMessage("請輸入聯絡用Email");
+          setErrorMessage(`${t("請輸入聯絡用 email")}`);
         }
         if (inputName === "password") {
-          setErrorMessage("請輸入密碼");
+          setErrorMessage(`${t("請輸入密碼")}`);
         }
         if (inputName === "checkPassword") {
-          setErrorMessage("請再次輸入密碼");
+          setErrorMessage(`${t("請再次輸入密碼")}`);
         }
         setIsLoading(false);
         scrollTop();
@@ -53,14 +54,14 @@ export default function useRegister() {
     if (registerData.password !== registerData.checkPassword) {
       setIsLoading(false);
       scrollTop();
-      return setErrorMessage("密碼不相符");
+      return setErrorMessage(`${t("密碼不相符")}`);
     }
 
     register(registerData, setErrorMessage).then((data) => {
       if (!data) {
         setIsLoading(false);
         scrollTop();
-        return setErrorMessage("網站更新中請稍後再登入");
+        return setErrorMessage(`${t("網站更新中請稍後再登入")}`);
       }
       if (data.success === false) {
         setIsLoading(false);
@@ -77,7 +78,9 @@ export default function useRegister() {
         setUser(response.user);
         setIsLoading(false);
         navigate("/");
-        alert("恭喜成為新會員，您將獲得免費的上課點數 1000 點 !! ");
+        if (registerData.identity === "student") {
+          alert(`${t("恭喜成為新會員，您將獲得免費的上課點數 1000 點！")}`);
+        }
       });
     });
   };

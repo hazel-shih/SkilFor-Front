@@ -13,21 +13,20 @@ import {
   ErrorMessage,
 } from "../../components/LoginRegisterForm/LoginRegisterFormWrapperStyle";
 import useLogin from "../../components/LoginRegisterForm/useLogin";
-import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 function LoginPage() {
-  scrollTop();
+  const { t } = useTranslation();
   const { handleLoginSubmit, loginData, handleLoginDataChange, errorMessage } =
     useLogin();
-
   return (
     <Wrapper>
       <Container>
-        <Title>登入帳戶</Title>
+        <Title>{t("登入帳戶")}</Title>
         <FormContainer onSubmit={handleLoginSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <FormItem
-            itemName="Email"
+            itemName={t("登入用 email")}
             id="email"
             value={loginData.email}
             type="email"
@@ -35,9 +34,9 @@ function LoginPage() {
             handleChange={handleLoginDataChange}
           />
           <FormItemContainer>
-            <ItemName>登入身分</ItemName>
+            <ItemName>{t("身分")}</ItemName>
             <RadioFormItem
-              radioItemName="學生"
+              radioItemName={t("學生")}
               id="student"
               value="student"
               type="radio"
@@ -45,7 +44,7 @@ function LoginPage() {
               handleChange={handleLoginDataChange}
             />
             <RadioFormItem
-              radioItemName="老師"
+              radioItemName={t("老師")}
               id="teacher"
               value="teacher"
               type="radio"
@@ -54,14 +53,14 @@ function LoginPage() {
             />
           </FormItemContainer>
           <FormItem
-            itemName="密碼"
+            itemName={t("密碼")}
             id="password"
             value={loginData.password}
             type="password"
             name="password"
             handleChange={handleLoginDataChange}
           />
-          <Btn>登入</Btn>
+          <Btn>{t("登入")}</Btn>
         </FormContainer>
       </Container>
     </Wrapper>

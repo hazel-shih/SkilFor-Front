@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../../components/constants/breakpoints";
 import deleteBtn from "../../img/close.png";
+import { useTranslation } from "react-i18next";
 
 const CheckBox = styled.input`
   width: 18px;
@@ -62,11 +63,6 @@ const ExpiredCover = styled.div`
   opacity: 0.5;
 `;
 
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 10);
-};
-
 export default function CartList({
   item,
   onChangeCheck,
@@ -76,6 +72,7 @@ export default function CartList({
   overlapTimeItems,
   orderError,
 }) {
+  const { t } = useTranslation();
   const [errorNotice, setErrorNotice] = useState("");
   const [errorStyle, setErrorStyle] = useState({});
   const [disabled, setDisable] = useState(false);
@@ -129,7 +126,7 @@ export default function CartList({
         </ErrorTr>
       ) : null}
       <tr>
-        <td data-title="購買" style={errorStyle}>
+        <td data-title={t("購買")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
           <label>
             <CheckBox
@@ -142,7 +139,7 @@ export default function CartList({
             />
           </label>
         </td>
-        <td data-title="刪除" style={errorStyle}>
+        <td data-title={t("刪除")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
           <DeleteButton
             src={deleteBtn}
@@ -150,29 +147,29 @@ export default function CartList({
             id={item.scheduleId}
           />
         </td>
-        <td data-title="課程名稱" style={errorStyle}>
+        <td data-title={t("課程名稱")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
           {item.courseName}
         </td>
-        <td data-title="老師" style={errorStyle}>
+        <td data-title={t("老師")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
           {item.teacherName}
         </td>
-        <td data-title="上課時間" style={errorStyle}>
+        <td data-title={t("上課時間")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
-          {getDisplayDate(new Date(item.start))}
+          {new Date(item.start).toLocaleDateString()}
           <br />
           {item.timePeriod}
         </td>
-        <td data-title="點數" style={errorStyle}>
+        <td data-title={t("點數")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
-          {item.price} 點
+          {item.price} {t("點")}
         </td>
-        <td data-title="備註" style={errorStyle}>
+        <td data-title={t("備註")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
           <label>
             <NoteTextArea
-              placeholder="我想對老師說..."
+              placeholder={t("我想對老師說...")}
               onChange={onChangeNote}
               id={item.scheduleId}
               value={item.note || ""}

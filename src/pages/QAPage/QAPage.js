@@ -81,7 +81,7 @@ function QAPage() {
 
   return (
     <Container>
-      <Title>常見問題 Q & A</Title>
+      <Title>Q & A</Title>
       <QuestionBlocks onClick={handleClick}>
         <QuestionBlock>
           <QuestionTitle name="Q1">Q1 : 如何取消課程？</QuestionTitle>

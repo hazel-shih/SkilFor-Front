@@ -23,6 +23,7 @@ import {
 } from "../../../WebAPI";
 import { CATEGORY_LIST } from "../Constant";
 import { getKeyByValue } from "../../../utils";
+import { useTranslation } from "react-i18next";
 
 const ColumnContainer = styled.div`
   display: flex;
@@ -119,6 +120,7 @@ const makeDeleteCourseApi = async (setApiError, courseId) => {
 };
 
 function CoursePage({ apiError, setApiError }) {
+  const { t } = useTranslation();
   //存取老師擁有的課程資料
   const [courseInfos, setCourseInfos] = useState(null);
   //課程領域按鈕
@@ -147,7 +149,7 @@ function CoursePage({ apiError, setApiError }) {
     const getData = async (setApiError) => {
       let json = await getTeacherCourseInfos(setApiError);
       if (!json || !json.success) {
-        return setApiError("請先登入才能使用後台功能");
+        return setApiError(`${t("請先登入才能使用後台功能")}`);
       }
       setCourseInfos(json.data);
       if (json.data.length > 0) {
@@ -156,7 +158,7 @@ function CoursePage({ apiError, setApiError }) {
       }
     };
     getData(setApiError);
-  }, [setEditContent, initState, setApiError]);
+  }, [setEditContent, initState, setApiError, t]);
   //當課程資訊下的按鈕被點選時
   const handleCourseBtnClick = (e) => {
     if (apiError) return;
@@ -174,7 +176,7 @@ function CoursePage({ apiError, setApiError }) {
     let errorArr = formDataVerify(editContent);
     if (errorArr.length > 0) {
       setError(errorArr);
-      return alert("尚有欄位未填答，請填寫完後再送出資料");
+      return alert(`${t("尚有欄位未填答，請填寫完後再送出資料")}`);
     }
     let updatedCourseInfos;
     let audit = editContent.audit;
@@ -222,11 +224,15 @@ function CoursePage({ apiError, setApiError }) {
     let confirmAlert;
     if (publishedValue === "true") {
       confirmAlert = window.confirm(
-        "確定要將課程資訊上架到前台嗎？(上架到前台後，任何人都可以瀏覽你的課程頁面，並可預約你的課程)"
+        `${t(
+          "確定要將課程資訊上架到前台嗎？(上架到前台後，任何人都可以瀏覽你的課程頁面，並可預約你的課程)"
+        )}`
       );
     } else {
       confirmAlert = window.confirm(
-        "確定要將課程資訊暫時隱藏嗎？(從前台隱藏後，其他人將無法瀏覽你的課程頁面，也無法預約你的課程)"
+        `${t(
+          "確定要將課程資訊暫時隱藏嗎？(從前台隱藏後，其他人將無法瀏覽你的課程頁面，也無法預約你的課程)"
+        )}`
       );
     }
     if (!confirmAlert) return;
@@ -249,7 +255,7 @@ function CoursePage({ apiError, setApiError }) {
   //當刪除課程被按時
   const handleCourseDeleteClick = (e) => {
     let confirmDelete = window.confirm(
-      "確定刪除這門課嗎？刪除後的課程資訊將不可回復！"
+      `${t("確定刪除這門課嗎？刪除後的課程資訊將不可回復！")}`
     );
     if (!confirmDelete) return;
     if (selectedCourseInfos.id) {
@@ -263,7 +269,7 @@ function CoursePage({ apiError, setApiError }) {
   };
   return (
     <>
-      <SectionText>新增課程</SectionText>
+      <SectionText>{t("新增課程")}</SectionText>
       <CategoryDropDownMenu
         show={true}
         setCourseInfos={setCourseInfos}
@@ -273,7 +279,7 @@ function CoursePage({ apiError, setApiError }) {
         setApiError={setApiError}
         setIsEditing={setIsEditing}
       />
-      <SectionText>目前擁有的課程</SectionText>
+      <SectionText>{t("目前擁有的課程")}</SectionText>
       {courseInfos && courseInfos.length !== 0 && selectedCourseInfos && (
         <CourseBtnsContainer>
           {courseInfos.map((course) => (
@@ -296,57 +302,61 @@ function CoursePage({ apiError, setApiError }) {
                 <PassContainer success>
                   <ImgBlock src={happy} />
                   <PassText success>
-                    課程已通過審核，設定完課程時段後同學們就可以預約囉！
+                    {t("課程已通過審核，設定完課程時段後同學們就可以預約囉！")}
                   </PassText>
                 </PassContainer>
               </SuccessContainer>
-              <SectionText>設定課程時段</SectionText>
-              <GoToLink to="/calendar">前往行事曆設定課程時段 ➜</GoToLink>
+              <SectionText>{t("設定課程時段")}</SectionText>
+              <GoToLink to="/calendar">
+                {t("前往行事曆設定課程時段")} ➜
+              </GoToLink>
             </>
           )}
           {selectedCourseInfos.audit === "pending" && (
             <PassContainer warn>
-              <PassText warn>課程審核中，審核成功後將以電子郵件通知您</PassText>
+              <PassText warn>
+                {t("課程審核中，審核成功後將以電子郵件通知您")}
+              </PassText>
             </PassContainer>
           )}
           {selectedCourseInfos.audit === "fail" && (
             <PassContainer fail>
               <ImgBlock src={sad} />
               <PassText fail>
-                課程未通過審核，請調整課程資訊後再重新送審
+                {t("課程未通過審核，請調整課程資訊後再重新送審")}
               </PassText>
             </PassContainer>
           )}
           {!selectedCourseInfos.audit && (
             <PassContainer warn>
               <PassText warn>
-                為避免資料遺失，編輯完成的課程資料要記得送審喔！
+                {t("為避免資料遺失，編輯完成的課程資料要記得送審喔！")}
               </PassText>
             </PassContainer>
           )}
           <EditContainer>
-            <SectionText>課程資訊</SectionText>
+            <SectionText>{t("課程資訊")}</SectionText>
             <RowContainer>
               {(isEditing || selectedCourseInfos.audit === "pending") && (
                 <DeleteButton onClick={handleCourseDeleteClick}>
-                  刪除課程
+                  {t("刪除課程")}
                 </DeleteButton>
               )}
               {selectedCourseInfos.audit !== "pending" && (
                 <EditButton onClick={handleEditClick}>
-                  {isEditing ? "取消編輯" : "編輯課程資訊"}
+                  {isEditing ? t("取消編輯") : t("編輯課程資訊")}
                 </EditButton>
               )}
               {isEditing &&
                 (selectedCourseInfos.audit === "fail" ||
                   !selectedCourseInfos.audit) && (
                   <SubmitButton onClick={handleCourseSubmitClick}>
-                    送審
+                    {t("送審")}
                   </SubmitButton>
                 )}
               {isEditing && selectedCourseInfos.audit === "success" && (
                 <SubmitButton onClick={handleCourseSubmitClick}>
-                  完成編輯
+                  {t("完成編輯")}
                 </SubmitButton>
               )}
             </RowContainer>
@@ -361,7 +371,7 @@ function CoursePage({ apiError, setApiError }) {
           />
           {selectedCourseInfos.audit === "success" && (
             <>
-              <SectionText>是否發布課程頁面</SectionText>
+              <SectionText>{t("是否發布課程頁面")}</SectionText>
               <PublishedRadiosContainer
                 handleRadioChange={handleRadioChange}
                 published={selectedCourseInfos.published}
@@ -370,9 +380,9 @@ function CoursePage({ apiError, setApiError }) {
           )}
           {selectedCourseInfos.published && (
             <>
-              <SectionText>瀏覽我的前台頁面</SectionText>
+              <SectionText>{t("瀏覽我的前台頁面")}</SectionText>
               <GoToLink to={`/course/${selectedCourseInfos.id}`}>
-                前往此門課程的前台頁面 ➜
+                {t("前往此門課程的前台頁面")} ➜
               </GoToLink>
             </>
           )}
@@ -381,7 +391,9 @@ function CoursePage({ apiError, setApiError }) {
       {courseInfos && courseInfos.length === 0 && (
         <PassContainer warn>
           <PassText warn>
-            你好像還沒有開設課程～點選上方的下拉式選單新增你的第一堂課吧！
+            {t(
+              "你好像還沒有開設課程～點選上方的下拉式選單新增你的第一堂課吧！"
+            )}
           </PassText>
         </PassContainer>
       )}

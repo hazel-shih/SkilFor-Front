@@ -1,10 +1,5 @@
 import { useEffect } from "react";
-import {
-  FormItem,
-  RadioFormItem,
-  FormItemContainer,
-  ItemName,
-} from "../../components/LoginRegisterForm/LoginRegisterFormItem";
+import { FormItem } from "../../components/LoginRegisterForm/LoginRegisterFormItem";
 import {
   Wrapper,
   Container,
@@ -14,10 +9,10 @@ import {
   ErrorMessage,
 } from "../../components/LoginRegisterForm/LoginRegisterFormWrapperStyle";
 import useLogin from "../../components/LoginRegisterForm/useLogin";
-import { scrollTop } from "../../utils";
+import { useTranslation } from "next-i18next";
 
 function AdminLoginPage() {
-  scrollTop();
+  const { t } = useTranslation();
   const {
     handleLoginSubmit,
     setLoginData,
@@ -36,36 +31,26 @@ function AdminLoginPage() {
   return (
     <Wrapper>
       <Container>
-        <Title>登入帳戶</Title>
+        <Title>{t("登入帳戶")}</Title>
         <FormContainer onSubmit={handleLoginSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <FormItem
-            itemName="管理員 Email"
+            itemName={t("管理員 email")}
             id="email"
             value={loginData.email}
             type="email"
             name="email"
             handleChange={handleLoginDataChange}
           />
-          <FormItemContainer>
-            <ItemName>登入身分</ItemName>
-            <RadioFormItem
-              radioItemName="管理員"
-              id="administrator"
-              value="administrator"
-              type="radio"
-              name="identity"
-            />
-          </FormItemContainer>
           <FormItem
-            itemName="密碼"
+            itemName={t("密碼")}
             id="password"
             value={loginData.password}
             type="password"
             name="password"
             handleChange={handleLoginDataChange}
           />
-          <Btn>登入</Btn>
+          <Btn>{t("登入")}</Btn>
         </FormContainer>
       </Container>
     </Wrapper>

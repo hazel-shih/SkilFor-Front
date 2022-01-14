@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 const RowContainer = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ const RadioLabel = styled.label`
 `;
 
 const PublishedRadiosContainer = ({ handleRadioChange, published }) => {
+  const { t } = useTranslation();
   return (
     <RadiosContainer>
       <RadioContainer>
@@ -33,7 +35,7 @@ const PublishedRadiosContainer = ({ handleRadioChange, published }) => {
           checked={published}
           value={true}
         />
-        <RadioLabel htmlFor="true">一切都 OK！發布至前台</RadioLabel>
+        <RadioLabel htmlFor="true">{t("一切都 OK！發布至前台")}</RadioLabel>
       </RadioContainer>
       <RadioContainer>
         <RadioInput
@@ -44,7 +46,9 @@ const PublishedRadiosContainer = ({ handleRadioChange, published }) => {
           checked={!published}
           value={false}
         />
-        <RadioLabel htmlFor="false">還有資訊需要編輯，暫時不發布</RadioLabel>
+        <RadioLabel htmlFor="false">
+          {t("還有資訊需要編輯，暫時不發布")}
+        </RadioLabel>
       </RadioContainer>
     </RadiosContainer>
   );

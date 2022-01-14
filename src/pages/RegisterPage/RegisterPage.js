@@ -13,10 +13,10 @@ import {
   ErrorMessage,
 } from "../../components/LoginRegisterForm/LoginRegisterFormWrapperStyle";
 import useRegister from "../../components/LoginRegisterForm/useRegister";
-import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 function RegisterPage() {
-  scrollTop();
+  const { t } = useTranslation();
   const {
     handleRegisterSubmit,
     registerData,
@@ -26,11 +26,11 @@ function RegisterPage() {
   return (
     <Wrapper>
       <Container>
-        <Title>註冊帳戶</Title>
+        <Title>{t("註冊帳戶")}</Title>
         <FormContainer onSubmit={handleRegisterSubmit}>
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           <FormItem
-            itemName="使用者名稱"
+            itemName={t("使用者名稱")}
             id="username"
             value={registerData.username}
             type="text"
@@ -38,9 +38,9 @@ function RegisterPage() {
             handleChange={handleRegisterDataChange}
           />
           <FormItemContainer>
-            <ItemName>登入身分</ItemName>
+            <ItemName>{t("身分")}</ItemName>
             <RadioFormItem
-              radioItemName="學生"
+              radioItemName={t("學生")}
               id="student"
               value="student"
               type="radio"
@@ -48,7 +48,7 @@ function RegisterPage() {
               handleChange={handleRegisterDataChange}
             />
             <RadioFormItem
-              radioItemName="老師"
+              radioItemName={t("老師")}
               id="teacher"
               value="teacher"
               type="radio"
@@ -57,7 +57,7 @@ function RegisterPage() {
             />
           </FormItemContainer>
           <FormItem
-            itemName="登入用 Email"
+            itemName={t("登入用 email")}
             id="email"
             value={registerData.email}
             type="email"
@@ -65,7 +65,7 @@ function RegisterPage() {
             handleChange={handleRegisterDataChange}
           />
           <FormItem
-            itemName="聯絡用 Email"
+            itemName={t("聯絡用 email")}
             id="contactEmail"
             value={registerData.contactEmail}
             type="email"
@@ -73,22 +73,22 @@ function RegisterPage() {
             handleChange={handleRegisterDataChange}
           />
           <FormItem
-            itemName="密碼"
-            id="password"
+            itemName={t("密碼")}
+            id="registerPassword"
             value={registerData.password}
             type="password"
             name="password"
             handleChange={handleRegisterDataChange}
           />
           <FormItem
-            itemName="再次確認密碼"
+            itemName={t("再次確認密碼")}
             id="checkPassword"
             value={registerData.checkPassword}
             type="password"
             name="checkPassword"
             handleChange={handleRegisterDataChange}
           />
-          <Btn>註冊</Btn>
+          <Btn>{t("註冊")}</Btn>
         </FormContainer>
       </Container>
     </Wrapper>
