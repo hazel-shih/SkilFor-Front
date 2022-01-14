@@ -9,7 +9,7 @@ import { AuthContext } from "../../../contexts";
 import LoaderSpining from "../../../components/LoaderSpining";
 import { LoadingSquare } from "../../../components/Calendar/TeacherManageCalendar";
 import AlertCard from "../../../components/AlertCard";
-
+import { useTranslation } from "next-i18next";
 const CalendarContainer = styled.div`
   position: relative;
   display: flex;
@@ -17,6 +17,7 @@ const CalendarContainer = styled.div`
   margin-top: 20px;
 `;
 function FrontCourseCalendar({ courseId }) {
+  const { t } = useTranslation();
   const localizer = momentLocalizer(moment);
   const [alertShow, setAlertShow] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
@@ -36,7 +37,7 @@ function FrontCourseCalendar({ courseId }) {
       );
       if (!json || !json.success) {
         setLoading(false);
-        return setApiError("發生了一點錯誤，請稍後再試");
+        return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       }
       if (json.data) {
         let eventsData = json.data.map((event) => {
@@ -49,11 +50,11 @@ function FrontCourseCalendar({ courseId }) {
       }
     }
     fetchData();
-  }, [courseId, setApiError, currentPage]);
+  }, [courseId, setApiError, currentPage, t]);
   const handleEventClick = (e) => {
     if (!user || (user && user.identity !== "student")) {
       return alert(
-        "學生身份才能使用課程預約功能！請以學生身份登入系統再試一次。"
+        `${t("學生身份才能使用課程預約功能！請以學生身份登入系統再試一次。")}`
       );
     }
     if (

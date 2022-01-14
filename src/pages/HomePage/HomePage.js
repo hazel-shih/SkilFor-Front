@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { scrollTop, setAuthToken } from "../../utils";
 import { AuthContext } from "../../contexts";
 import { useContext } from "react";
+import { useTranslation } from "react-i18next";
 
 const Container = styled.div`
   padding: 100px 0px 100px 0px;
@@ -196,6 +197,7 @@ const FindATeacherBtn = styled(Btn)`
 `;
 
 function HomePage() {
+  const { t } = useTranslation();
   const newTyped = useRef(null);
   const typed = useRef(null);
 
@@ -203,7 +205,9 @@ function HomePage() {
     scrollTop();
     const typedSetting = {
       strings: [
-        "最酷的技能學習平台<br/>從寫程式到 B-box 你都可以在這裡教與學！<br/>A platform for learning and teaching skill.",
+        t(
+          "最酷的技能學習平台<br/>從寫程式到 B-box 你都可以在這裡教與學！<br/>A platform for learning and teaching skill."
+        ),
       ],
       typeSpeed: 80,
       fadeOut: true,
@@ -211,7 +215,7 @@ function HomePage() {
       showCursor: false,
     };
     typed.current = new Typed(newTyped.current, typedSetting);
-  }, []);
+  }, [t]);
 
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -219,7 +223,9 @@ function HomePage() {
     e.preventDefault();
     if (!user || user.identity === "student") {
       const confirmNavigate = window.confirm(
-        "註冊一個老師身分的帳號，即可成為老師囉 ! 按下確定將帶您前往註冊頁面。"
+        `${t(
+          "註冊一個老師身分的帳號，即可成為老師囉！按下確定將帶您前往註冊頁面。"
+        )}`
       );
       if (!confirmNavigate) return;
       setAuthToken("");
@@ -227,30 +233,35 @@ function HomePage() {
       navigate("/register");
     }
     if (user && user.identity === "teacher") {
-      alert("您已成功成為老師囉 !");
+      alert(`${t("您已成功成為老師囉！")}`);
     }
   };
+
   return (
     <Container>
       <Banner src={banner}>
         <p ref={newTyped}></p>
       </Banner>
       <StudentStep>
-        <Title>上課三步驟</Title>
+        <Title>{t("上課三步驟")}</Title>
         <StepDiv>
           <Img src={firstStep} />
           <StepContent>
-            <StepTitle>Step 1：根據學習需求找老師</StepTitle>
+            <StepTitle>Step 1：{t("根據學習需求找課程")}</StepTitle>
             <StepDescription>
-              完成帳號註冊後，進入「找老師」頁面選擇你要學習的領域，將會立即出現該領域的所有老師。
+              {t(
+                "註冊帳號後，進入「搜尋課程」頁面選擇你要學習的領域，將會立即出現該領域的所有課程。"
+              )}
             </StepDescription>
           </StepContent>
         </StepDiv>
         <StepDiv>
           <StepTwoContent>
-            <StepTitle>Step 2：預約與購買課程</StepTitle>
+            <StepTitle>Step 2：{t("預約與購買課程")}</StepTitle>
             <StepDescription>
-              挑好老師後，可點選老師的行事曆選擇可上課時間。點選後，可到「購物車」中查看，確認資訊無誤，按下送出。出現「購買成功」即代表成功買好老師的時間了。
+              {t(
+                "挑好課程後，可點選行事曆的時段選擇上課時間，並進入「購物車」中確認購買，完成購買流程後會出現「成功扣點」。若您的點數不足請至「點數儲值」頁面先行加值。"
+              )}
             </StepDescription>
           </StepTwoContent>
           <SecondImg src={secondStep} />
@@ -258,20 +269,22 @@ function HomePage() {
         <StepDiv>
           <Img src={thirdStep} />
           <StepContent>
-            <StepTitle>Step 3：開始上課</StepTitle>
+            <StepTitle>Step 3：{t("開始上課")}</StepTitle>
             <StepDescription>
-              上課前會收到線上課程會議室連結，到了上課時間點選連結進入會議室，就可以開始享受與老師的上課啦！
+              {t(
+                "課程開始前至「我的行事曆」點選上課時段，可見上課的視訊連結。上課時間進入指定的視訊會議中，就可以開始享受與老師的課程啦！"
+              )}
             </StepDescription>
             <BtnDiv>
-              <FindATeacherBtn to="./filter">開始找老師</FindATeacherBtn>
+              <FindATeacherBtn to="./filter">{t("開始找課程")}</FindATeacherBtn>
             </BtnDiv>
           </StepContent>
         </StepDiv>
       </StudentStep>
       <TeacherStep src={teacherStep}>
-        <p>上架你的才華，將熱情與技能分享給全世界</p>
+        <p>{t("上架你的才華，將熱情與技能分享給全世界")}</p>
         <Btn to="./register" onClick={handleBtnClick}>
-          成為老師
+          {t("成為老師")}
         </Btn>
       </TeacherStep>
     </Container>

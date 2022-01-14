@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { MEDIA_QUERY_SM } from "../constants/breakpoints";
+import { useTranslation } from "react-i18next";
 
 export const FormItemContainer = styled.div`
   margin: 5px 0;
@@ -31,6 +32,7 @@ const ItemLabel = styled.label`
   font-size: 1.3rem;
   padding: 10px;
   float: left;
+  color: ${(props) => props.theme.colors.grey_dark};
   ${MEDIA_QUERY_SM} {
     padding: 6px;
     font-size: 1rem;
@@ -61,11 +63,12 @@ const ItemRadioInput = styled(ItemInput)`
 `;
 
 export function FormItem({ itemName, id, value, type, name, handleChange }) {
+  const { t } = useTranslation();
   return (
     <FormItemContainer>
       <ItemName>
         {itemName}
-        {id === "password" && <span> (至少需有六碼)</span>}
+        {id === "registerPassword" && <span> ({t("至少 6 個字元")})</span>}
       </ItemName>
       <ItemInput
         id={id}
@@ -94,7 +97,6 @@ export function RadioFormItem({
         type={type}
         name={name}
         onChange={handleChange}
-        defaultChecked={id === "administrator" ? true : false}
       />
       {radioItemName}
     </ItemLabel>

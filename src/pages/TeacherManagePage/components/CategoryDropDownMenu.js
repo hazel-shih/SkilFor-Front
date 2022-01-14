@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAllCategories } from "../../../WebAPI";
 import { CATEGORY_LIST } from "../Constant";
+import { useTranslation } from "react-i18next";
 
 export const RowContainer = styled.div`
   display: flex;
@@ -47,16 +48,17 @@ function CategoryDropDownMenu({
   setApiError,
   setIsEditing,
 }) {
+  const { t, i18n } = useTranslation();
   const [selectOptions, setSelectOptions] = useState(null);
   useEffect(() => {
     async function getCategoryOptions(setApiError) {
       let json = await getAllCategories(setApiError);
       if (!json || !json.success)
-        return setApiError("發生了一點錯誤，請稍後再試");
+        return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       setSelectOptions(json.data);
     }
     getCategoryOptions(setApiError);
-  }, [setApiError]);
+  }, [setApiError, t]);
   const selectedCategory = useRef(null);
   const handleSelectCategorySubmit = (e) => {
     setIsEditing(false);
@@ -77,28 +79,32 @@ function CategoryDropDownMenu({
     <SelectContainer>
       <RowContainer>
         <SelectBar id="addCategory" ref={selectedCategory}>
-          <option value="">請選擇一個課程領域</option>
+          <option value="">{t("請選擇一個課程領域")}</option>
           {selectOptions && courseInfos && (
             <>
               {courseInfos.length !== 0 &&
                 makeSelectOptions(selectOptions, courseInfos).map(
                   (category) => (
                     <option key={category.name} value={category.name}>
-                      {category.displayName}
+                      {i18n.language === "en"
+                        ? category.name
+                        : category.displayName}
                     </option>
                   )
                 )}
               {courseInfos.length === 0 &&
                 selectOptions.map((category) => (
                   <option key={category.name} value={category.name}>
-                    {category.displayName}
+                    {i18n.language === "en"
+                      ? category.name
+                      : category.displayName}
                   </option>
                 ))}
             </>
           )}
         </SelectBar>
         <ChooseCategoryButton onClick={handleSelectCategorySubmit}>
-          新增
+          {t("新增")}
         </ChooseCategoryButton>
       </RowContainer>
     </SelectContainer>

@@ -13,8 +13,8 @@ import {
   addOrder,
 } from "../../WebAPI";
 import { checkEventsConflict } from "../../components/Calendar/utils";
-import { titles } from "./CartTableTitles";
 import { scrollTop } from "../../utils";
+import { useTranslation } from "react-i18next";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -186,6 +186,7 @@ const RemainingPoints = styled(TotalPoints)`
 `;
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
@@ -194,14 +195,14 @@ export default function CartPage() {
     const getUserCartItems = async (setApiError) => {
       let json = await getCartItems(setApiError);
       if (!json || !json.success)
-        return setApiError("發生了一點錯誤，請稍後再試");
+        return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       if (json.data.length === 0) {
-        return setApiError("目前未有課程加入購物車");
+        return setApiError(`${t("目前未有課程加入購物車...")}`);
       }
       setCartItems(json.data);
     };
     getUserCartItems(setApiError);
-  }, [setCartItems]);
+  }, [setCartItems, t]);
 
   const handleItemCheckChange = (e) => {
     const { id } = e.target;
@@ -230,7 +231,7 @@ export default function CartPage() {
       new Date(end)
     );
     if (overlapItemResult !== false) {
-      alert("課程時段重複了，請擇一購買喔");
+      alert(`${t("課程時段重複了，請擇一購買喔！")}`);
       setOverlapTimeItems([
         overlapItemResult[1].scheduleId,
         targetItem.scheduleId,
@@ -257,21 +258,26 @@ export default function CartPage() {
   const deleteUserCartItem = async (scheduleId, setApiError) => {
     let json = await deleteCartItem(scheduleId, setApiError);
     if (!json || !json.success) {
-      return setApiError("發生了一點錯誤，請稍後再試");
+      return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
     }
   };
-
+  const [orderError, setOrderError] = useState([]);
   const handleItemDelete = (e) => {
     e.preventDefault();
-    const confirmDelete = window.confirm("確認從購物車刪除此課程嗎?");
+    const confirmDelete = window.confirm(`${t("確認從購物車刪除此課程嗎？")}`);
     if (!confirmDelete) return;
     const { id } = e.target;
     deleteUserCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
+    setOrderError([]);
   };
 
   const handleExpiredItemDelete = (e) => {
     e.preventDefault();
+    const confirmDelete = window.confirm(
+      `${t("確認從購物車刪除失效課程嗎？")}`
+    );
+    if (!confirmDelete) return;
     setCartItems(
       cartItems.filter((item, setApiError) => {
         if (
@@ -304,29 +310,29 @@ export default function CartPage() {
     const getData = async (setApiError) => {
       let json = await getUserInfos(setApiError);
       if (!json || !json.success) {
-        return setApiError("發生了一點錯誤，請稍後再試");
+        return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       }
       if (!json.data.points) return setRemainingPoints("0");
       return setRemainingPoints(json.data.points);
     };
     getData(setApiError);
-  }, [setRemainingPoints]);
+  }, [setRemainingPoints, t]);
 
   const navigate = useNavigate();
-  const [orderError, setOrderError] = useState([]);
+
   const handleConfirmPaymentClick = (e) => {
     e.preventDefault();
     if (orderError.length !== 0) return;
     const checkedItem = cartItems.find((item) => item.checked);
-    if (!checkedItem) return alert("尚未選擇要確認購買的課程");
+    if (!checkedItem) return alert(`${t("尚未選擇要確認購買的課程")}`);
 
     if (remainingPoints < totalPoints) {
-      alert("剩餘點數不足，請先去儲值點數喔!");
+      alert(`${t("剩餘點數不足，請先去儲值點數喔！")}`);
       return navigate("/point");
     }
 
     const confirmPayment = window.confirm(
-      "按下確認購買後，將會於您的帳戶扣除點數"
+      `${t("按下確認購買後，將會於您的帳戶扣除點數")}`
     );
     if (!confirmPayment) return;
 
@@ -350,23 +356,23 @@ export default function CartPage() {
     orderData.totalPrice = totalPoints;
 
     addOrder(orderData, setApiError).then((json) => {
-      if (!json) return setApiError("發生了一點錯誤，請稍後再試");
+      if (!json) return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       if (!json.success) {
         return setOrderError(json.errMessage);
       }
-      alert("成功扣點 ! 可在行事曆上看到已購買成功的課程喔");
+      alert(`${t("成功扣點！可在行事曆上看到已購買成功的課程喔")}`);
       navigate("/calendar");
     });
   };
   return (
     <CartWrapper>
-      <PageTitle>購物車</PageTitle>
+      <PageTitle>{t("購物車")}</PageTitle>
       {apiError && <ErrorMessage>{apiError}</ErrorMessage>}
       {!apiError && (
         <CartContainer>
           <WrapDiv>
             <DeleteExpiredItemBtn onClick={handleExpiredItemDelete}>
-              清除失效課程
+              {t("清除失效課程")}
             </DeleteExpiredItemBtn>
           </WrapDiv>
           <CartTable>
@@ -380,9 +386,13 @@ export default function CartPage() {
             </colgroup>
             <CartHead>
               <tr>
-                {titles.map((title, index) => (
-                  <th key={index}>{title}</th>
-                ))}
+                <th>{t("購買")}</th>
+                <th>{t("刪除")}</th>
+                <th>{t("課程名稱")}</th>
+                <th>{t("老師")}</th>
+                <th>{t("上課時間")}</th>
+                <th>{t("點數")}</th>
+                <th>{t("備註")}</th>
               </tr>
             </CartHead>
             <CartBody>
@@ -405,10 +415,14 @@ export default function CartPage() {
             </CartBody>
           </CartTable>
           <WrapDiv>
-            <RemainingPoints>我的點數 {remainingPoints} 點</RemainingPoints>
+            <RemainingPoints>
+              {t("我的點數")} {remainingPoints} {t("點")}
+            </RemainingPoints>
             <NoWrapDiv>
-              <TotalPoints>共計 {totalPoints} 點</TotalPoints>
-              <Btn onClick={handleConfirmPaymentClick}>確認購買</Btn>
+              <TotalPoints>
+                {t("共計")} {totalPoints} {t("點")}
+              </TotalPoints>
+              <Btn onClick={handleConfirmPaymentClick}>{t("確認購買")}</Btn>
             </NoWrapDiv>
           </WrapDiv>
         </CartContainer>

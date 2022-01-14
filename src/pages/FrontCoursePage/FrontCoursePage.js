@@ -11,7 +11,7 @@ import {
 // import { nanoid } from "nanoid";
 import AlertCard from "../../components/AlertCard";
 import { getFrontCourseInfos } from "../../WebAPI";
-
+import { useTranslation } from "next-i18next";
 const TeacherProfileWrapper = styled.section`
   padding: 180px 200px 232px 200px;
   display: flex;
@@ -93,6 +93,7 @@ const SectionIntro = styled(ItemContent)`
 
 function FrontCoursePage() {
   window.scroll(0, 0);
+  const { t } = useTranslation();
   const { courseId } = useParams();
   const [infos, setInfos] = useState(null);
   // const [comments, setComments] = useState(null);
@@ -102,12 +103,12 @@ function FrontCoursePage() {
     async function fetchData() {
       let json = await getFrontCourseInfos(courseId, setApiError);
       if (!json || !json.success) {
-        return setApiError("發生了一點錯誤，請稍後再試");
+        return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
       }
       setInfos(json.data);
     }
     fetchData();
-  }, [courseId, setApiError]);
+  }, [courseId, setApiError, t]);
 
   const handleAlertOkClick = () => {
     setApiError(false);
@@ -118,7 +119,7 @@ function FrontCoursePage() {
       {apiError && (
         <AlertCard
           color="#A45D5D"
-          title="錯誤"
+          title={t("錯誤")}
           content={apiError}
           handleAlertOkClick={handleAlertOkClick}
         />
@@ -134,24 +135,24 @@ function FrontCoursePage() {
         </TeacherAvatarContainer>
         <CourseInfosContainer>
           <ItemContainer>
-            <ItemTitle>領域</ItemTitle>
+            <ItemTitle>{t("領域")}</ItemTitle>
             {infos && <ItemContent>{infos.category}</ItemContent>}
           </ItemContainer>
           <ItemContainer>
-            <ItemTitle>課程名稱</ItemTitle>
+            <ItemTitle>{t("課程名稱")}</ItemTitle>
             {infos && <ItemContent>{infos.courseName}</ItemContent>}
           </ItemContainer>
           <ItemContainer>
-            <ItemTitle>單堂點數</ItemTitle>
+            <ItemTitle>{t("單堂點數")}</ItemTitle>
             {infos && <ItemContent>{infos.price}</ItemContent>}
           </ItemContainer>
         </CourseInfosContainer>
       </TeacherInfosContainer>
-      <SectionTitle>課程時間</SectionTitle>
+      <SectionTitle>{t("課程時間")}</SectionTitle>
       <FrontCourseCalendar courseId={courseId} />
-      <SectionTitle>課程介紹</SectionTitle>
+      <SectionTitle>{t("課程介紹")}</SectionTitle>
       {infos && <SectionIntro>{infos.courseDescription}</SectionIntro>}
-      {/* <SectionTitle>課程評價</SectionTitle> */}
+      {/* <SectionTitle>{t("課程評價")}</SectionTitle> */}
       {/* <CommentsContainer>
         {comments && comments.length !== 0 ? (
           comments.map((comment) => (
@@ -163,7 +164,7 @@ function FrontCoursePage() {
             />
           ))
         ) : (
-          <NoStatusText>目前沒有任何評論</NoStatusText>
+          <NoStatusText>{t("目前沒有任何評論")}</NoStatusText>
         )}
       </CommentsContainer> */}
     </TeacherProfileWrapper>

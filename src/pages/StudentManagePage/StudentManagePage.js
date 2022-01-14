@@ -15,26 +15,27 @@ import {
   PageBtn,
   FormContainer,
 } from "../TeacherManagePage/TeacherManagePage";
-
+import { useTranslation } from "next-i18next";
 const StudentManageWrapper = styled(TeacherManageWrapper)``;
 const StudentManageContainer = styled(TeacherManageContainer)``;
 
 function StudentManagePage() {
+  const { t } = useTranslation();
   useCheckToken();
   const navigate = useNavigate();
-  //老師個人資訊
+  //學生個人資訊
   const [studentInfos, setStudentInfos] = useState(null);
   const [apiError, setApiError] = useState(false);
   useEffect(() => {
     const getData = async (setApiError) => {
       let json = await getUserInfos(setApiError);
       if (!json || !json.success) {
-        return setApiError("請先登入才能使用後台功能");
+        return setApiError(`${t("請先登入才能使用後台功能")}`);
       }
       setStudentInfos(json.data);
     };
     getData(setApiError);
-  }, []);
+  }, [t]);
   const handleAlertOkClick = () => {
     setApiError(false);
     if (apiError === "請先登入才能使用後台功能") {
@@ -46,12 +47,12 @@ function StudentManagePage() {
   };
   return (
     <StudentManageWrapper>
-      <PageTitle>後台管理</PageTitle>
+      <PageTitle>{t("管理後台")}</PageTitle>
       <StudentManageContainer>
         {apiError && (
           <AlertCard
             color="#A45D5D"
-            title="錯誤"
+            title={t("錯誤")}
             content={apiError}
             handleAlertOkClick={handleAlertOkClick}
           />
@@ -61,13 +62,13 @@ function StudentManagePage() {
             <Avatar
               imgSrc="https://i.imgur.com/f9bnLUM.png"
               name={studentInfos.username}
-              status={`我的點數：${
+              status={`${t("點數")}：${
                 !studentInfos.points ? 0 : studentInfos.points
               }`}
             />
           )}
           <PageBtnsContainer>
-            <PageBtn isClick={true}>個人資訊</PageBtn>
+            <PageBtn isClick={true}>{t("個人資訊")}</PageBtn>
           </PageBtnsContainer>
         </UserInfoContainer>
         <FormContainer>
