@@ -84,11 +84,19 @@ function StudentReadTaskCard({
           </>
         )}
         {!selectedEvent.exist && (
-          <AlertContent>
-            {t(
-              "老師臨時無法上課，因此取消了此堂課程，系統已經自動將點數退還給你囉！"
-            )}
-          </AlertContent>
+          <>
+            <AlertContent>
+              {t(
+                "老師臨時無法上課，因此取消了此堂課程，系統已經自動將點數退還給你囉！"
+              )}
+            </AlertContent>
+            <AlertButton
+              color="#75A29E"
+              onClick={() => handleDeleteEvent(selectedEvent.id)}
+            >
+              {t("刪除此筆課程紀錄")}
+            </AlertButton>
+          </>
         )}
       </ContentContainer>
     </AlertContainer>
