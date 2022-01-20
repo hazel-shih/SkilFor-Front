@@ -26,7 +26,7 @@ function AdminLoginPage() {
       ...loginData,
       identity: "administrator",
     });
-  }, [setLoginData]);
+  }, [setLoginData, loginData]);
 
   return (
     <Wrapper>
