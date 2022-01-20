@@ -13,12 +13,13 @@ import {
 } from "../../pages/FrontCoursePage/components/ReserveAlertCard";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { dateObjToDisplayTime } from "./utils";
 
 const ContentContainer = styled.div``;
 
 const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 3);
+  let dateStr = dateObjToDisplayTime(dateObj);
+  return dateStr;
 };
 const NoneStyleLink = styled(Link)`
   text-decoration: none;
