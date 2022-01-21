@@ -121,7 +121,7 @@ export default function CartList({
         <ErrorTr>
           <td colSpan="7">
             {item.scheduleStatus && <ExpiredCover />}
-            {item.scheduleStatus ? item.scheduleStatus : errorNotice}
+            {item.scheduleStatus ? t(item.scheduleStatus) : errorNotice}
           </td>
         </ErrorTr>
       ) : null}
@@ -159,7 +159,15 @@ export default function CartList({
           {item.scheduleStatus && <ExpiredCover />}
           {new Date(item.start).toLocaleDateString()}
           <br />
-          {item.timePeriod}
+          {new Date(item.start).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}{" "}
+          ~{" "}
+          {new Date(item.end).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
         </td>
         <td data-title={t("點數")} style={errorStyle}>
           {item.scheduleStatus && <ExpiredCover />}
