@@ -49,7 +49,7 @@ export default function useLogin() {
       if (data.success === false) {
         setIsLoading(false);
         scrollTop();
-        return setErrorMessage(data.errMessage);
+        return setErrorMessage(t(data.errMessage));
       }
       setAuthToken(data.token);
       getMyUserData().then((response) => {

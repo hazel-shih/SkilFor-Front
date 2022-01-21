@@ -195,5 +195,13 @@
   "職場技能": "Career Skill",
   "生活品味": "Life Style",
   "其他": "Others",
-  "此時段課程已過期": "This course has expired."
+  "此時段課程已過期": "This course has expired.",
+  "此課程已被預訂": "This course has been reserved from others.",
+  "您已預訂此課程": "You have reserved this course.",
+  "此時段課程已被刪除": "This course has been deleted.",
+  "此時段已加入購物車": "This course has existed in your shopping cart.",
+  "此課程已下架": "This course doesn't existed.",
+  "密碼不得少於六位數": "The password has invalid format",
+  "找不到此使用者": "The login details you entered doesn't match any user. Please try again.",
+  "密碼錯誤": "The password you provided are incorrect. Please try again."
 }
