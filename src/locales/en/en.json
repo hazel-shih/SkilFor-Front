@@ -183,5 +183,17 @@
   "確定新增": "Add Time",
   "目前沒有新增課程的權限": "No course to add time slot",
   "請先到後台新增課程，等待資料審核通過後就可以開課囉！": "Please create a new course in My Information. Once your course passed the evaluation, you can start adding time slots.",
-  "我知道了": "I understand"
+  "我知道了": "I understand",
+  "程式":"Programming",
+  "音樂":"Music",
+  "語言":"Language",
+  "攝影":"Photography",
+  "藝術":"Art",
+  "設計":"Design",
+  "人文":"Humanities",
+  "行銷":"Promotion",
+  "投資理財":"Invest",
+  "職場技能":"Career Skill",
+  "生活品味":"Life Style",
+  "其他":"Others"
 }

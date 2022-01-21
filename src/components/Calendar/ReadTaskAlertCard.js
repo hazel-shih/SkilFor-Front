@@ -13,6 +13,7 @@ import {
   TimeContainer,
 } from "../../pages/FrontCoursePage/components/ReserveAlertCard";
 import { useTranslation } from "react-i18next";
+import { dateObjToDisplayTime } from "./utils";
 
 const ContentContainer = styled.div``;
 
@@ -20,8 +21,8 @@ const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
 `;
 const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 3);
+  let dateStr = dateObjToDisplayTime(dateObj);
+  return dateStr;
 };
 
 function ReadTaskAlertCard({

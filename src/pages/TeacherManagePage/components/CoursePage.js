@@ -289,7 +289,7 @@ function CoursePage({ apiError, setApiError }) {
               isClick={selectedCourseInfos.category === course.category}
               onClick={handleCourseBtnClick}
             >
-              {course.category}
+              {t(course.category)}
             </CourseButton>
           ))}
         </CourseBtnsContainer>
