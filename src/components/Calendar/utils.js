@@ -89,3 +89,13 @@ export const checkEventsConflict = (
     return false;
   }
 };
+
+export const dateObjToDisplayTime = (dateObj) => {
+  let displayTime = `${dateObj.getFullYear()}/${
+    dateObj.getMonth() + 1
+  }/${dateObj.getDate()} ${dateObj.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}`;
+  return displayTime;
+};
