@@ -1,14 +1,19 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, getMyUserData } from "../../WebAPI";
+import { login, getMyUserData, getCartItems } from "../../WebAPI";
 import { setAuthToken } from "../../utils";
-import { AuthContext, AuthLoadingContext } from "../../contexts";
+import {
+  AuthCartContext,
+  AuthContext,
+  AuthLoadingContext,
+} from "../../contexts";
 import { scrollTop } from "../../utils";
 import { useTranslation } from "react-i18next";
 
 export default function useLogin() {
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const { setIsLoading } = useContext(AuthLoadingContext);
+  const { setCartNumber } = useContext(AuthCartContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [loginData, setLoginData] = useState({
@@ -62,6 +67,15 @@ export default function useLogin() {
         setUser(response.user);
         setIsLoading(false);
         navigate("/");
+      });
+      getCartItems().then((json) => {
+        if (!json || !json.success || json.data.length === 0) {
+          if (!user || user.identity !== "student") {
+            console.log("here");
+            return;
+          } else return setCartNumber("0");
+        }
+        return setCartNumber(json.data.length);
       });
     });
   };

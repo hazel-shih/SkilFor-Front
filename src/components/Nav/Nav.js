@@ -6,7 +6,11 @@ import LogoSrc from "../../img/logo/logo.svg";
 import { IconDiv } from "../Icon/IconDiv";
 import { MEDIA_QUERY_SM, MEDIA_QUERY_MD } from "../constants/breakpoints";
 import BurgerMenu from "../BurgerMenu";
-import { AuthContext, AuthLoadingContext } from "../../contexts";
+import {
+  AuthContext,
+  AuthLoadingContext,
+  AuthCartContext,
+} from "../../contexts";
 import { setAuthToken } from "../../utils";
 import { useTranslation } from "react-i18next";
 
@@ -72,12 +76,31 @@ const NavItem = styled(Link)`
   }
 `;
 
+const CartCount = styled.div`
+  position: absolute;
+  top: 0px;
+  right: -10px;
+  min-width: 8px;
+  height: 25px;
+  line-height: 10px;
+  margin-top: -10px;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+  background: #e23442;
+  border: 1px solid #911f28;
+  border-radius: 10px;
+`;
+
 function Nav() {
   const { user, setUser } = useContext(AuthContext);
   const { isLoading } = useContext(AuthLoadingContext);
+  const { cartNumber, setCartNumber } = useContext(AuthCartContext);
   const handleLogout = () => {
     setAuthToken("");
     setUser(null);
+    setCartNumber(null);
   };
   const { t, i18n } = useTranslation();
   const handleSelectLanguage = (e) => {
@@ -114,6 +137,14 @@ function Nav() {
                   <Icons.NavIcons.Question />
                 </IconDiv>
               </NavItem>
+              {user && user.identity === "student" && (
+                <NavItem to="./cart">
+                  <IconDiv>
+                    <Icons.NavIcons.Cart />
+                    <CartCount>{cartNumber}</CartCount>
+                  </IconDiv>
+                </NavItem>
+              )}
               {user && <BurgerMenu />}
               <select
                 onChange={handleSelectLanguage}
