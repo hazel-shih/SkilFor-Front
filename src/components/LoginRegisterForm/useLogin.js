@@ -6,15 +6,24 @@ import { AuthContext, AuthLoadingContext } from "../../contexts";
 import { scrollTop } from "../../utils";
 import { useTranslation } from "react-i18next";
 
-export default function useLogin() {
+export default function useLogin(userIdentity) {
   const { setUser } = useContext(AuthContext);
   const { setIsLoading } = useContext(AuthLoadingContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-  const [loginData, setLoginData] = useState({
-    email: "",
-    identity: "",
-    password: "",
+  const [loginData, setLoginData] = useState(() => {
+    const data = {
+      email: "",
+      identity: "",
+      password: "",
+    };
+    if (userIdentity) {
+      return {
+        ...data,
+        identity: userIdentity,
+      };
+    }
+    return data;
   });
   const { t } = useTranslation();
 
