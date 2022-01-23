@@ -9,6 +9,8 @@ import {
 import close from "../../../img/close.png";
 import { addCartItem } from "../../../WebAPI";
 import { useTranslation } from "next-i18next";
+import { dateObjToDisplayTime } from "../../../components/Calendar/utils";
+
 const AddToCartButton = styled(AlertButton)`
   min-width: 100px;
 `;
@@ -27,10 +29,6 @@ export const TimeTitle = styled(AlertTitle)`
     margin-bottom: 0px;
   }
 `;
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObj.toLocaleString();
-  return dateStr.slice(0, dateStr.length - 3);
-};
 
 function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const { t } = useTranslation();
@@ -53,11 +51,11 @@ function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
       <TimeContainer>
         <TimeTitle>
           {t("開始：")}
-          {getDisplayDate(new Date(selectedEvent.start))}
+          {dateObjToDisplayTime(new Date(selectedEvent.start))}
         </TimeTitle>
         <TimeTitle>
           {t("結束：")}
-          {getDisplayDate(new Date(selectedEvent.end))}
+          {dateObjToDisplayTime(new Date(selectedEvent.end))}
         </TimeTitle>
       </TimeContainer>
       <WrapContent>
