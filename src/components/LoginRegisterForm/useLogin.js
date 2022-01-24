@@ -77,13 +77,11 @@ export default function useLogin(userIdentity) {
         setIsLoading(false);
         navigate("/");
       });
+      if (!user || user.identity !== "student") return;
       getCartItems().then((json) => {
         if (!json || !json.success || json.data.length === 0) {
-          if (!user || user.identity !== "student") {
-            return;
-          } else return setCartNumber("0");
-        }
-        return setCartNumber(json.data.length);
+          return setCartNumber("0");
+        } else return setCartNumber(json.data.length);
       });
     });
   };
