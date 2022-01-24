@@ -141,7 +141,7 @@ function Nav() {
                 <NavItem to="./cart">
                   <IconDiv>
                     <Icons.NavIcons.Cart />
-                    <CartCount>{cartNumber}</CartCount>
+                    {cartNumber > 0 && <CartCount>{cartNumber}</CartCount>}
                   </IconDiv>
                 </NavItem>
               )}
