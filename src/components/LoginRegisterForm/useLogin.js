@@ -80,7 +80,6 @@ export default function useLogin(userIdentity) {
       getCartItems().then((json) => {
         if (!json || !json.success || json.data.length === 0) {
           if (!user || user.identity !== "student") {
-            console.log("here");
             return;
           } else return setCartNumber("0");
         }
