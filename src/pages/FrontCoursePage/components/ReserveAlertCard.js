@@ -9,6 +9,9 @@ import {
 import close from "../../../img/close.png";
 import { addCartItem } from "../../../WebAPI";
 import { useTranslation } from "next-i18next";
+import { AuthCartContext } from "../../../contexts";
+import { useContext } from "react";
+
 const AddToCartButton = styled(AlertButton)`
   min-width: 100px;
 `;
@@ -34,15 +37,17 @@ const getDisplayDate = (dateObj) => {
 
 function ReserveAlertCard({ setAlertShow, selectedEvent, setApiError }) {
   const { t } = useTranslation();
+  const { cartNumber, setCartNumber } = useContext(AuthCartContext);
   const handleCloseClick = () => {
     setAlertShow(null);
   };
   const handleReserveEvent = () => {
     addCartItem(setApiError, selectedEvent.scheduleId).then((json) => {
       if (json && !json.success && json.errMessage) {
-        return setApiError(json.errMessage[0]);
+        return setApiError(t(json.errMessage[0]));
       }
       if (json && json.success) alert(`${t("加入成功！請至購物車結帳吧！")}`);
+      setCartNumber(Number(cartNumber) + 1);
     });
     setAlertShow(false);
   };

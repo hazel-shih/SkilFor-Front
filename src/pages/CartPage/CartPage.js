@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import {
 import { checkEventsConflict } from "../../components/Calendar/utils";
 import { scrollTop } from "../../utils";
 import { useTranslation } from "react-i18next";
+import { AuthCartContext } from "../../contexts";
 
 const CartWrapper = styled.section`
   padding: 156px 80px 232px 80px;
@@ -190,6 +191,7 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPoints, setTotalPoints] = useState("0");
   const [apiError, setApiError] = useState(false);
+  const { cartNumber, setCartNumber } = useContext(AuthCartContext);
   useEffect(() => {
     scrollTop();
     const getUserCartItems = async (setApiError) => {
@@ -200,9 +202,10 @@ export default function CartPage() {
         return setApiError(`${t("目前未有課程加入購物車...")}`);
       }
       setCartItems(json.data);
+      setCartNumber(json.data.length);
     };
     getUserCartItems(setApiError);
-  }, [setCartItems, t]);
+  }, [setCartItems, setCartNumber, t]);
 
   const handleItemCheckChange = (e) => {
     const { id } = e.target;
@@ -270,6 +273,7 @@ export default function CartPage() {
     deleteUserCartItem(id, setApiError);
     setCartItems(cartItems.filter((item) => item.scheduleId !== id));
     setOrderError([]);
+    setCartNumber(cartNumber - 1);
   };
 
   const handleExpiredItemDelete = (e) => {
@@ -278,18 +282,22 @@ export default function CartPage() {
       `${t("確認從購物車刪除失效課程嗎？")}`
     );
     if (!confirmDelete) return;
+    let expiredItemArr = [];
     setCartItems(
       cartItems.filter((item, setApiError) => {
         if (
           item.scheduleStatus ||
           new Date(item.start).getTime() < new Date().getTime()
         ) {
+          expiredItemArr.push(item.scheduleId);
           deleteUserCartItem(item.scheduleId, setApiError);
           return false;
         }
         return true;
       })
     );
+    let expiredItemTotalNumber = expiredItemArr.length;
+    setCartNumber(Number(cartNumber) - expiredItemTotalNumber);
   };
 
   const handleItemNoteChange = (e) => {
@@ -354,6 +362,7 @@ export default function CartPage() {
       })
     );
     orderData.totalPrice = totalPoints;
+    let orderTotalNumber = orderData.scheduleId.length;
 
     addOrder(orderData, setApiError).then((json) => {
       if (!json) return setApiError(`${t("發生了一點錯誤，請稍後再試")}`);
@@ -362,6 +371,7 @@ export default function CartPage() {
       }
       alert(`${t("成功扣點！可在行事曆上看到已購買成功的課程喔")}`);
       navigate("/calendar");
+      setCartNumber(Number(cartNumber) - orderTotalNumber);
     });
   };
   return (

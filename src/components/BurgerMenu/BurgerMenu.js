@@ -98,14 +98,9 @@ function BurgerMenu() {
               }`}
             />
             {user && user.identity === "student" && (
-              <>
-                <BurgerItem to="./cart" onClick={handleMenuToggle}>
-                  {t("購物車")}
-                </BurgerItem>
-                <BurgerItem to="/point" onClick={handleMenuToggle}>
-                  {t("點數儲值")}
-                </BurgerItem>
-              </>
+              <BurgerItem to="/point" onClick={handleMenuToggle}>
+                {t("點數儲值")}
+              </BurgerItem>
             )}
             {user && user.identity !== "administrator" && (
               <>

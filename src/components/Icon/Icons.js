@@ -6,6 +6,7 @@ import { ReactComponent as Facebook } from "../../img/icons/facebook-icon.svg";
 
 import { ReactComponent as Burger } from "../../img/icons/burger-icon.svg";
 import { ReactComponent as Question } from "../../img/icons/question-icon.svg";
+import { ReactComponent as Cart } from "../../img/icons/shopping-cart-icon.svg";
 
 const Icons = {
   SocialMediaIcons: {
@@ -18,6 +19,7 @@ const Icons = {
   NavIcons: {
     Burger,
     Question,
+    Cart,
   },
 };
 
