@@ -20,10 +20,6 @@ const ContentContainer = styled.div``;
 const WrapContent = styled(AlertContent)`
   overflow-wrap: break-word;
 `;
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObjToDisplayTime(dateObj);
-  return dateStr;
-};
 
 function ReadTaskAlertCard({
   allEvents,
@@ -60,11 +56,11 @@ function ReadTaskAlertCard({
       <TimeContainer>
         <TimeTitle>
           {t("開始：")}
-          {getDisplayDate(selectedEvent.start)}
+          {dateObjToDisplayTime(selectedEvent.start)}
         </TimeTitle>
         <TimeTitle>
           {t("結束：")}
-          {getDisplayDate(selectedEvent.end)}
+          {dateObjToDisplayTime(selectedEvent.end)}
         </TimeTitle>
       </TimeContainer>
       <ContentContainer>

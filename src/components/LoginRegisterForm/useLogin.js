@@ -10,16 +10,25 @@ import {
 import { scrollTop } from "../../utils";
 import { useTranslation } from "react-i18next";
 
-export default function useLogin() {
+export default function useLogin(userIdentity) {
   const { user, setUser } = useContext(AuthContext);
   const { setIsLoading } = useContext(AuthLoadingContext);
   const { setCartNumber } = useContext(AuthCartContext);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-  const [loginData, setLoginData] = useState({
-    email: "",
-    identity: "",
-    password: "",
+  const [loginData, setLoginData] = useState(() => {
+    const data = {
+      email: "",
+      identity: "",
+      password: "",
+    };
+    if (userIdentity) {
+      return {
+        ...data,
+        identity: userIdentity,
+      };
+    }
+    return data;
   });
   const { t } = useTranslation();
 
@@ -71,7 +80,6 @@ export default function useLogin() {
       getCartItems().then((json) => {
         if (!json || !json.success || json.data.length === 0) {
           if (!user || user.identity !== "student") {
-            console.log("here");
             return;
           } else return setCartNumber("0");
         }

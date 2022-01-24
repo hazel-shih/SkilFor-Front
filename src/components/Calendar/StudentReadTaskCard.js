@@ -17,10 +17,6 @@ import { dateObjToDisplayTime } from "./utils";
 
 const ContentContainer = styled.div``;
 
-const getDisplayDate = (dateObj) => {
-  let dateStr = dateObjToDisplayTime(dateObj);
-  return dateStr;
-};
 const NoneStyleLink = styled(Link)`
   text-decoration: none;
   color: ${(props) => props.theme.colors.grey_dark};
@@ -46,11 +42,11 @@ function StudentReadTaskCard({
       <TimeContainer>
         <TimeTitle>
           {t("開始：")}
-          {getDisplayDate(selectedEvent.start)}
+          {dateObjToDisplayTime(selectedEvent.start)}
         </TimeTitle>
         <TimeTitle>
           {t("結束：")}
-          {getDisplayDate(selectedEvent.end)}
+          {dateObjToDisplayTime(selectedEvent.end)}
         </TimeTitle>
       </TimeContainer>
       <ContentContainer>

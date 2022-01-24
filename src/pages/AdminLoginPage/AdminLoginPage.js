@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { FormItem } from "../../components/LoginRegisterForm/LoginRegisterFormItem";
 import {
   Wrapper,
@@ -13,20 +12,8 @@ import { useTranslation } from "next-i18next";
 
 function AdminLoginPage() {
   const { t } = useTranslation();
-  const {
-    handleLoginSubmit,
-    setLoginData,
-    loginData,
-    handleLoginDataChange,
-    errorMessage,
-  } = useLogin();
-
-  useEffect(() => {
-    setLoginData({
-      ...loginData,
-      identity: "administrator",
-    });
-  }, [setLoginData, loginData]);
+  const { handleLoginSubmit, loginData, handleLoginDataChange, errorMessage } =
+    useLogin("administrator");
 
   return (
     <Wrapper>
